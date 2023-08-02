@@ -1,11 +1,10 @@
 import { View, Text, SafeAreaView, ScrollView, TextInput, Image, Pressable } from 'react-native'
 import React, { useState } from 'react'
 import { GlobalStyle } from '../../globalStyle'
-import HeaderProfile from '../../components/HeaderProfile'
 import SelectDropdown from 'react-native-select-dropdown'
 import SearchIcon from '../../assets/icons/Search.svg'
 
-const MessageScreen = ({navigation}:any) => {
+const MessageScreen = ({ navigation }: any) => {
   const [searchValue, setSearchValue] = useState('')
   const [selectedValue, setSelectValue] = useState('')
 
@@ -39,11 +38,11 @@ const MessageScreen = ({navigation}:any) => {
             <TextInput
               onChangeText={text => onChangeSearch(text)}
               value={searchValue}
-              placeholder='Search'
+              placeholder='Search chats'
               style={{ padding: 5, flex: 1 }}
             />
-            <SearchIcon height={20} width={20}/>
-          </View> 
+            <SearchIcon height={20} width={20} />
+          </View>
           <View
             style={[{
               marginTop: 10,
@@ -60,8 +59,8 @@ const MessageScreen = ({navigation}:any) => {
                 onSelect={(selectedItem) => {
                   setSelectValue(selectedItem)
                 }}
-                
-                buttonStyle={{ backgroundColor: 'transparent' ,width:'100%'}}
+
+                buttonStyle={{ backgroundColor: 'transparent', width: '100%' }}
                 defaultButtonText='Select Gig'
                 buttonTextStyle={{ textAlign: 'left' }}
                 dropdownStyle={{ width: '85%', borderRadius: 10 }}
@@ -71,23 +70,23 @@ const MessageScreen = ({navigation}:any) => {
             <Image source={require('../../assets/icons/dropdown.png')} style={{ marginEnd: 10 }} />
           </View>
           {profiles.length && profiles.map((data, index) => (
-            <Pressable onPress={()=>navigation.navigate('Chat')} key={index}>
-            <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingHorizontal: 10 }]} >
-              <View style={[{ display: 'flex', flexDirection: 'row', alignItems: 'center' }]}>
-                <View style={{ height: 70, width: 70, backgroundColor: 'black', borderRadius: 35 }}>
-                  <Image style={{ height: 70, width: 70, borderRadius: 35 }} resizeMode='contain' source={require('../../assets/images/avatar-1.png')} />
-                  <View style={{ height: 20, width: 20, borderRadius: 10, backgroundColor: '#36CC36', position: 'absolute', bottom: 0, right: 0 }}></View>
-                </View>
-                <View style={{ flex: 1, marginStart: 10 }}>
-                  <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>{data.name}</Text>
-                  <Text style={[GlobalStyle.blackColor]}>{data.title}</Text>
-                  <Text numberOfLines={1} style={[GlobalStyle.greyColor,]}>{data.message}</Text>
-                </View>
-                <View>
-                  <Text style={[GlobalStyle.themeColor, { fontWeight: 'bold' }]}>{data.time}</Text>
+            <Pressable onPress={() => navigation.navigate('Chat')} key={index}>
+              <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingHorizontal: 10 }]} >
+                <View style={[{ display: 'flex', flexDirection: 'row', alignItems: 'center' }]}>
+                  <View style={{ height: 70, width: 70, backgroundColor: 'black', borderRadius: 35 }}>
+                    <Image style={{ height: 70, width: 70, borderRadius: 35 }} resizeMode='contain' source={require('../../assets/images/avatar-1.png')} />
+                    <View style={{ height: 20, width: 20, borderRadius: 10, backgroundColor: '#36CC36', position: 'absolute', bottom: 0, right: 0 }}></View>
+                  </View>
+                  <View style={{ flex: 1, marginStart: 10 }}>
+                    <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>{data.name}</Text>
+                    <Text style={[GlobalStyle.blackColor]}>{data.title}</Text>
+                    <Text numberOfLines={1} style={[GlobalStyle.greyColor,]}>{data.message}</Text>
+                  </View>
+                  <View>
+                    <Text style={[GlobalStyle.themeColor, { fontWeight: 'bold' }]}>{data.time}</Text>
+                  </View>
                 </View>
               </View>
-            </View>
             </Pressable>
           ))
           }

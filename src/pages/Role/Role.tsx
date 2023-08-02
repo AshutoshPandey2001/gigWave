@@ -33,6 +33,7 @@ const RoleScreen = ({ navigation }: any) => {
         <View>
           <Text style={[GlobalStyle.subtitle]}>
             Select want to do first, you can select the other option later by tapping.&nbsp;
+            {/* <GigwaveIcon height={50} /> */}
             <Image style={{ resizeMode: 'contain', width: 34, height: 20 }} source={require('../../assets/images/gigwave.png')} />
           </Text>
           <Pressable style={[Style.button, { marginTop: 30 }]} onPress={() => { navigation.navigate('Home'); dispatch(setUserType('CREATOR')) }}>

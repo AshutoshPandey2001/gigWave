@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from 'react'
-import { SafeAreaView, ScrollView, StyleSheet, View, Image, Text, TouchableOpacity, TextInput, TouchableHighlight, Alert } from 'react-native'
-import { GlobalStyle } from '../../globalStyle';
 import Voice from '@react-native-voice/voice';
 import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import MicIcon from '../../assets/icons/Mic.svg';
+import CamaraIcon from '../../assets/icons/camera.svg';
+import MarkerIcon from '../../assets/icons/marker.svg';
+import SendIcon from '../../assets/icons/send.svg';
+import { GlobalStyle } from '../../globalStyle';
 
 const ChatScreen = ({ navigation }: any) => {
     const [message, setMessage] = useState('');
@@ -143,7 +147,9 @@ const ChatScreen = ({ navigation }: any) => {
                                     Lala Kian
                                 </Text>
                                 <View style={{ display: 'flex', flexDirection: 'row' }}>
-                                    <Image resizeMode='contain' source={require('../../assets/icons/marker.png')} />
+                                    <View>
+                                        <MarkerIcon />
+                                    </View>
                                     <Text style={{ fontSize: 12 }}>
                                         &nbsp;San Francisco, CA
                                     </Text>
@@ -167,9 +173,7 @@ const ChatScreen = ({ navigation }: any) => {
             <View style={styles.footer}>
                 <View>
                     <TouchableOpacity style={[styles.btnSend, { paddingRight: 10 }]} onPress={() => console.log('send')}>
-                        <Image style={{ height: 30, width: 30 }} resizeMode='contain'
-                            source={require('../../assets/icons/camera.png')}
-                        />
+                        <CamaraIcon height={30} width={30} />
                     </TouchableOpacity>
                 </View>
                 <View style={styles.inputContainer}>
@@ -186,14 +190,13 @@ const ChatScreen = ({ navigation }: any) => {
                     />
                 </View>
                 <TouchableOpacity style={[styles.btnSend, { paddingRight: 10 }]} onPress={() => onSend()}>
-                    <Image style={{ height: 30, width: 30 }} resizeMode='contain'
+                    <SendIcon fill={'#fff'} height={30} width={30} />
+                    {/* <Image style={{ height: 30, width: 30 }} resizeMode='contain'
                         source={require('../../assets/icons/send.png')}
-                    />
+                    /> */}
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.btnSend} onPress={startRecognizing} onLongPress={startRecognizing} onPressOut={stopRecording}>
-                    <Image style={{ height: 40, width: 40 }} resizeMode='contain'
-                        source={require('../../assets/icons/mic.png')}
-                    />
+                    <MicIcon height={35} width={35} />
                 </TouchableOpacity>
             </View>
 
