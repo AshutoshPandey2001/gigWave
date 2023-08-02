@@ -1,6 +1,6 @@
 import { Formik } from 'formik'
 import React from 'react'
-import { Image, Pressable, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Image, Pressable, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { GlobalStyle } from '../../globalStyle'
 import { useDispatch } from 'react-redux'
@@ -27,6 +27,7 @@ const RegisterScreen = ({ navigation }: any) => {
                 backgroundColor="#fff"
                 barStyle="dark-content" // Here is where you change the font-color
             />
+            <ScrollView automaticallyAdjustKeyboardInsets={true}>
             <View style={GlobalStyle.centerContentPage}>
                 <View style={Style.authContainer}>
                     <Image source={require('../../assets/images/gigwave.png')} />
@@ -42,7 +43,7 @@ const RegisterScreen = ({ navigation }: any) => {
                         validationSchema={registerSchema}
                         onSubmit={values => onRegister(values)}
                     >
-                        {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
+                        {({ handleChange, handleBlur, handleSubmit, values, errors, isValid,touched }) => (
                             <View style={{ padding: 10 }}>
                                 <View style={[GlobalStyle.fieldwithIcon]}>
                                     <View style={{ marginRight: 10 }}>
@@ -56,7 +57,7 @@ const RegisterScreen = ({ navigation }: any) => {
                                     />
                                 </View>
                                 <View style={{ marginBottom: 10 }}>
-                                    {errors.firstname &&
+                                    {touched.firstname && errors.firstname &&
                                         <Text style={GlobalStyle.errorMsg}>{errors.firstname}</Text>
                                     }
                                 </View>
@@ -72,7 +73,7 @@ const RegisterScreen = ({ navigation }: any) => {
                                     />
                                 </View>
                                 <View style={{ marginBottom: 10 }}>
-                                    {errors.lastname &&
+                                    {errors.lastname && touched.lastname &&
                                         <Text style={GlobalStyle.errorMsg}>{errors.lastname}</Text>
                                     }
                                 </View>
@@ -89,7 +90,7 @@ const RegisterScreen = ({ navigation }: any) => {
                                     />
                                 </View>
                                 <View style={{ marginBottom: 10 }}>
-                                    {errors.email &&
+                                    {errors.email && touched.email &&
                                         <Text style={GlobalStyle.errorMsg}>{errors.email}</Text>
                                     }
                                 </View>
@@ -105,7 +106,7 @@ const RegisterScreen = ({ navigation }: any) => {
                                     />
                                 </View>
                                 <View style={{ marginBottom: 10 }}>
-                                    {errors.address &&
+                                    {errors.address && touched.address &&
                                         <Text style={GlobalStyle.errorMsg}>{errors.address}</Text>
                                     }
                                 </View>
@@ -117,6 +118,8 @@ const RegisterScreen = ({ navigation }: any) => {
                     </Formik>
                 </View>
             </View>
+
+            </ScrollView>
         </SafeAreaView>
     )
 }

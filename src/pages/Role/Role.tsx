@@ -1,26 +1,44 @@
-import { View, Text, SafeAreaView, StatusBar, StyleSheet, Image, Pressable } from 'react-native'
 import React from 'react'
+import { Image, Pressable, SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native'
+import { useDispatch } from 'react-redux'
 import { GlobalStyle } from '../../globalStyle'
+import { setUserType } from '../../redux/action/User/userTypeSlice'
+import HelpSVG from '../../assets/icons/Help.svg'
+import GroupSvg from '../../assets/icons/Group.svg'
 
-const RoleScreen = ({navigation}:any) => {
+const RoleScreen = ({ navigation }: any) => {
+  const dispatch = useDispatch()
   return (
     <SafeAreaView>
       <StatusBar
         backgroundColor="#fff"
         barStyle="dark-content" // Here is where you change the font-color
       />
-      <View style={[GlobalStyle.centerContentPage, { justifyContent: 'center', padding: 30 }]}>
-        <View>
-          <Text style={[GlobalStyle.title, { fontSize: 26 }]}>I want to</Text>
+      <View style={{ marginHorizontal: 10 }}>
+        <View style={[GlobalStyle.headerLeft]}>
+          <View>
+            <Image resizeMode='contain' source={require('../../assets/images//avatar_profile.png')} />
+          </View>
+          <View style={{ marginLeft: 5 }}>
+            <View>
+              <Text style={{ color: '#05E3D5', fontSize: 20 }}>Hi Joshua</Text>
+              <Text style={[GlobalStyle.title, { fontSize: 18 }]}>Welcome to Gigwave</Text>
+            </View>
+          </View>
         </View>
+      </View>
+      {/* <ScrollView> */}
+      <View style={[GlobalStyle.centerContentPage, { padding: 30, marginTop: 0, height: 'auto' }]}>
+        <Text style={[GlobalStyle.title, { fontSize: 26 }]}>I want to</Text>
         <View>
-          <Text style={[GlobalStyle.subtitle,]}>
+          <Text style={[GlobalStyle.subtitle]}>
             Select want to do first, you can select the other option later by tapping.&nbsp;
             <Image style={{ resizeMode: 'contain', width: 34, height: 20 }} source={require('../../assets/images/gigwave.png')} />
           </Text>
-          <Pressable style={[Style.button, { marginTop: 60 }]} onPress={()=>navigation.navigate('Tab')}>
+          <Pressable style={[Style.button, { marginTop: 30 }]} onPress={() => { navigation.navigate('Home'); dispatch(setUserType('CREATOR')) }}>
             <View>
-              <Image source={require('../../assets/images/help.png')} />
+              {/* <Image source={require('../../assets/images/help.png')} /> */}
+              <HelpSVG />
             </View>
             <View>
               <Text style={Style.btnTitle}>Get Help</Text>
@@ -34,9 +52,10 @@ const RoleScreen = ({navigation}:any) => {
               </Text>
             </View>
           </Pressable>
-          <Pressable style={[Style.button, { marginTop: 20 }]} onPress={()=>navigation.navigate('Tab')}>
+          <Pressable style={[Style.button, { marginTop: 20 }]} onPress={() => { navigation.navigate('Home'); dispatch(setUserType('PRO')) }}>
             <View>
-              <Image source={require('../../assets/images/help_other.png')} />
+              {/* <Image source={require('../../assets/images/help_other.png')} /> */}
+              <GroupSvg />
             </View>
             <View>
               <Text style={Style.btnTitle}>Help Others</Text>
@@ -52,7 +71,8 @@ const RoleScreen = ({navigation}:any) => {
           </Pressable>
         </View>
       </View>
-    </SafeAreaView>
+      {/* </ScrollView> */}
+    </SafeAreaView >
   )
 }
 
@@ -61,7 +81,7 @@ const Style = StyleSheet.create({
     backgroundColor: '#F9F9F9',
     borderRadius: 15,
     height: 220,
-    padding:30,
+    padding: 30,
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
@@ -69,7 +89,7 @@ const Style = StyleSheet.create({
   },
   btnTitle: {
     color: '#05E3D5',
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     paddingTop: 20
   },

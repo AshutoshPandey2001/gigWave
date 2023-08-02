@@ -78,5 +78,6 @@ To learn more about React Native, take a look at the following resources:
 - [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
 - [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
 
-## Android run 
+## Android run & debug build
 - for debug run if android build is not running properly then run './gradlew app:installDebug'
+- for copy latest code from src to android platform run command 'react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res'

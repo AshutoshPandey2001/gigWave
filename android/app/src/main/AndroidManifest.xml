@@ -1,5 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-
+      <queries>
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
+      </queries>
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -22,4 +26,5 @@
         </intent-filter>
       </activity>
     </application>
+     
 </manifest>

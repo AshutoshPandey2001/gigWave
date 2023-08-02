@@ -6,8 +6,8 @@ export const GlobalStyle = StyleSheet.create({
     },
     centerContentPage: {
         backgroundColor: '#ffffff',
-        height: '100%',
         display: "flex",
+        height: '100%',
         alignItems: "center",
         justifyContent: "flex-end"
     },
@@ -51,6 +51,9 @@ export const GlobalStyle = StyleSheet.create({
     themeColor: {
         color: '#05E3D5'
     },
+    greyColor: {
+        color: '#989898'
+    },
     blackColor: {
         color: '#1E1E1E'
     },
@@ -59,10 +62,11 @@ export const GlobalStyle = StyleSheet.create({
         color: 'red'
     },
     container: {
-        margin: 25
+        margin: 25,
+        paddingBottom: 85
     },
     card: {
-        backgroundColor: 'white',
+        backgroundColor: '#fff',
         borderRadius: 10,
         paddingVertical: 15,
         paddingHorizontal: 20,
@@ -72,8 +76,9 @@ export const GlobalStyle = StyleSheet.create({
     shadowProp: {
         shadowColor: '#555',
         shadowOffset: { width: -5, height: 5 },
-        shadowOpacity: 0.1,
+        shadowOpacity: 1.0,
         shadowRadius: 5,
         elevation: 5
     },
+    headerLeft: { display: 'flex', alignItems: 'center', flexDirection: 'row' }
 })

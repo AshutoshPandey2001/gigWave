@@ -1,3 +1,5 @@
 export interface Constant {
-    user: any
+    user: any,
+    userType:string
 }
+

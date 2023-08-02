@@ -12,13 +12,14 @@ const FAQScreen = () => {
                 backgroundColor="#fff"
                 barStyle="dark-content" // Here is where you change the font-color
             />
-            <View style={{ display: 'flex', alignItems: 'center' }}>
+            <View style={{ display: 'flex', alignItems: 'center', paddingTop: 20 }}>
                 <SegmentedControl
                     values={['CREATOR', 'PRO']}
                     selectedIndex={selectedIndex}
                     onChange={(event) => {
                         SetSelectedIndex(event.nativeEvent.selectedSegmentIndex);
                     }}
+                    backgroundColor='#05E3D5'
                     style={{ width: '80%', height: 40, backgroundColor: "#05E3D5" }}
                     tintColor='#fff'
                     activeFontStyle={{ color: '#000', fontWeight: 'bold', fontSize: 18 }}
@@ -26,7 +27,7 @@ const FAQScreen = () => {
                 />
             </View>
             <ScrollView>
-                <View style={[GlobalStyle.container]}>
+                <View style={[GlobalStyle.container,{marginBottom: 50 }]}>
                     {selectedIndex === 0 ?
                         <View>
                             <View style={Style.cardContainer}>
@@ -112,7 +113,7 @@ const FAQScreen = () => {
                                     </Text>
                                 </View>
                             </View>
-                            <View style={Style.cardContainer}>
+                            <View style={[Style.cardContainer, { marginBottom: 20 }]}>
                                 <Text style={[GlobalStyle.blackColor, { fontSize: 16, fontWeight: 'bold' }]}>Getting Paid</Text>
                                 <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
                                     <Text style={[GlobalStyle.blackColor, { fontSize: 14 }]}>

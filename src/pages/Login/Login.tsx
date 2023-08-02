@@ -7,6 +7,7 @@ import * as yup from "yup"
 
 const LoginScreen = ({ navigation }: any) => {
   const [isOtpsent, setOtpSend] = useState(false);
+  const [mobile, setMobile] = useState("");
   const loginPhoneSchema = yup.object().shape({
     phone: yup.string().required('Phone number is required')
       .min(10, 'Phone number must be 10 digit number')
@@ -18,12 +19,14 @@ const LoginScreen = ({ navigation }: any) => {
   })
   const onLogin = (values: any) => {
     // console.log('values', values);
+    setMobile(values.phone)
     setOtpSend(true)
   }
   const onSubmit = (values: any) => {
     // console.log('values', values);
     setOtpSend(false)
     navigation.navigate('Register')
+    
   }
   return (
     <SafeAreaView style={GlobalStyle.safeAreaCotainer}>
@@ -34,11 +37,16 @@ const LoginScreen = ({ navigation }: any) => {
       <View style={GlobalStyle.centerContentPage}>
         <View style={Style.authContainer}>
           <Image source={require('../../assets/images/gigwave.png')} />
-          <Text style={[GlobalStyle.title, { marginTop: 20 }]}>Login</Text>
           {!isOtpsent ?
-            <Text style={{ color: '#949494' }}>Enter Login Details</Text>
-            :
-            <Text style={{ color: '#949494' }}>We Sent a Code To Your Phone</Text>
+            <>
+              <Text style={[GlobalStyle.title, { marginTop: 20 }]}>Login</Text>
+              <Text style={{ color: '#949494' }}>Enter Login Details</Text>
+            </>
+            : <>
+              <Text style={[GlobalStyle.title, { marginTop: 20 }]}>User Verification</Text>
+              <Text style={{ color: '#949494' }}>We Sent a Code To Your Phone</Text>
+              <Text style={{ color: '#949494' }}>{mobile ? mobile : ''}</Text>
+            </>
           }
           {
             !isOtpsent ?
@@ -66,7 +74,7 @@ const LoginScreen = ({ navigation }: any) => {
                     {errors.phone &&
                       <Text style={GlobalStyle.errorMsg}>{errors.phone}</Text>
                     }
-                    <Pressable style={GlobalStyle.button} disabled={!isValid} onPress={() => { handleSubmit(); resetForm() }}>
+                    <Pressable style={GlobalStyle.button} disabled={!isValid} onPress={() => { handleSubmit() }}>
                       <Text style={GlobalStyle.btntext}>Continue</Text>
                     </Pressable>
                   </View>
@@ -97,7 +105,9 @@ const LoginScreen = ({ navigation }: any) => {
                       <Text style={GlobalStyle.errorMsg}>{errors.code}</Text>
                     }
                     <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
-                      <Text onPress={() => setOtpSend(false)} style={[GlobalStyle.blackColor, { marginBottom: 10 }]}>Return to Login</Text>
+                      <Text onPress={() => setOtpSend(false)} style={[GlobalStyle.blackColor, { marginBottom: 10, flex: 1 }]}>Return to Login</Text>
+                      {/* <Text style={[GlobalStyle.themeColor, { marginBottom: 10 }]}> or </Text> */}
+                      <Text onPress={() => console.log('resend code')} style={[GlobalStyle.blackColor, { marginBottom: 10 }]}>Resend Code </Text>
                     </View>
                     <Pressable style={GlobalStyle.button} disabled={!isValid} onPress={() => handleSubmit()}>
                       <Text style={GlobalStyle.btntext}>Login</Text>

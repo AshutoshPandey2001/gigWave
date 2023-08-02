@@ -5,21 +5,22 @@
  * @format
  */
 
-import { NavigationContainer } from '@react-navigation/native';
+import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import {
-  StyleSheet
+  StyleSheet,
+  View
 } from 'react-native';
 
 import AuthNavigator from './src/navigator/AuthNavigator';
 
 import { useSelector, } from 'react-redux';
 import TabNavigator from './src/navigator/TabNavigator';
-import RoleScreen from './src/pages/Role/Role';
 import { RootState } from './src/redux/store';
 
-
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['new NativeEventEmitter']);
 function App(): JSX.Element {
 
   const Stack = createNativeStackNavigator();
@@ -35,19 +36,10 @@ function App(): JSX.Element {
   }, [user])
 
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={DefaultTheme}>
       {isLoggedIn ?
-        <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen name="Home" component={RoleScreen} options={{
-            headerTitle: 'Select Role',
-            headerTitleAlign: 'center',
-            headerTitleStyle: { fontSize: 18, fontWeight: 'bold' },
-            headerShadowVisible: false
-          }} />
-          <Stack.Screen name="Tab" options={{ headerShown: false}}
-            component={TabNavigator} />
-        </Stack.Navigator> :
-        <Stack.Navigator initialRouteName="Login">
+        <TabNavigator />
+        : <Stack.Navigator initialRouteName="Login">
           <Stack.Screen name="Auth" options={{ headerShown: false }}
             component={AuthNavigator} />
         </Stack.Navigator>
