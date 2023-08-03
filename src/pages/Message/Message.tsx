@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { GlobalStyle } from '../../globalStyle'
 import SelectDropdown from 'react-native-select-dropdown'
 import SearchIcon from '../../assets/icons/Search.svg'
+import DropDownIcon from '../../assets/icons/dropdown.svg'
 
 const MessageScreen = ({ navigation }: any) => {
   const [searchValue, setSearchValue] = useState('')
@@ -67,7 +68,8 @@ const MessageScreen = ({ navigation }: any) => {
                 defaultValue={selectedValue}
               />
             </View>
-            <Image source={require('../../assets/icons/dropdown.png')} style={{ marginEnd: 10 }} />
+            <DropDownIcon style={{ marginEnd: 10 }} />
+            {/* <Image source={require('../../assets/icons/dropdown.png')} style={{ marginEnd: 10 }} /> */}
           </View>
           {profiles.length && profiles.map((data, index) => (
             <Pressable onPress={() => navigation.navigate('Chat')} key={index}>

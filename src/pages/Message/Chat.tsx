@@ -6,6 +6,7 @@ import MicIcon from '../../assets/icons/Mic.svg';
 import CamaraIcon from '../../assets/icons/camera.svg';
 import MarkerIcon from '../../assets/icons/marker.svg';
 import SendIcon from '../../assets/icons/send.svg';
+import OnlineIcon from '../../assets/icons/online.svg';
 import { GlobalStyle } from '../../globalStyle';
 
 const ChatScreen = ({ navigation }: any) => {
@@ -158,6 +159,9 @@ const ChatScreen = ({ navigation }: any) => {
                                     Plays piano and violin for events
                                 </Text>
                             </View>
+                            <View style={{ justifyContent: 'center' }}>
+                                <OnlineIcon height={40} width={40} />
+                            </View>
                         </View>
                     </View>
                     <View style={{ display: 'flex', alignItems: 'center', marginTop: 10 }}>
@@ -199,7 +203,6 @@ const ChatScreen = ({ navigation }: any) => {
                     <MicIcon height={35} width={35} />
                 </TouchableOpacity>
             </View>
-
         </SafeAreaView >
 
     )

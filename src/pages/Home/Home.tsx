@@ -64,9 +64,9 @@ const HomeScreen = ({ navigation }: any) => {
           <View style={[GlobalStyle.container]}>
             <View style={Style.cardContainer}>
               {selectedIndex === 0 ?
-                <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Active Gigs</Text>
+                <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Active Gigs</Text>
                 :
-                <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Inactive Gigs</Text>
+                <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Inactive Gigs</Text>
               }
               {
                 lists?.length > 0 ?
@@ -79,13 +79,13 @@ const HomeScreen = ({ navigation }: any) => {
                           paddingHorizontal: 0
                         }]} >
                           <View>
-                            <Image resizeMode='contain' style={{ borderTopLeftRadius: 15, borderBottomLeftRadius: 15, height: 120 }} source={item.image} />
+                            <Image resizeMode='contain' style={Style.imageStyle} source={item.image} />
                           </View>
                           <View style={{ flex: 1, width: 100 }}>
-                            <Text style={[GlobalStyle.blackColor, { fontSize: 16, marginHorizontal: 10, paddingTop: 10, fontWeight: 'bold' }]}>
+                            <Text style={[GlobalStyle.blackColor, Style.title]}>
                               {item.title}
                             </Text>
-                            <Text style={[GlobalStyle.blackColor, { fontSize: 12, margin: 10, }]}>
+                            <Text style={[GlobalStyle.blackColor, Style.message]}>
                               {item.msg}
                             </Text>
                           </View>
@@ -126,7 +126,7 @@ const HomeScreen = ({ navigation }: any) => {
       <ScrollView>
         <View style={[GlobalStyle.container]}>
           <View style={Style.cardContainer}>
-            <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Suggested Gigs</Text>
+            <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Suggested Gigs</Text>
             {
               proLists?.length > 0 ?
                 <>
@@ -138,13 +138,13 @@ const HomeScreen = ({ navigation }: any) => {
                         paddingHorizontal: 0
                       }]} >
                         <View>
-                          <Image resizeMode='contain' style={{ borderTopLeftRadius: 15, borderBottomLeftRadius: 15, height: 120 }} source={item.image} />
+                          <Image resizeMode='contain' style={Style.imageStyle} source={item.image} />
                         </View>
                         <View style={{ flex: 1, width: 100 }}>
-                          <Text style={[GlobalStyle.blackColor, { fontSize: 16, marginHorizontal: 10, paddingTop: 10, fontWeight: 'bold' }]}>
+                          <Text style={[GlobalStyle.blackColor, Style.title]}>
                             {item.title}
                           </Text>
-                          <Text style={[GlobalStyle.blackColor, { fontSize: 12, margin: 10, }]}>
+                          <Text style={[GlobalStyle.blackColor, Style.message]}>
                             {item.msg}
                           </Text>
                         </View>
@@ -213,7 +213,28 @@ const HomeScreen = ({ navigation }: any) => {
   )
 }
 const Style = StyleSheet.create({
-  cardContainer: { marginBottom: 10 }
+  cardContainer: { marginBottom: 10 },
+  commanFont: {
+    fontSize: 18,
+    fontWeight: 'bold'
+  },
+  title: {
+    fontSize: 16,
+    marginHorizontal: 10,
+    paddingTop: 10,
+    fontWeight: 'bold'
+  },
+  message: {
+    fontSize: 12,
+    margin: 10
+  },
+  imageStyle: {
+    borderTopLeftRadius: 15,
+    borderBottomLeftRadius: 15,
+    height: 120
+  }
+
+
 
 })
 

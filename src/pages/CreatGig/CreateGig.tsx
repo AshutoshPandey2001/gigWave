@@ -4,7 +4,6 @@ import { GlobalStyle } from '../../globalStyle'
 import { Formik } from 'formik'
 import SelectDropdown from 'react-native-select-dropdown'
 import MicIcon from '../../assets/icons/Mic.svg'
-
 import * as yup from "yup"
 
 const CreategigScreen = ({ navigation }: any) => {
@@ -68,7 +67,7 @@ const CreategigScreen = ({ navigation }: any) => {
                         style={{ width: '90%' }}
                       />
                       <View style={{ width: '10%', alignItems: 'center' }}>
-                        <MicIcon/>
+                        <MicIcon />
                       </View>
                     </View>
                   </View>

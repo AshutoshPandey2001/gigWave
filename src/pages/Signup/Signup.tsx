@@ -2,7 +2,9 @@ import { Formik } from 'formik'
 import React, { useState } from 'react'
 import { Image, Pressable, SafeAreaView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native'
 import { GlobalStyle } from '../../globalStyle'
-
+import GigwaveIcon from '../../assets/icons/gigwave.svg'
+import LockIcon from '../../assets/icons/lock.svg'
+import PhoneIcon from '../../assets/icons/phone.svg'
 import * as yup from "yup"
 
 const SignupScreen = ({ navigation }: any) => {
@@ -38,7 +40,8 @@ const SignupScreen = ({ navigation }: any) => {
             />
             <View style={GlobalStyle.centerContentPage}>
                 <View style={Style.authContainer}>
-                    <Image source={require('../../assets/images/gigwave.png')} />
+                    <GigwaveIcon />
+                    {/* <Image source={require('../../assets/images/gigwave.png')} /> */}
                     {!isOtpsent ?
                         <>
                             <Text style={[GlobalStyle.title, { marginTop: 20 }]}>Register</Text>
@@ -63,7 +66,8 @@ const SignupScreen = ({ navigation }: any) => {
 
                                         <View style={GlobalStyle.fieldwithIcon}>
                                             <View style={{ marginRight: 10 }}>
-                                                <Image source={require('../../assets/icons/phone.png')} />
+                                                <PhoneIcon />
+                                                {/* <Image source={require('../../assets/icons/phone.png')} /> */}
                                             </View>
                                             <TextInput style={{ flex: 1 }}
                                                 onChangeText={handleChange('phone')}
@@ -93,7 +97,8 @@ const SignupScreen = ({ navigation }: any) => {
                                     <View style={{ padding: 10 }}>
                                         <View style={[GlobalStyle.fieldwithIcon]}>
                                             <View style={{ marginRight: 10 }}>
-                                                <Image source={require('../../assets/icons/lock.png')} />
+                                                <LockIcon />
+                                                {/* <Image source={require('../../assets/icons/lock.png')} /> */}
                                             </View>
                                             <TextInput style={{ flex: 1 }}
                                                 onChangeText={handleChange('code')}
