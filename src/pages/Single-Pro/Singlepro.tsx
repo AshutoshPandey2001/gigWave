@@ -8,9 +8,9 @@ const SingleproScreen = () => {
         <SafeAreaView>
             <ScrollView>
                 <View style={[GlobalStyle.container, { marginTop: 0 }]}>
-                    <View style={[GlobalStyle.headerLeft, { margin: 0 }]}>
+                    {/* <View style={[GlobalStyle.headerLeft, { margin: 0 }]}>
                         <HeaderProfile />
-                    </View>
+                    </View> */}
                     <View style={{ marginTop: 50 }}>
                         <View style={{ display: 'flex', width: '100%', alignItems: 'center' }}>
                             <Image source={require('../../assets/images/avatar-3.png')} style={{ position: 'absolute', zIndex: 999, top: 15 }} />

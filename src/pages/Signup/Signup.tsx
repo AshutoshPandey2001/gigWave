@@ -152,7 +152,8 @@ const Style = StyleSheet.create({
     },
     footerText: {
         fontWeight: "bold",
-        color: 'black'
+        color: 'black',
+        fontSize: 16
     }
 })
 

@@ -166,7 +166,7 @@ const ChatScreen = ({ navigation }: any) => {
                     </View>
                     <View style={{ display: 'flex', alignItems: 'center', marginTop: 10 }}>
                         <View style={[styles.centerBorder, { left: 40 }]} />
-                        <Text style={{ alignSelf: 'center', paddingHorizontal: 5, color: '#d6d6d6', fontSize: 16, fontWeight: 'bold' }}>Chat Started</Text>
+                        <Text style={{ alignSelf: 'center', paddingHorizontal: 5, color: '#d6d6d6', fontSize: 16, fontWeight: 'bold' }}>Chat History</Text>
                         <View style={[styles.centerBorder, { right: 40 }]} />
                     </View>
                     <View style={styles.chatContainer}>

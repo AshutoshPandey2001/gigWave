@@ -38,7 +38,7 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                                     </Pressable>
                                 </> :
                                 <Pressable style={[GlobalStyle.button, { flex: 1, backgroundColor: '#000', margin: 5, paddingHorizontal: 10 }]}>
-                                    <Text style={[GlobalStyle.btntext, { fontWeight: 'bold', fontSize:16}]}>I’m Interested</Text>
+                                    <Text style={[GlobalStyle.btntext, { fontWeight: 'bold', fontSize: 16 }]}>I’m Interested</Text>
                                 </Pressable>
                             }
                         </View> : <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: -15 }}>

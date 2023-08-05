@@ -182,7 +182,7 @@ const HomeScreen = ({ navigation }: any) => {
                       />
                       <View style={{ alignItems: 'center' }}>
                         {/* <Image source={require('../../assets/icons/mic1.png')} /> */}
-                        <MicIcon />
+                        <MicIcon height={80} width={80} />
                       </View>
                     </View>
                   </View>

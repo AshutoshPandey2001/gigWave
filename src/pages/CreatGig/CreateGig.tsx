@@ -8,7 +8,8 @@ import * as yup from "yup"
 
 const CreategigScreen = ({ navigation }: any) => {
   const gigSchema = yup.object().shape({
-    description: yup.string().required('Description is required'),
+    description: yup.string().required('Description is required').min(10, 'Description must be at least 10 characters')
+      .max(400, 'Description must not exceed 400 characters'),
     address: yup.string().required('Address is required'),
     amount: yup.string().required('Amount is required'),
     status: yup.string().required('Status is required')
@@ -64,10 +65,11 @@ const CreategigScreen = ({ navigation }: any) => {
                         onChangeText={handleChange('description')}
                         onBlur={() => { handleBlur('description') }}
                         value={values.description}
-                        style={{ width: '90%' }}
+                        maxLength={400}
+                        style={{ width: '80%' }}
                       />
-                      <View style={{ width: '10%', alignItems: 'center' }}>
-                        <MicIcon />
+                      <View style={{ alignItems: 'center' }}>
+                        <MicIcon height={80} width={80} />
                       </View>
                     </View>
                   </View>
@@ -105,6 +107,11 @@ const CreategigScreen = ({ navigation }: any) => {
                         data={['Free', 'Paid']}
                         onSelect={(selectedItem) => {
                           setFieldValue('status', selectedItem)
+                          if (selectedItem === 'Free') {
+                            setFieldValue('amount', '0');
+                          } else {
+                            setFieldValue('amount', '');
+                          }
                         }}
                         buttonStyle={{ backgroundColor: 'transparent' }}
                         defaultButtonText='Select'
@@ -117,25 +124,26 @@ const CreategigScreen = ({ navigation }: any) => {
                       <Text style={GlobalStyle.errorMsg}>{errors.status}</Text>
                     }
                   </View>
-                  <View
-                    style={[{ flex: 1 }]}>
-                    <View style={Style.inputField}>
-                      <Text style={Style.inputLabel}>Amount</Text>
-                      <TextInput
-                        onChangeText={handleChange('amount')}
-                        onBlur={() => { handleBlur('amount') }}
-                        value={values.amount}
-                        keyboardType='numeric'
-                      />
+                  {values.status === 'Free' ? null
+                    :
+                    <View
+                      style={[{ flex: 1 }]}>
+                      <View style={Style.inputField}>
+                        <Text style={Style.inputLabel}>Amount</Text>
+                        <TextInput
+                          onChangeText={handleChange('amount')}
+                          onBlur={() => { handleBlur('amount') }}
+                          value={values.amount}
+                          keyboardType='numeric'
+                        />
+                      </View>
+                      {errors.amount && touched.amount &&
+                        <Text style={GlobalStyle.errorMsg}>{errors.amount}</Text>
+                      }
                     </View>
-                    {errors.amount && touched.amount &&
-                      <Text style={GlobalStyle.errorMsg}>{errors.amount}</Text>
-                    }
-                  </View>
+                  }
                 </View>
                 <Pressable style={GlobalStyle.button} onPress={() => handleSubmit()}
-
-
                 >
                   <Text style={GlobalStyle.btntext}>Create Gig</Text>
                 </Pressable>

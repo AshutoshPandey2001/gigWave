@@ -9,8 +9,11 @@ const MessageStack = () => {
     const MsgStack = createNativeStackNavigator();
     function HeaderLeft() {
         return (
-            <View style={{ flex: 1, margin: 15 }}>
-                <HeaderProfile />
+            //     <View style={{ flex: 1, margin: 15 }}>
+            //     {/* <HeaderProfile /> */}
+            // </View>
+            <View style={{ flex: 1, margin: 0 }}>
+                {/* <HeaderProfile /> */}
             </View>
         );
     }
@@ -23,8 +26,13 @@ const MessageStack = () => {
             <MsgStack.Screen name="Msg" component={MessageScreen}
                 options={{
                     headerTitle: '',
+                    // header: () => (
+                    //     <View style={{ height: 90, display: 'flex', flexDirection: 'row', paddingHorizontal: 10, alignItems: 'center', backgroundColor: '#fff' }}>
+                    //         <HeaderLeft />
+                    //     </View>
+                    // ),
                     header: () => (
-                        <View style={{ height: 90, display: 'flex', flexDirection: 'row', paddingHorizontal: 10, alignItems: 'center', backgroundColor: '#fff' }}>
+                        <View style={{ height: 0, display: 'flex', flexDirection: 'row', paddingHorizontal: 10, alignItems: 'center', backgroundColor: '#fff' }}>
                             <HeaderLeft />
                         </View>
                     ),
@@ -39,7 +47,7 @@ const MessageStack = () => {
                     headerStyle: { backgroundColor: '#fff' },
                     contentStyle: { backgroundColor: "#fff" },
                     headerShadowVisible: false,
-                    headerBackVisible:true
+                    headerBackVisible: true
                 }}
             />
         </MsgStack.Navigator>

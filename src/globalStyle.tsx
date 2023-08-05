@@ -13,12 +13,12 @@ export const GlobalStyle = StyleSheet.create({
     },
     title: {
         color: '#000000',
-        fontSize: 20,
+        fontSize: 22,
         fontWeight: 'bold'
     },
     subtitle: {
         color: '#949494',
-        fontSize: 16
+        fontSize: 18
     },
     fieldwithIcon: {
         width: "100%",
@@ -42,7 +42,7 @@ export const GlobalStyle = StyleSheet.create({
         backgroundColor: '#05E3D5',
     },
     btntext: {
-        fontSize: 16,
+        fontSize: 18,
         lineHeight: 21,
         fontWeight: 'bold',
         letterSpacing: 0.25,
@@ -58,7 +58,7 @@ export const GlobalStyle = StyleSheet.create({
         color: '#1E1E1E'
     },
     errorMsg: {
-        fontSize: 12,
+        fontSize: 14,
         color: 'red'
     },
     container: {
@@ -66,7 +66,8 @@ export const GlobalStyle = StyleSheet.create({
         paddingBottom: 85
     },
     card: {
-        backgroundColor: '#fff',
+        backgroundColor: 'rgba(68, 71, 70, 0.08)',
+        // backgroundColor: '#fff',
         borderRadius: 10,
         paddingVertical: 15,
         paddingHorizontal: 20,
@@ -74,7 +75,8 @@ export const GlobalStyle = StyleSheet.create({
         marginVertical: 10,
     },
     shadowProp: {
-        shadowColor: '#555',
+        // shadowColor: '#555',
+        shadowColor: '#fff',
         shadowOffset: { width: -5, height: 5 },
         shadowOpacity: 0.2,
         shadowRadius: 5,
