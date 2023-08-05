@@ -1,8 +1,8 @@
-import { StyleSheet } from "react-native"
+import { StatusBar, StyleSheet } from "react-native"
 
 export const GlobalStyle = StyleSheet.create({
     safeAreaCotainer: {
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
     },
     centerContentPage: {
         backgroundColor: '#ffffff',
@@ -76,7 +76,7 @@ export const GlobalStyle = StyleSheet.create({
     shadowProp: {
         shadowColor: '#555',
         shadowOffset: { width: -5, height: 5 },
-        shadowOpacity: 1.0,
+        shadowOpacity: 0.2,
         shadowRadius: 5,
         elevation: 5
     },

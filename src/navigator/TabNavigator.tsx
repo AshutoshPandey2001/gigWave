@@ -14,7 +14,7 @@ import MessageStack from './MessageStack';
 import SearchGigStack from './SearchGigStack';
 import MessageIcon from '../assets/icons/Message.svg'
 import HomeIcon from '../assets/icons/Home.svg'
-import SearchIcon from '../assets/icons/Search.svg'
+import SearchIcon from '../assets/icons/Search-tab.svg'
 import FAQIcon from '../assets/icons/FAQ.svg'
 import AddIcon from '../assets/icons/Add.svg'
 
@@ -110,7 +110,7 @@ const TabNavigator = () => {
                         },
 
                         shadowColor: '#555',
-                        shadowOpacity: 1.0,
+                        shadowOpacity: 0.2,
                         borderColor: '#fff',
                         elevation: 10,
                         borderTopLeftRadius: 25,
