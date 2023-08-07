@@ -2,7 +2,6 @@ import React from 'react'
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector } from 'react-redux'
-import HeaderProfile from '../../components/HeaderProfile'
 import { GlobalStyle } from '../../globalStyle'
 import { RootState } from '../../redux/store'
 

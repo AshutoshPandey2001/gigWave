@@ -7,6 +7,7 @@ import { RootState } from '../../redux/store'
 // import SearchIcon from '../../assets/icons/Search.svg'
 import SearchIcon from '../../assets/icons/gig Search bar.svg'
 import MicIcon from '../../assets/icons/Mic.svg'
+import MarkerIcon from '../../assets/icons/marker.svg'
 
 const SearchGigScreen = ({ navigation }: any) => {
     const [searchValue, setSearchValue] = useState('')
@@ -151,14 +152,18 @@ const SearchGigScreen = ({ navigation }: any) => {
                             borderColor: '#05E3D5',
                             borderRadius: 10,
                             paddingHorizontal: 5,
-                            flex: 1
+                            flex: 1,
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            overflow: 'hidden'
                         }]}>
+                        <MarkerIcon height={25} width={25} color={'black'}/>
                         <TextInput
-                            onChangeText={text => onChangeSearch(text)}
-                            value={searchValue}
-                            placeholder='Add Zip Code'
+                            onChangeText={text => console.log(text)}
+                            value={'San Francisco'}
+                            placeholder='City'
                             placeholderTextColor={'#1E1E1E'}
-                            keyboardType='number-pad'
+                            // keyboardType='number-pad'
                             style={{ fontSize: 16 }}
                         />
                     </View>

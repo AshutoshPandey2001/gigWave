@@ -1,7 +1,6 @@
-import { View, Text, SafeAreaView, Image, Pressable, ScrollView } from 'react-native'
 import React from 'react'
+import { Image, Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native'
 import { GlobalStyle } from '../../globalStyle'
-import HeaderProfile from '../../components/HeaderProfile'
 
 const SingleproScreen = () => {
     return (

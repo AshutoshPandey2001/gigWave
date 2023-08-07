@@ -1,8 +1,12 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { Image, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import AddIcon from '../assets/icons/Add.svg';
+import FAQIcon from '../assets/icons/FAQ.svg';
+import HomeIcon from '../assets/icons/Home.svg';
+import MessageIcon from '../assets/icons/Message.svg';
+import SearchIcon from '../assets/icons/Search-tab.svg';
 import HeaderProfile from '../components/HeaderProfile';
 import { GlobalStyle } from '../globalStyle';
 import CreategigScreen from '../pages/CreatGig/CreateGig';
@@ -12,11 +16,6 @@ import { RootState } from '../redux/store';
 import HomeStack from './HomeStack';
 import MessageStack from './MessageStack';
 import SearchGigStack from './SearchGigStack';
-import MessageIcon from '../assets/icons/Message.svg'
-import HomeIcon from '../assets/icons/Home.svg'
-import SearchIcon from '../assets/icons/Search-tab.svg'
-import FAQIcon from '../assets/icons/FAQ.svg'
-import AddIcon from '../assets/icons/Add.svg'
 
 const Tab = createBottomTabNavigator();
 
@@ -157,13 +156,6 @@ const TabNavigator = () => {
                         <Tab.Screen name="Message" component={MessageStack}
 
                             options={({ route }) => {
-                                const focusedRouteName = getFocusedRouteNameFromRoute(route);
-                                if (focusedRouteName === 'Chat') {
-                                    return {
-                                        tabBarStyle: { display: 'none' },
-                                        headerShown: false
-                                    };
-                                }
                                 return {
                                     tabBarIcon: () => {
                                         return (

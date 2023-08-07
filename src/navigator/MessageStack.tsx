@@ -1,11 +1,10 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import { View } from 'react-native';
-import HeaderProfile from '../components/HeaderProfile';
 import ChatScreen from '../pages/Message/Chat';
 import MessageScreen from '../pages/Message/Message';
 
-const MessageStack = () => {
+const MessageStack = ({navigation}:any) => {
     const MsgStack = createNativeStackNavigator();
     function HeaderLeft() {
         return (
@@ -47,7 +46,7 @@ const MessageStack = () => {
                     headerStyle: { backgroundColor: '#fff' },
                     contentStyle: { backgroundColor: "#fff" },
                     headerShadowVisible: false,
-                    headerBackVisible: true
+                    headerBackVisible:true,
                 }}
             />
         </MsgStack.Navigator>

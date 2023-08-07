@@ -1,9 +1,8 @@
-import { View, Text, StyleSheet, Pressable, Image, ScrollView } from 'react-native'
 import React, { useEffect } from 'react'
+import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import MarkerIcon from '../../assets/icons/marker.svg'
 import { GlobalStyle } from '../../globalStyle'
-import HeaderProfile from '../../components/HeaderProfile'
-import MarkerIcon from '../../assets/icons/marker.svg';
 
 const HelpScreen = ({ route, navigation }: any) => {
     // const [params, setParams] = useState({})
@@ -16,9 +15,7 @@ const HelpScreen = ({ route, navigation }: any) => {
         <SafeAreaView>
             <ScrollView>
                 <View style={[GlobalStyle.container, { marginTop: 0 }]}>
-                    <View style={[GlobalStyle.headerLeft, { margin: 0 }]}>
-                        <HeaderProfile />
-                    </View>
+                   
                     <Text style={[GlobalStyle.blackColor, Style.commanmargin]}>Gig Need Help For</Text>
                     {route.params &&
                         <Pressable onPress={() => navigation.navigate('View-gig')}>
