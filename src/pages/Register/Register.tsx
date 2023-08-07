@@ -36,7 +36,7 @@ const RegisterScreen = ({ navigation }: any) => {
                         <GigwaveIcon />
                         {/* <Image source={require('../../assets/images/gigwave.png')} /> */}
                         <Text style={[GlobalStyle.title, { marginTop: 20 }]}>Register</Text>
-                        <Text style={{ color: '#949494', marginBottom: 20, fontSize: 16 }}>Please enter your details to register</Text>
+                        <Text style={{ color: '#949494', marginBottom: 20, fontSize: 18 }}>Please enter your details to register</Text>
                         <Formik
                             initialValues={{
                                 firstname: '',
@@ -146,7 +146,7 @@ const Style = StyleSheet.create({
     footerText: {
         fontWeight: "bold",
         color: 'black',
-        fontSize: 16
+        fontSize: 18
     }
 })
 

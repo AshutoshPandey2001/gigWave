@@ -34,7 +34,7 @@ const SearchGigScreen = ({ navigation }: any) => {
     const ListView = (props: any) => {
         return (
             <View style={styles.cardContainer}>
-                <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Gig Discovery</Text>
+                <Text style={[GlobalStyle.blackColor, { fontSize: 20, fontWeight: 'bold' }]}>Gig Discovery</Text>
                 {
                     proLists?.length > 0 ?
                         <>
@@ -49,10 +49,10 @@ const SearchGigScreen = ({ navigation }: any) => {
                                             <Image resizeMode='contain' style={{ borderTopLeftRadius: 15, borderBottomLeftRadius: 15, height: 120 }} source={item.image} />
                                         </View>
                                         <View style={{ flex: 1, width: 100 }}>
-                                            <Text style={[GlobalStyle.blackColor, { fontSize: 16, marginHorizontal: 10, paddingTop: 10, fontWeight: 'bold' }]}>
+                                            <Text style={[GlobalStyle.blackColor, { fontSize: 18, marginHorizontal: 10, paddingTop: 10, fontWeight: 'bold' }]}>
                                                 {item.title}
                                             </Text>
-                                            <Text style={[GlobalStyle.blackColor, { fontSize: 12, margin: 10, }]}>
+                                            <Text style={[GlobalStyle.blackColor, { fontSize: 16, margin: 10, }]}>
                                                 {item.msg}
                                             </Text>
                                         </View>
@@ -69,25 +69,25 @@ const SearchGigScreen = ({ navigation }: any) => {
                         :
                         <>
                             <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                <Text style={[GlobalStyle.blackColor, { fontSize: 18 }]}>
+                                <Text style={[GlobalStyle.blackColor, { fontSize: 22 }]}>
                                     No gigs in your area match your skills.  Expand your search area or add these skills to your profile.
                                 </Text>
                             </View>
 
                             <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontStyle: 'italic' }]}>
+                                <Text style={[GlobalStyle.blackColor, { fontSize: 20, fontStyle: 'italic' }]}>
                                     Popular skills:
                                 </Text>
-                                <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>
+                                <Text style={[GlobalStyle.blackColor, { fontSize: 20, fontWeight: 'bold' }]}>
                                     lawn care
                                 </Text>
-                                <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>
+                                <Text style={[GlobalStyle.blackColor, { fontSize: 20, fontWeight: 'bold' }]}>
                                     heavy lifting
                                 </Text>
-                                <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>
+                                <Text style={[GlobalStyle.blackColor, { fontSize: 20, fontWeight: 'bold' }]}>
                                     meal prep
                                 </Text>
-                                <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>
+                                <Text style={[GlobalStyle.blackColor, { fontSize: 20, fontWeight: 'bold' }]}>
                                     house cleaning
 
                                 </Text>
@@ -190,9 +190,9 @@ const SearchGigScreen = ({ navigation }: any) => {
                             }}
                             buttonStyle={{ backgroundColor: 'transparent' }}
                             defaultButtonText='Free/Paid'
-                            buttonTextStyle={{ textAlign: 'left', color: '#1E1E1E', fontSize: 14 }}
+                            buttonTextStyle={{ textAlign: 'left', color: '#1E1E1E', fontSize: 16 }}
                             dropdownStyle={{ width: '25%', borderRadius: 10 }}
-                            rowTextStyle={{ fontSize: 14 }}
+                            rowTextStyle={{ fontSize: 16 }}
                             defaultValue={''}
                         />
                     </View>

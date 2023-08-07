@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { GlobalStyle } from '../../globalStyle'
 import { Formik } from 'formik'
 import SelectDropdown from 'react-native-select-dropdown'
-import MicIcon from '../../assets/icons/Mic.svg'
+import MicIcon from '../../assets/icons/Mic1.svg'
 import * as yup from "yup"
 
 const CreategigScreen = ({ navigation }: any) => {
@@ -27,14 +27,14 @@ const CreategigScreen = ({ navigation }: any) => {
       <ScrollView>
         <View style={[GlobalStyle.container]}>
           <View style={Style.cardContainer}>
-            <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>How It Works</Text>
+            <Text style={[GlobalStyle.blackColor, { fontSize: 22, fontWeight: 'bold' }]}>How It Works</Text>
             <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-              <Text style={[GlobalStyle.blackColor, { fontSize: 14 }]}>
+              <Text style={[GlobalStyle.blackColor, { fontSize: 18 }]}>
                 Tap the mic and speak what you need help with (or tap the box below to type).  Gigwave helps match you with local Pros to help with your Gig.  In the app, you can message Pros, evaluate Pros, and even pay the Pro.              </Text>
             </View>
           </View>
           <View>
-            <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Gig Details</Text>
+            <Text style={[GlobalStyle.blackColor, { fontSize: 22, fontWeight: 'bold' }]}>Gig Details</Text>
           </View>
           <Formik
             initialValues={{
@@ -66,10 +66,10 @@ const CreategigScreen = ({ navigation }: any) => {
                         onBlur={() => { handleBlur('description') }}
                         value={values.description}
                         maxLength={400}
-                        style={{ width: '80%' }}
+                        style={{ width: '80%',fontSize:16 }}
                       />
                       <View style={{ alignItems: 'center' }}>
-                        <MicIcon height={80} width={80} />
+                        <MicIcon height={50} width={50} style={{padding:10}} />
                       </View>
                     </View>
                   </View>
@@ -163,10 +163,11 @@ const Style = StyleSheet.create({
   inputField: {
     backgroundColor: '#F9F9F9',
     borderRadius: 15,
+    fontSize:16,
     padding: 10,
 
   },
-  inputLabel: { color: '#05E3D5', fontSize: 14 }
+  inputLabel: { color: '#05E3D5', fontSize: 16 }
 })
 
 export default CreategigScreen

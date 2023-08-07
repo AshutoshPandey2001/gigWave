@@ -13,11 +13,11 @@ const ViewGigScreen = ({ route, navigation }: any) => {
         <SafeAreaView>
             <ScrollView>
                 <View style={[GlobalStyle.container, { marginTop: 0 }]}>
-                    <View style={[GlobalStyle.headerLeft, { margin: 0 }]}>
+                    {/* <View style={[GlobalStyle.headerLeft, { margin: 0 }]}>
                         <HeaderProfile />
-                    </View>
+                    </View> */}
                     <View style={{ marginTop: 10, width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Text style={[GlobalStyle.blackColor, { fontSize: 20, fontWeight: 'bold' }]}>Gig</Text>
+                        <Text style={[GlobalStyle.blackColor, { fontSize: 22, fontWeight: 'bold' }]}>Gig</Text>
                     </View>
                     <View style={{ marginTop: 10 }}>
                         <View style={{ display: 'flex', alignItems: 'center' }}>
@@ -31,19 +31,19 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                             {route.params && route.params?.isProList ?
                                 <>
                                     <Pressable style={[GlobalStyle.button, { flex: 1, backgroundColor: '#000', margin: 5, paddingHorizontal: 15 }]}>
-                                        <Text style={[GlobalStyle.btntext, { fontWeight: 'bold', fontSize: 14 }]}>Not Interested</Text>
+                                        <Text style={[GlobalStyle.btntext, { fontWeight: 'bold', fontSize: 16 }]}>Not Interested</Text>
                                     </Pressable>
                                     <Pressable onPress={() => navigation.navigate('Message')} style={[GlobalStyle.button, { flex: 1, backgroundColor: '#05E3D5', margin: 5, paddingHorizontal: 10 }]}>
-                                        <Text style={[GlobalStyle.blackColor, { fontWeight: 'bold', fontSize: 14 }]}>Message Creator</Text>
+                                        <Text style={[GlobalStyle.blackColor, { fontWeight: 'bold', fontSize: 16 }]}>Message Creator</Text>
                                     </Pressable>
                                 </> :
                                 <Pressable style={[GlobalStyle.button, { flex: 1, backgroundColor: '#000', margin: 5, paddingHorizontal: 10 }]}>
-                                    <Text style={[GlobalStyle.btntext, { fontWeight: 'bold', fontSize: 16 }]}>I’m Interested</Text>
+                                    <Text style={[GlobalStyle.btntext, { fontWeight: 'bold', fontSize: 18 }]}>I’m Interested</Text>
                                 </Pressable>
                             }
                         </View> : <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: -15 }}>
                             <Pressable style={[GlobalStyle.button, { width: '90%', backgroundColor: '#000', marginRight: 10 }]}>
-                                <Text style={[GlobalStyle.btntext, { fontWeight: 'bold', fontSize: 16 }]}>Close Gig</Text>
+                                <Text style={[GlobalStyle.btntext, { fontWeight: 'bold', fontSize: 18 }]}>Close Gig</Text>
                             </Pressable>
                         </View>}
 
@@ -84,7 +84,7 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                             <View style={{ height: 70, borderRadius: 35, width: 70 }}>
                                 <Image resizeMode='contain' style={{ height: 70, width: 70 }} source={require('../../assets/images/avatar-3.png')} />
                             </View>
-                            <Text style={[GlobalStyle.blackColor, { fontSize: 18, margin: 10 }]}>
+                            <Text style={[GlobalStyle.blackColor, { fontSize: 20, margin: 10 }]}>
                                 Kaiya Vetrovs
                             </Text>
                         </View>
@@ -101,7 +101,7 @@ const style = StyleSheet.create({
         flexDirection: 'row'
     },
     headFont: {
-        fontSize: 16,
+        fontSize: 18,
         marginTop: 10,
         fontWeight: 'bold'
     }

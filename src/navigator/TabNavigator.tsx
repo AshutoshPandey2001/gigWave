@@ -130,7 +130,7 @@ const TabNavigator = () => {
                         tabBarStyle: { display: "none" },
                         headerTitle: 'Select Role',
                         headerTitleAlign: 'center',
-                        headerTitleStyle: { fontSize: 18, fontWeight: 'bold' },
+                        headerTitleStyle: { fontSize: 20, fontWeight: 'bold' },
                         headerShadowVisible: false,
                         tabBarButton: () => null
                     }}
@@ -213,7 +213,7 @@ const TabNavigator = () => {
                                 );
                             },
                             headerTitle: 'How GigWave Works',
-                            headerTitleStyle: { fontSize: 20, fontWeight: 'bold' },
+                            headerTitleStyle: { fontSize: 22, fontWeight: 'bold' },
                             headerTitleAlign: 'center',
                             // headerStyle:{height:100}
                         }} />

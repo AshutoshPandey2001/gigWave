@@ -31,7 +31,7 @@ const HelpScreen = ({ route, navigation }: any) => {
                                     <Text style={[GlobalStyle.blackColor, Style.commanPaddingFontSize, { marginHorizontal: 10 }]}>
                                         {route.params?.title}
                                     </Text>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 12, margin: 10, }]}>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 14, margin: 10, }]}>
                                         {route.params?.msg}
                                     </Text>
                                 </View>
@@ -57,11 +57,11 @@ const HelpScreen = ({ route, navigation }: any) => {
                                     <View style={{ display: 'flex', flexDirection: 'row' }}>
                                         <MarkerIcon />
                                         {/* <Image resizeMode='contain' source={require('../../assets/icons/marker.png')} /> */}
-                                        <Text style={{ fontSize: 12 }}>
+                                        <Text style={{ fontSize: 14 }}>
                                             &nbsp;San Francisco, CA
                                         </Text>
                                     </View>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 12, paddingTop: 5 }]}>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 14, paddingTop: 5 }]}>
                                         Plays piano and violin for events
                                     </Text>
                                 </View>
@@ -79,11 +79,11 @@ const HelpScreen = ({ route, navigation }: any) => {
                                     <View style={{ display: 'flex', flexDirection: 'row' }}>
                                         <MarkerIcon />
                                         {/* <Image resizeMode='contain' source={require('../../assets/icons/marker.png')} /> */}
-                                        <Text style={{ fontSize: 12 }}>
+                                        <Text style={{ fontSize: 14 }}>
                                             &nbsp;San Francisco, CA
                                         </Text>
                                     </View>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 12, paddingTop: 5 }]}>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 14, paddingTop: 5 }]}>
                                         Professional pianist
                                     </Text>
                                 </View>
@@ -101,11 +101,11 @@ const HelpScreen = ({ route, navigation }: any) => {
                                     <View style={{ display: 'flex', flexDirection: 'row' }}>
                                         <MarkerIcon />
                                         {/* <Image resizeMode='contain' source={require('../../assets/icons/marker.png')} /> */}
-                                        <Text style={{ fontSize: 12 }}>
+                                        <Text style={{ fontSize: 14 }}>
                                             &nbsp;San Francisco, CA
                                         </Text>
                                     </View>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 12, paddingTop: 5 }]}>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 14, paddingTop: 5 }]}>
                                         Teaches piano lessons
                                     </Text>
                                 </View>
@@ -126,11 +126,11 @@ const Style = StyleSheet.create({
         paddingHorizontal: 0
     },
     commanmargin: {
-        fontSize: 16,
+        fontSize: 18,
         marginTop: 10
     },
     commanPaddingFontSize: {
-        fontSize: 16,
+        fontSize: 18,
         paddingTop: 10,
         fontWeight: 'bold'
 

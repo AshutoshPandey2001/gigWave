@@ -39,7 +39,7 @@ const SearchGigStack = ({ navigation }: any) => {
                                 dispatch(setView(true))
                             }
                         }} >
-                            <Text style={{ color: '#05D3E5', fontSize: 18 }}>{isListView ? 'Map View' : 'List View'}</Text>
+                            <Text style={{ color: '#05D3E5', fontSize: 20 }}>{isListView ? 'Map View' : 'List View'}</Text>
                         </Pressable>
                     </View>
                 ),

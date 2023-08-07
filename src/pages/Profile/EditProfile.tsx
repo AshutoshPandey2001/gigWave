@@ -44,7 +44,7 @@ const EditProfileScreen = () => {
                         {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched }) => (
                             <>
                                 <View style={styles.cardContainer}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16, fontWeight: 'bold' }]}>First</Text>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>First</Text>
                                     <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
                                         <TextInput style={{ flex: 1 }}
                                             onChangeText={handleChange('firstname')}
@@ -58,7 +58,7 @@ const EditProfileScreen = () => {
                                     }
                                 </View>
                                 <View style={styles.cardContainer}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16, fontWeight: 'bold' }]}>Last</Text>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Last</Text>
                                     <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
                                         <TextInput style={{ flex: 1 }}
                                             onChangeText={handleChange('lastname')}
@@ -72,7 +72,7 @@ const EditProfileScreen = () => {
                                     }
                                 </View>
                                 <View style={styles.cardContainer}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16, fontWeight: 'bold' }]}>Phone</Text>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Phone</Text>
                                     <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
                                         <TextInput style={{ flex: 1 }}
                                             onChangeText={handleChange('phone')}
@@ -88,7 +88,7 @@ const EditProfileScreen = () => {
                                     }
                                 </View>
                                 <View style={styles.cardContainer}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16, fontWeight: 'bold' }]}>Address</Text>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Address</Text>
                                     <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
                                         <TextInput style={{ flex: 1 }}
                                             onChangeText={handleChange('address')}
@@ -102,7 +102,7 @@ const EditProfileScreen = () => {
                                     }
                                 </View>
                                 <View style={styles.cardContainer}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16, fontWeight: 'bold' }]}>Email</Text>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Email</Text>
                                     <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
                                         <TextInput style={{ flex: 1 }}
                                             onChangeText={handleChange('email')}
@@ -117,7 +117,7 @@ const EditProfileScreen = () => {
                                     }
                                 </View>
                                 <View style={styles.cardContainer}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16, fontWeight: 'bold' }]}>Company</Text>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Company</Text>
                                     <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
                                         <TextInput style={{ flex: 1 }}
                                             onChangeText={handleChange('company')}
@@ -151,5 +151,5 @@ const styles = StyleSheet.create({
     },
     cardContainer: { marginTop: 10, marginBottom: 5 },
     profileImg: { height: 80, width: 80 },
-    editText: { color: '#05E3D5', fontSize: 18 }
+    editText: { color: '#05E3D5', fontSize: 20 }
 })

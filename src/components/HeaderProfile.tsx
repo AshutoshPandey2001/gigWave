@@ -10,7 +10,7 @@ const HeaderProfile = ({ navigation }: any) => {
             </View>
             <View style={{ marginLeft: 5 }}>
                 <View>
-                    <Text style={{ color: '#05E3D5', fontSize: 20 }}>Hi Joshua</Text>
+                    <Text style={{ color: '#05E3D5', fontSize: 22 }}>Hi Joshua</Text>
                 </View>
             </View>
         </View>

@@ -22,8 +22,8 @@ const FAQScreen = () => {
                     backgroundColor='#05E3D5'
                     style={{ width: '80%', height: 40, backgroundColor: "#05E3D5" }}
                     tintColor='#fff'
-                    activeFontStyle={{ color: '#000', fontWeight: 'bold', fontSize: 18 }}
-                    fontStyle={{ color: '#fff', fontWeight: 'bold', fontSize: 18 }}
+                    activeFontStyle={{ color: '#000', fontWeight: 'bold', fontSize: 20 }}
+                    fontStyle={{ color: '#fff', fontWeight: 'bold', fontSize: 20 }}
                 />
             </View>
             <ScrollView>
@@ -33,7 +33,7 @@ const FAQScreen = () => {
                             <View style={Style.cardContainer}>
                                 <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Creator</Text>
                                 <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 14 }]}>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
                                         Tap the mic and speak what you need help with (or tap the box below to type).
                                     </Text>
                                 </View>
@@ -41,7 +41,7 @@ const FAQScreen = () => {
                             <View style={Style.cardContainer}>
                                 <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Creating a Gig</Text>
                                 <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 14 }]}>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
                                         Tap the mic and speak what you need help with (or tap the box below to type).
                                     </Text>
                                 </View>
@@ -49,7 +49,7 @@ const FAQScreen = () => {
                             <View style={Style.cardContainer}>
                                 <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Evaluating Pros</Text>
                                 <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 14 }]}>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
                                         Tap the mic and speak what you need help with (or tap the box below to type).  Gigwave helps match you with local Pros who
                                     </Text>
                                 </View>
@@ -57,7 +57,7 @@ const FAQScreen = () => {
                             <View style={Style.cardContainer}>
                                 <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Paying Pros</Text>
                                 <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 14 }]}>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
                                         Tap the mic and speak what you need help with (or tap the box below to type).  Gigwave helps match you with local Pros who
                                     </Text>
                                 </View>
@@ -65,7 +65,7 @@ const FAQScreen = () => {
                             <View style={Style.cardContainer}>
                                 <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Free vs Paid</Text>
                                 <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 14 }]}>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
                                         Tap the mic and speak what you need help with (or tap the box below to type).  Gigwave helps match you with local Pros who
                                     </Text>
                                 </View>
@@ -76,7 +76,7 @@ const FAQScreen = () => {
                             <View style={Style.cardContainer}>
                                 <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Pro</Text>
                                 <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 14 }]}>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
                                         Tap the mic and speak what you need help with (or tap the box below to type).
                                     </Text>
                                 </View>
@@ -84,7 +84,7 @@ const FAQScreen = () => {
                             <View style={Style.cardContainer}>
                                 <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Searching Gigs</Text>
                                 <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 14 }]}>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
                                         Tap the mic and speak what you need help with (or tap the box below to type).
                                     </Text>
                                 </View>
@@ -92,7 +92,7 @@ const FAQScreen = () => {
                             <View style={Style.cardContainer}>
                                 <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Paid vs Free</Text>
                                 <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 14 }]}>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
                                         Tap the mic and speak what you need help with (or tap the box below to type).  Gigwave helps match you with local Pros who
                                     </Text>
                                 </View>
@@ -100,7 +100,7 @@ const FAQScreen = () => {
                             <View style={Style.cardContainer}>
                                 <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Paying Pros</Text>
                                 <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 14 }]}>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
                                         Tap the mic and speak what you need help with (or tap the box below to type).  Gigwave helps match you with local Pros who
                                     </Text>
                                 </View>
@@ -108,7 +108,7 @@ const FAQScreen = () => {
                             <View style={Style.cardContainer}>
                                 <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Benefits of Premium & Background Check</Text>
                                 <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 14 }]}>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
                                         Tap the mic and speak what you need help with (or tap the box below to type).  Gigwave helps match you with local Pros who
                                     </Text>
                                 </View>
@@ -116,7 +116,7 @@ const FAQScreen = () => {
                             <View style={[Style.cardContainer, { marginBottom: 20 }]}>
                                 <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Getting Paid</Text>
                                 <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 14 }]}>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
                                         Tap the mic and speak what you need help with (or tap the box below to type).  Gigwave helps match you with local Pros who
                                     </Text>
                                 </View>
@@ -132,7 +132,7 @@ const FAQScreen = () => {
 const Style = StyleSheet.create({
     cardContainer: { marginBottom: 10 },
     commanFont: {
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: 'bold'
     }
 

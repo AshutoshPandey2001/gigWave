@@ -17,30 +17,30 @@ const SingleproScreen = () => {
                             <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { marginTop: 70, paddingTop: 50, display: 'flex', justifyContent: 'center', alignItems: 'center' }]}>
                                 <Text style={[GlobalStyle.blackColor, { fontWeight: 'bold' }]}>Kaiya Vetrovs</Text>
                                 <Text>San Francisco, CA</Text>
-                                <Text style={{ color: '#989898', marginTop: 5, fontSize: 16, fontStyle: 'italic', fontWeight: 'bold' }}>Background Check Completed</Text>
+                                <Text style={{ color: '#989898', marginTop: 5, fontSize: 18, fontStyle: 'italic', fontWeight: 'bold' }}>Background Check Completed</Text>
                             </View>
                         </View>
                         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: -15 }}>
                             <Pressable style={[GlobalStyle.button, { width: '50%', backgroundColor: '#000', marginRight: 10 }]}>
-                                <Text style={[GlobalStyle.btntext, { fontWeight: 'bold' }]}>Message Pro</Text>
+                                <Text style={[GlobalStyle.btntext, { fontWeight: 'bold',fontSize:18 }]}>Message Pro</Text>
                             </Pressable>
                             <Pressable style={[GlobalStyle.button, { width: '50%' }]}>
-                                <Text style={[GlobalStyle.btntext, { fontWeight: 'bold' }]}>Pay Pro</Text>
+                                <Text style={[GlobalStyle.btntext, { fontWeight: 'bold',fontSize:18 }]}>Pay Pro</Text>
                             </Pressable>
                         </View>
                     </View>
                     <View style={{ marginTop: 10 }}>
-                        <Text style={[GlobalStyle.blackColor, { fontSize: 16, marginTop: 10, fontWeight: 'bold' }]}>Review Pro List</Text>
+                        <Text style={[GlobalStyle.blackColor, { fontSize: 18, marginTop: 10, fontWeight: 'bold' }]}>Review Pro List</Text>
                         <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                            <Text style={[GlobalStyle.blackColor]}>
+                            <Text style={[GlobalStyle.blackColor,{fontSize:16}]}>
                                 Lorem ipsum dolor sit amet consectetur. Vestibulum nibh aliquet mattis arcu pretium neque orci. Faucibus risus eleifend.
                             </Text>
                         </View>
                     </View>
                     <View>
-                        <Text style={[GlobalStyle.blackColor, { fontSize: 16, marginTop: 10, fontWeight: 'bold' }]}>Company</Text>
+                        <Text style={[GlobalStyle.blackColor, { fontSize: 18, marginTop: 10, fontWeight: 'bold' }]}>Company</Text>
                         <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                            <Text style={[GlobalStyle.blackColor]}>
+                            <Text style={[GlobalStyle.blackColor,{fontSize:16}]}>
                                 Null
                             </Text>
                         </View>

@@ -4,7 +4,7 @@ import { Image, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text
 import { useSelector } from 'react-redux';
 import { GlobalStyle } from '../../globalStyle';
 import { RootState } from '../../redux/store';
-import MicIcon from '../../assets/icons/Mic.svg'
+import MicIcon from '../../assets/icons/Mic1.svg'
 
 const HomeScreen = ({ navigation }: any) => {
   const [selectedIndex, SetSelectedIndex] = useState(0);
@@ -56,8 +56,8 @@ const HomeScreen = ({ navigation }: any) => {
               borderRadius: 10,
             }]}
             tintColor='#05E3D5'
-            activeFontStyle={{ color: '#fff', fontSize: 18 }}
-            fontStyle={{ color: '#000', fontSize: 18 }}
+            activeFontStyle={{ color: '#fff', fontSize: 20 }}
+            fontStyle={{ color: '#000', fontSize: 20 }}
           />
         </View>
         <ScrollView>
@@ -72,12 +72,12 @@ const HomeScreen = ({ navigation }: any) => {
                 lists?.length > 0 ?
                   <>
                     {lists.map((item: any, index) => (
-                      <View key={index}>
-                        <Pressable onPress={() => navigation.navigate('Help', item)} style={[GlobalStyle.card, GlobalStyle.shadowProp,
-                        {
-                          display: 'flex', flexDirection: 'row', paddingVertical: 0,
-                          paddingHorizontal: 0
-                        }]} >
+                      <View key={index} style={[GlobalStyle.card, GlobalStyle.shadowProp,{paddingVertical: 0,
+                        paddingHorizontal: 0}]}>
+                        <Pressable onPress={() => navigation.navigate('Help', item)} 
+                        style={{
+                          display: 'flex', flexDirection: 'row', 
+                        }} >
                           <View>
                             <Image resizeMode='contain' style={Style.imageStyle} source={item.image} />
                           </View>
@@ -107,7 +107,7 @@ const HomeScreen = ({ navigation }: any) => {
                         What do you need help with? You have no active gigs, CREATE a Gig to get started
                       </Text>
                     </View>
-                    <View style={{ margin: 20 }}>
+                    <View style={{ margin: 18 }}>
                       <Pressable style={GlobalStyle.button} onPress={() => navigation.navigate('Create')}>
                         <Text style={GlobalStyle.btntext}>Create New Gig</Text>
                       </Pressable>
@@ -182,7 +182,7 @@ const HomeScreen = ({ navigation }: any) => {
                       />
                       <View style={{ alignItems: 'center' }}>
                         {/* <Image source={require('../../assets/icons/mic1.png')} /> */}
-                        <MicIcon height={80} width={80} />
+                        <MicIcon height={50} width={50} />
                       </View>
                     </View>
                   </View>
@@ -215,17 +215,17 @@ const HomeScreen = ({ navigation }: any) => {
 const Style = StyleSheet.create({
   cardContainer: { marginBottom: 10 },
   commanFont: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold'
   },
   title: {
-    fontSize: 16,
+    fontSize: 20,
     marginHorizontal: 10,
     paddingTop: 10,
     fontWeight: 'bold'
   },
   message: {
-    fontSize: 12,
+    fontSize: 16,
     margin: 10
   },
   imageStyle: {
@@ -233,9 +233,6 @@ const Style = StyleSheet.create({
     borderBottomLeftRadius: 15,
     height: 120
   }
-
-
-
 })
 
 export default HomeScreen

@@ -21,8 +21,8 @@ const RoleScreen = ({ navigation }: any) => {
           </View>
           <View style={{ marginLeft: 5 }}>
             <View>
-              <Text style={{ color: '#05E3D5', fontSize: 20 }}>Hi Joshua</Text>
-              <Text style={[GlobalStyle.title, { fontSize: 18 }]}>Welcome to Gigwave</Text>
+              <Text style={{ color: '#05E3D5', fontSize: 22 }}>Hi Joshua</Text>
+              <Text style={[GlobalStyle.title, { fontSize: 20 }]}>Welcome to Gigwave</Text>
             </View>
           </View>
         </View>
@@ -95,7 +95,7 @@ const Style = StyleSheet.create({
     paddingTop: 20
   },
   btnSubTitle: {
-    fontSize: 14,
+    fontSize: 16,
     color: '#000'
   }
 })

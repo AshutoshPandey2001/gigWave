@@ -8,6 +8,8 @@ import MarkerIcon from '../../assets/icons/marker.svg';
 import SendIcon from '../../assets/icons/send.svg';
 import OnlineIcon from '../../assets/icons/online.svg';
 import { GlobalStyle } from '../../globalStyle';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
 
 const ChatScreen = ({ navigation }: any) => {
     const [message, setMessage] = useState('');
@@ -21,6 +23,7 @@ const ChatScreen = ({ navigation }: any) => {
         { id: 0, message: 'Yes I am ready', time: new Date(), from: 'lala' },
         { id: 0, message: 'What is the work', time: new Date(), from: 'lala' },
     ])
+    const { userType }: any = useSelector((state: RootState) => state.userType)
 
 
 
@@ -78,7 +81,7 @@ const ChatScreen = ({ navigation }: any) => {
                                 <View style={{ display: 'flex', flexDirection: 'row-reverse' }}>
                                     <View style={{ backgroundColor: '#05E3D5', maxWidth: '80%', borderTopLeftRadius: 10, borderTopRightRadius: 10, borderBottomLeftRadius: 10 }}>
                                         <View style={{ padding: 15 }}>
-                                            <Text style={{ fontSize: 16, color: '#fff' }}> {data.message}</Text>
+                                            <Text style={{ fontSize: 18, color: '#fff' }}> {data.message}</Text>
                                         </View>
                                     </View>
                                 </View>
@@ -93,7 +96,7 @@ const ChatScreen = ({ navigation }: any) => {
                                 <View style={{ display: 'flex', flexDirection: 'row' }}>
                                     <View style={{ backgroundColor: '#EAEAEA', maxWidth: '80%', borderTopLeftRadius: 10, borderTopRightRadius: 10, borderBottomRightRadius: 10 }}>
                                         <View style={{ padding: 15 }}>
-                                            <Text style={{ fontSize: 16, color: '#000' }}> {data.message}</Text>
+                                            <Text style={{ fontSize: 18, color: '#000' }}> {data.message}</Text>
                                         </View>
                                     </View>
                                 </View>
@@ -121,7 +124,9 @@ const ChatScreen = ({ navigation }: any) => {
         <SafeAreaView style={{ height: '100%' }}>
             <ScrollView>
                 <View style={[GlobalStyle.container, { marginTop: 0 }]}>
-                    <View>
+                    <View> 
+                        {
+                            userType==="CREATOR" &&
                         <View style={[GlobalStyle.card, GlobalStyle.shadowProp,
                         {
                             display: 'flex', flexDirection: 'row', paddingVertical: 10,
@@ -131,31 +136,32 @@ const ChatScreen = ({ navigation }: any) => {
                                 <Image resizeMode='contain' style={{ borderTopLeftRadius: 15, borderBottomLeftRadius: 15 }} source={require('../../assets/images/piano.png')} />
                             </View>
                             <View style={{ flex: 1, width: 100 }}>
-                                <Text style={[GlobalStyle.blackColor, { fontSize: 16, marginHorizontal: 10, paddingTop: 10, fontWeight: 'bold' }]}>
+                                <Text style={[GlobalStyle.blackColor, { fontSize: 18, marginHorizontal: 10, paddingTop: 10, fontWeight: 'bold' }]}>
                                     Play Piano
                                 </Text>
-                                <Text style={[GlobalStyle.blackColor, { fontSize: 12, margin: 10, }]}>
+                                <Text style={[GlobalStyle.blackColor, { fontSize: 14, margin: 10, }]}>
                                     Seeking  piano player for two hour family reunion
                                 </Text>
                             </View>
                         </View>
+                        }
                         <View style={[GlobalStyle.card, GlobalStyle.shadowProp, styles.localCardStyle]}>
                             <View style={styles.imgView}>
                                 <Image resizeMode='contain' style={styles.img} source={require('../../assets/images/avatar-1.png')} />
                             </View>
                             <View style={{ flex: 1, width: 100, marginHorizontal: 10 }}>
-                                <Text style={[GlobalStyle.blackColor, { fontSize: 16, paddingTop: 10, fontWeight: 'bold' }]}>
+                                <Text style={[GlobalStyle.blackColor, { fontSize: 18, paddingTop: 10, fontWeight: 'bold' }]}>
                                     Lala Kian
                                 </Text>
                                 <View style={{ display: 'flex', flexDirection: 'row' }}>
                                     <View>
                                         <MarkerIcon />
                                     </View>
-                                    <Text style={{ fontSize: 12 }}>
+                                    <Text style={{ fontSize: 14 }}>
                                         &nbsp;San Francisco, CA
                                     </Text>
                                 </View>
-                                <Text style={[GlobalStyle.blackColor, { fontSize: 12, paddingTop: 5 }]}>
+                                <Text style={[GlobalStyle.blackColor, { fontSize: 14, paddingTop: 5 }]}>
                                     Plays piano and violin for events
                                 </Text>
                             </View>
@@ -166,7 +172,7 @@ const ChatScreen = ({ navigation }: any) => {
                     </View>
                     <View style={{ display: 'flex', alignItems: 'center', marginTop: 10 }}>
                         <View style={[styles.centerBorder, { left: 40 }]} />
-                        <Text style={{ alignSelf: 'center', paddingHorizontal: 5, color: '#d6d6d6', fontSize: 16, fontWeight: 'bold' }}>Chat History</Text>
+                        <Text style={{ alignSelf: 'center', paddingHorizontal: 5, color: '#d6d6d6', fontSize: 18, fontWeight: 'bold' }}>Chat History</Text>
                         <View style={[styles.centerBorder, { right: 40 }]} />
                     </View>
                     <View style={styles.chatContainer}>
@@ -268,14 +274,14 @@ const styles = StyleSheet.create({
         borderBottomColor: '#FFFFFF',
         flex: 1,
         color: '#fff',
-        fontSize: 16
+        fontSize: 18
     },
     chatContainer: {
         marginVertical: 10,
     },
     chatTime: {
         color: '#A7A7A7',
-        fontSize: 14
+        fontSize: 16
     }
 
 

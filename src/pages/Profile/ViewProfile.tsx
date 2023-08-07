@@ -1,7 +1,7 @@
 import { Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useState } from 'react'
 import { GlobalStyle } from '../../globalStyle'
-import MicIcon from '../../assets/icons/Mic.svg'
+import MicIcon from '../../assets/icons/Mic1.svg'
 
 
 const ViewProfileScreen = ({ navigation }: any) => {
@@ -22,7 +22,7 @@ const ViewProfileScreen = ({ navigation }: any) => {
                         </Pressable>
                     </View>
                     <View style={styles.cardContainer}>
-                        <Text style={[GlobalStyle.blackColor, { fontSize: 16, fontWeight: 'bold' }]}>My Skills or How I Can Help Others</Text>
+                        <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>My Skills or How I Can Help Others</Text>
                         <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
                             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                 <TextInput
@@ -33,11 +33,11 @@ const ViewProfileScreen = ({ navigation }: any) => {
                                     value={skillValue ? skillValue : ''}
                                     editable={false}
                                     onChangeText={(msg: string) => setSkillValue(msg)}
-                                    style={{ flex: 1, fontSize: 14, color: '#000' }}
+                                    style={{ flex: 1, fontSize: 16, color: '#000' }}
                                 />
                                 <View style={{ alignItems: 'center' }}>
                                     {/* <Image source={require('../../assets/icons/mic1.png')} /> */}
-                                    <MicIcon height={80} width={80} />
+                                    <MicIcon height={50} width={50} />
                                 </View>
                             </View>
                         </View>
@@ -59,13 +59,13 @@ const ViewProfileScreen = ({ navigation }: any) => {
                         {
                             !backgroundCheck &&
                             <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', marginTop: 5 }}>
-                                <Text style={{ fontSize: 12, color: '#000' }}>How Does Background Check Work? </Text>
-                                <Text style={{ fontSize: 12, color: '#05E3D5' }}>Click here</Text>
+                                <Text style={{ fontSize: 14, color: '#000' }}>How Does Background Check Work? </Text>
+                                <Text style={{ fontSize: 14, color: '#05E3D5' }}>Click here</Text>
                             </View>
                         }
                     </View>
                     <View style={styles.cardContainer}>
-                        <Text style={[GlobalStyle.blackColor, { fontSize: 16, fontWeight: 'bold' }]}>Alert</Text>
+                        <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Alert</Text>
                         <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { display: 'flex', flexDirection: 'row', alignItems: 'center' }]}>
                             <Pressable style={[GlobalStyle.button, { backgroundColor: 'lightgrey', padding: 0, marginTop: 0, marginRight: 30 }]} onPress={() => console.log('add skill')}>
                                 <Text style={{ color: '#000', fontWeight: 'bold' }}>Free</Text>
@@ -87,6 +87,6 @@ export default ViewProfileScreen
 const styles = StyleSheet.create({
     cardContainer: { marginTop: 20, marginBottom: 10 },
     profileImg: { height: 80, width: 80 },
-    editText: { color: '#05E3D5', fontSize: 18 },
+    editText: { color: '#05E3D5', fontSize: 20 },
     btnMargin: { marginTop: 10 }
 })

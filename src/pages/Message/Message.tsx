@@ -80,7 +80,7 @@ const MessageScreen = ({ navigation }: any) => {
                     <View style={{ height: 20, width: 20, borderRadius: 10, backgroundColor: '#36CC36', position: 'absolute', bottom: 0, right: 0 }}></View>
                   </View>
                   <View style={{ flex: 1, marginStart: 10 }}>
-                    <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>{data.name}</Text>
+                    <Text style={[GlobalStyle.blackColor, { fontSize: 18 }]}>{data.name}</Text>
                     <Text style={[GlobalStyle.blackColor]}>{data.title}</Text>
                     <Text numberOfLines={1} style={[GlobalStyle.greyColor,]}>{data.message}</Text>
                   </View>
