@@ -31,7 +31,7 @@ const HomeStack = ({ navigation }: any) => {
     }
     function HeaderLeft() {
         return (
-            <Pressable style={{ flex: 1, margin: 15 }} onPress={() => userType === "PRO" && navigation.navigate('View-Profile')}>
+            <Pressable style={{ flex: 1, margin: 15 }} onPress={() => userType === "PRO" ? navigation.navigate('View-Profile') : navigation.navigate('Edit-Profile')}>
                 <HeaderProfile />
             </Pressable>
         );

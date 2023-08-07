@@ -101,7 +101,7 @@ const ChatScreen = ({ navigation }: any) => {
                                     </View>
                                 </View>
                                 <View style={{ margin: 5, display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                    {data.from &&
+                                    {/* {data.from &&
                                         <>
                                             <Text style={[styles.chatTime, { fontWeight: '500' }]}>
                                                 {data.from}
@@ -109,7 +109,7 @@ const ChatScreen = ({ navigation }: any) => {
                                         </>
                                     }
                                     <View style={data.from && { height: 10, backgroundColor: '#A7A7A7', width: 10, borderRadius: 50, marginHorizontal: 5 }}>
-                                    </View>
+                                    </View> */}
                                     <Text style={styles.chatTime}>{moment(data.time).format('HH:mm A')}</Text>
                                 </View>
                             </View>
@@ -124,26 +124,26 @@ const ChatScreen = ({ navigation }: any) => {
         <SafeAreaView style={{ height: '100%' }}>
             <ScrollView>
                 <View style={[GlobalStyle.container, { marginTop: 0 }]}>
-                    <View> 
+                    <View>
                         {
-                            userType==="CREATOR" &&
-                        <View style={[GlobalStyle.card, GlobalStyle.shadowProp,
-                        {
-                            display: 'flex', flexDirection: 'row', paddingVertical: 10,
-                            paddingHorizontal: 10
-                        }]} >
-                            <View>
-                                <Image resizeMode='contain' style={{ borderTopLeftRadius: 15, borderBottomLeftRadius: 15 }} source={require('../../assets/images/piano.png')} />
+                            userType === "CREATOR" &&
+                            <View style={[GlobalStyle.card, GlobalStyle.shadowProp,
+                            {
+                                display: 'flex', flexDirection: 'row', paddingVertical: 10,
+                                paddingHorizontal: 10
+                            }]} >
+                                <View>
+                                    <Image resizeMode='contain' style={{ borderTopLeftRadius: 15, borderBottomLeftRadius: 15 }} source={require('../../assets/images/piano.png')} />
+                                </View>
+                                <View style={{ flex: 1, width: 100 }}>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 18, marginHorizontal: 10, paddingTop: 10, fontWeight: 'bold' }]}>
+                                        Play Piano
+                                    </Text>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 14, margin: 10, }]}>
+                                        Seeking  piano player for two hour family reunion
+                                    </Text>
+                                </View>
                             </View>
-                            <View style={{ flex: 1, width: 100 }}>
-                                <Text style={[GlobalStyle.blackColor, { fontSize: 18, marginHorizontal: 10, paddingTop: 10, fontWeight: 'bold' }]}>
-                                    Play Piano
-                                </Text>
-                                <Text style={[GlobalStyle.blackColor, { fontSize: 14, margin: 10, }]}>
-                                    Seeking  piano player for two hour family reunion
-                                </Text>
-                            </View>
-                        </View>
                         }
                         <View style={[GlobalStyle.card, GlobalStyle.shadowProp, styles.localCardStyle]}>
                             <View style={styles.imgView}>

@@ -66,10 +66,10 @@ const CreategigScreen = ({ navigation }: any) => {
                         onBlur={() => { handleBlur('description') }}
                         value={values.description}
                         maxLength={400}
-                        style={{ width: '80%',fontSize:16 }}
+                        style={{ width: '80%', fontSize: 16 }}
                       />
                       <View style={{ alignItems: 'center' }}>
-                        <MicIcon height={50} width={50} style={{padding:10}} />
+                        <MicIcon height={50} width={50} style={{ padding: 10 }} />
                       </View>
                     </View>
                   </View>
@@ -89,6 +89,7 @@ const CreategigScreen = ({ navigation }: any) => {
                         onChangeText={handleChange('address')}
                         onBlur={() => { handleBlur('address') }}
                         value={values.address}
+                        style={{ fontSize: 16 }}
                       />
                     </View>
                     {errors.address && touched.address &&
@@ -135,6 +136,7 @@ const CreategigScreen = ({ navigation }: any) => {
                           onBlur={() => { handleBlur('amount') }}
                           value={values.amount}
                           keyboardType='numeric'
+                          style={{ fontSize: 16 }}
                         />
                       </View>
                       {errors.amount && touched.amount &&
@@ -163,7 +165,7 @@ const Style = StyleSheet.create({
   inputField: {
     backgroundColor: '#F9F9F9',
     borderRadius: 15,
-    fontSize:16,
+    fontSize: 16,
     padding: 10,
 
   },

@@ -4,7 +4,9 @@ import { GlobalStyle } from '../../globalStyle'
 import SelectDropdown from 'react-native-select-dropdown'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
-import SearchIcon from '../../assets/icons/Search.svg'
+// import SearchIcon from '../../assets/icons/Search.svg'
+import SearchIcon from '../../assets/icons/gig Search bar.svg'
+import MicIcon from '../../assets/icons/Mic.svg'
 
 const SearchGigScreen = ({ navigation }: any) => {
     const [searchValue, setSearchValue] = useState('')
@@ -112,8 +114,7 @@ const SearchGigScreen = ({ navigation }: any) => {
 
     return (
         <SafeAreaView>
-
-            <View style={{ marginHorizontal: 25, marginTop: 10 }}>
+            <View style={{ marginHorizontal: 10, marginTop: 10 }}>
                 <View
                     style={{
                         backgroundColor: '#fff',
@@ -126,13 +127,15 @@ const SearchGigScreen = ({ navigation }: any) => {
                         alignItems: 'center',
                         padding: 5
                     }}>
+                    <SearchIcon height={25} width={25} style={{ margin: 2 }} />
+
                     <TextInput
                         onChangeText={text => onChangeSearch(text)}
                         value={searchValue}
-                        placeholder='Search Gig'
-                        style={{ padding: 5, flex: 1 }}
+                        placeholder='Search here'
+                        style={{ padding: 5, flex: 1, fontSize: 16 }}
                     />
-                    <SearchIcon height={20} width={20}/>
+                    <MicIcon height={50} width={50} />
                 </View>
                 <View style={{
                     display: 'flex',
@@ -156,6 +159,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                             placeholder='Add Zip Code'
                             placeholderTextColor={'#1E1E1E'}
                             keyboardType='number-pad'
+                            style={{ fontSize: 16 }}
                         />
                     </View>
                     <View
@@ -172,6 +176,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                             value={searchValue}
                             placeholder='Posted On'
                             placeholderTextColor={'#1E1E1E'}
+                            style={{ fontSize: 16 }}
                         />
                     </View>
                     <View
@@ -198,7 +203,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                     </View>
 
                 </View>
-                <ScrollView>
+                <ScrollView style={{ marginBottom: 60 }}>
 
                     {
                         isListView &&

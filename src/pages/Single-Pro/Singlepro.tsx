@@ -22,17 +22,17 @@ const SingleproScreen = () => {
                         </View>
                         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: -15 }}>
                             <Pressable style={[GlobalStyle.button, { width: '50%', backgroundColor: '#000', marginRight: 10 }]}>
-                                <Text style={[GlobalStyle.btntext, { fontWeight: 'bold',fontSize:18 }]}>Message Pro</Text>
+                                <Text style={[GlobalStyle.btntext, { fontWeight: 'bold', fontSize: 18 }]}>Message Pro</Text>
                             </Pressable>
                             <Pressable style={[GlobalStyle.button, { width: '50%' }]}>
-                                <Text style={[GlobalStyle.btntext, { fontWeight: 'bold',fontSize:18 }]}>Pay Pro</Text>
+                                <Text style={[GlobalStyle.btntext, { fontWeight: 'bold', fontSize: 18 }]}>Pay Pro</Text>
                             </Pressable>
                         </View>
                     </View>
                     <View style={{ marginTop: 10 }}>
                         <Text style={[GlobalStyle.blackColor, { fontSize: 18, marginTop: 10, fontWeight: 'bold' }]}>Review Pro List</Text>
                         <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                            <Text style={[GlobalStyle.blackColor,{fontSize:16}]}>
+                            <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
                                 Lorem ipsum dolor sit amet consectetur. Vestibulum nibh aliquet mattis arcu pretium neque orci. Faucibus risus eleifend.
                             </Text>
                         </View>
@@ -40,8 +40,8 @@ const SingleproScreen = () => {
                     <View>
                         <Text style={[GlobalStyle.blackColor, { fontSize: 18, marginTop: 10, fontWeight: 'bold' }]}>Company</Text>
                         <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                            <Text style={[GlobalStyle.blackColor,{fontSize:16}]}>
-                                Null
+                            <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
+                                ABC Pvt. Ltd.
                             </Text>
                         </View>
                     </View>

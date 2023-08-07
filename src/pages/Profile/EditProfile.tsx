@@ -46,7 +46,7 @@ const EditProfileScreen = () => {
                                 <View style={styles.cardContainer}>
                                     <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>First</Text>
                                     <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
-                                        <TextInput style={{ flex: 1 }}
+                                        <TextInput style={{ flex: 1, fontSize: 16 }}
                                             onChangeText={handleChange('firstname')}
                                             onBlur={() => { handleBlur('firstname') }}
                                             value={values.firstname}
@@ -60,7 +60,7 @@ const EditProfileScreen = () => {
                                 <View style={styles.cardContainer}>
                                     <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Last</Text>
                                     <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
-                                        <TextInput style={{ flex: 1 }}
+                                        <TextInput style={{ flex: 1, fontSize: 16 }}
                                             onChangeText={handleChange('lastname')}
                                             onBlur={() => { handleBlur('lastname') }}
                                             value={values.lastname}
@@ -74,7 +74,7 @@ const EditProfileScreen = () => {
                                 <View style={styles.cardContainer}>
                                     <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Phone</Text>
                                     <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
-                                        <TextInput style={{ flex: 1 }}
+                                        <TextInput style={{ flex: 1, fontSize: 16 }}
                                             onChangeText={handleChange('phone')}
                                             onBlur={() => { handleBlur('phone') }}
                                             value={values.phone}
@@ -90,7 +90,7 @@ const EditProfileScreen = () => {
                                 <View style={styles.cardContainer}>
                                     <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Address</Text>
                                     <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
-                                        <TextInput style={{ flex: 1 }}
+                                        <TextInput style={{ flex: 1, fontSize: 16 }}
                                             onChangeText={handleChange('address')}
                                             onBlur={() => { handleBlur('address') }}
                                             value={values.address}
@@ -104,7 +104,7 @@ const EditProfileScreen = () => {
                                 <View style={styles.cardContainer}>
                                     <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Email</Text>
                                     <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
-                                        <TextInput style={{ flex: 1 }}
+                                        <TextInput style={{ flex: 1, fontSize: 16 }}
                                             onChangeText={handleChange('email')}
                                             onBlur={() => { handleBlur('email') }}
                                             value={values.email}
@@ -119,7 +119,7 @@ const EditProfileScreen = () => {
                                 <View style={styles.cardContainer}>
                                     <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Company</Text>
                                     <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
-                                        <TextInput style={{ flex: 1 }}
+                                        <TextInput style={{ flex: 1, fontSize: 16 }}
                                             onChangeText={handleChange('company')}
                                             onBlur={() => { handleBlur('company') }}
                                             value={values.company}

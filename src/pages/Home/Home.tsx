@@ -72,12 +72,14 @@ const HomeScreen = ({ navigation }: any) => {
                 lists?.length > 0 ?
                   <>
                     {lists.map((item: any, index) => (
-                      <View key={index} style={[GlobalStyle.card, GlobalStyle.shadowProp,{paddingVertical: 0,
-                        paddingHorizontal: 0}]}>
-                        <Pressable onPress={() => navigation.navigate('Help', item)} 
-                        style={{
-                          display: 'flex', flexDirection: 'row', 
-                        }} >
+                      <View key={index} style={[GlobalStyle.card, GlobalStyle.shadowProp, {
+                        paddingVertical: 0,
+                        paddingHorizontal: 0
+                      }]}>
+                        <Pressable onPress={() => navigation.navigate('Help', item)}
+                          style={{
+                            display: 'flex', flexDirection: 'row',
+                          }} >
                           <View>
                             <Image resizeMode='contain' style={Style.imageStyle} source={item.image} />
                           </View>
@@ -99,6 +101,7 @@ const HomeScreen = ({ navigation }: any) => {
                     ))
 
                     }
+
                   </>
                   :
                   <>
@@ -157,6 +160,7 @@ const HomeScreen = ({ navigation }: any) => {
                     </View>
                   ))
                   }
+
                 </>
                 :
                 <>

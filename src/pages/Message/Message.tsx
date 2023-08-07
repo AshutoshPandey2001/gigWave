@@ -40,7 +40,7 @@ const MessageScreen = ({ navigation }: any) => {
               onChangeText={text => onChangeSearch(text)}
               value={searchValue}
               placeholder='Search chats'
-              style={{ padding: 5, flex: 1 }}
+              style={{ padding: 5, flex: 1, fontSize: 16 }}
             />
             <SearchIcon height={20} width={20} />
           </View>

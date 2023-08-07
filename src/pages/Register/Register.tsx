@@ -54,7 +54,7 @@ const RegisterScreen = ({ navigation }: any) => {
                                             <PersonIcon />
                                             {/* <Image source={require('../../assets/icons/person.png')} /> */}
                                         </View>
-                                        <TextInput style={{ flex: 1 }}
+                                        <TextInput style={{ flex: 1, fontSize: 16 }}
                                             onChangeText={handleChange('firstname')}
                                             onBlur={() => { handleBlur('firstname') }}
                                             value={values.firstname}
@@ -71,7 +71,7 @@ const RegisterScreen = ({ navigation }: any) => {
                                             <PersonIcon />
                                             {/* <Image source={require('../../assets/icons/person.png')} /> */}
                                         </View>
-                                        <TextInput style={{ flex: 1 }}
+                                        <TextInput style={{ flex: 1, fontSize: 16 }}
                                             onChangeText={handleChange('lastname')}
                                             onBlur={() => { handleBlur('lastname') }}
                                             value={values.lastname}
@@ -88,7 +88,7 @@ const RegisterScreen = ({ navigation }: any) => {
                                             <LockIcon />
                                             {/* <Image source={require('../../assets/icons/lock.png')} /> */}
                                         </View>
-                                        <TextInput style={{ flex: 1 }}
+                                        <TextInput style={{ flex: 1, fontSize: 16 }}
                                             onChangeText={handleChange('email')}
                                             onBlur={() => { handleBlur('email') }}
                                             value={values.email}
@@ -106,7 +106,7 @@ const RegisterScreen = ({ navigation }: any) => {
                                             <LockIcon />
                                             {/* <Image source={require('../../assets/icons/lock.png')} /> */}
                                         </View>
-                                        <TextInput style={{ flex: 1 }}
+                                        <TextInput style={{ flex: 1, fontSize: 16 }}
                                             onChangeText={handleChange('address')}
                                             onBlur={() => { handleBlur('address') }}
                                             value={values.address}

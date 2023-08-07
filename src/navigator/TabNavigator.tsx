@@ -115,7 +115,7 @@ const TabNavigator = () => {
                         elevation: 10,
                         borderTopLeftRadius: 25,
                         borderTopRightRadius: 25,
-                        backgroundColor: '#fff',
+                        backgroundColor: '#f5f5f5',
                         position: 'absolute',
                         padding: 10,
                         width: '100%',
@@ -227,7 +227,7 @@ const TabNavigator = () => {
                                                 style={{ width: 70, height: 70, marginEnd: 10 }}
                                                 source={require('../assets/icons/add.png')}
                                             /> */}
-                                            <AddIcon/>
+                                            <AddIcon />
                                         </View>
                                     );
                                 },

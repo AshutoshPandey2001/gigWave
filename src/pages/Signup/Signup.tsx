@@ -69,7 +69,7 @@ const SignupScreen = ({ navigation }: any) => {
                                                 <PhoneIcon />
                                                 {/* <Image source={require('../../assets/icons/phone.png')} /> */}
                                             </View>
-                                            <TextInput style={{ flex: 1 }}
+                                            <TextInput style={{ flex: 1, fontSize: 16 }}
                                                 onChangeText={handleChange('phone')}
                                                 onBlur={() => { handleBlur('phone') }}
                                                 value={values.phone}
@@ -100,7 +100,7 @@ const SignupScreen = ({ navigation }: any) => {
                                                 <LockIcon />
                                                 {/* <Image source={require('../../assets/icons/lock.png')} /> */}
                                             </View>
-                                            <TextInput style={{ flex: 1 }}
+                                            <TextInput style={{ flex: 1, fontSize: 16 }}
                                                 onChangeText={handleChange('code')}
                                                 onBlur={() => { handleBlur('code') }}
                                                 value={values.code}

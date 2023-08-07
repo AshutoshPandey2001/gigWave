@@ -56,14 +56,18 @@ export const GlobalStyle = StyleSheet.create({
     },
     blackColor: {
         color: '#1E1E1E',
-        fontSize:16
+        fontSize: 16
     },
     errorMsg: {
         fontSize: 16,
         color: 'red'
     },
     container: {
-        margin: 25,
+        margin: 15,
+        paddingBottom: 85
+    },
+    containerGig: {
+        margin: 10,
         paddingBottom: 85
     },
     card: {
