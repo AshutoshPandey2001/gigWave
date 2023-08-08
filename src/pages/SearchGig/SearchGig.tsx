@@ -14,7 +14,7 @@ const SearchGigScreen = ({ navigation }: any) => {
     const [searchValue, setSearchValue] = useState('')
     const { isListView }: any = useSelector((state: RootState) => state.isListView)
     const [proLists, setProLists] = useState([])
-    const [selectedDate, setSelectedDate] = useState<Date | null>(null); // Specify the type as Date | null
+    const [selectedDate, setSelectedDate] = useState<Date | null>(new Date()); // Specify the type as Date | null
     const [datePickerVisible, setDatePickerVisible] = useState(false);
 
     const onChangeSearch = (value: any) => {
@@ -26,7 +26,7 @@ const SearchGigScreen = ({ navigation }: any) => {
 
     const handleDateChange = (date: Date) => {
         setSelectedDate(date);
-        setDatePickerVisible(false);
+        setDatePickerVisible(false)
         // Do something with the selected date
     };
     const formatDate = (date: { toISOString: () => string }) => {
@@ -129,21 +129,20 @@ const SearchGigScreen = ({ navigation }: any) => {
 
     return (
         <SafeAreaView>
-            <View style={{ marginHorizontal: 10, marginTop: 10 }}>
+            <View style={{ marginHorizontal: 10, marginTop: 0 }}>
                 <View
                     style={{
                         backgroundColor: '#fff',
                         borderColor: '#05E3D5',
                         borderWidth: 1,
                         borderRadius: 10,
-                        marginTop: 15,
+                        
                         display: 'flex',
                         flexDirection: 'row',
                         alignItems: 'center',
                         padding: 5
                     }}>
-                    <SearchIcon height={25} width={25} style={{ margin: 2 }} />
-
+                    <SearchIcon height={25} width={25} style={{ marginLeft:5  }} />
                     <TextInput
                         onChangeText={text => onChangeSearch(text)}
                         value={searchValue}
@@ -157,6 +156,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                     flexDirection: 'row',
                     alignItems: 'center',
                     marginTop: 10,
+                    marginBottom:10,
                     justifyContent: 'space-between'
                 }}>
 
@@ -194,38 +194,31 @@ const SearchGigScreen = ({ navigation }: any) => {
                         >
                             <TextInput
                                 onPressIn={openDatePicker}
-                                value={selectedDate ? formatDate(selectedDate) : searchValue} // Display the selected date in the TextInput
+                                value={selectedDate ? formatDate(selectedDate) : ''} // Display the selected date in the TextInput
                                 placeholder='Posted On'
                                 placeholderTextColor={'#1E1E1E'}
-                                // editable={false}
+                                editable={true}
+                                aria-disabled
                                 style={{ fontSize: 16, color: '#000' }} // Adjust text color if needed
                             />
                         </View>
-                        {datePickerVisible && (
+                        {/* {datePickerVisible && ( */}
                             <DatePicker
+                                modal
+                                open={datePickerVisible}
                                 date={selectedDate || new Date()}
                                 mode='date'
-                                onDateChange={handleDateChange}
+                                // onDateChange={handleDateChange}
+                                onConfirm={(date) => {
+                                    handleDateChange(date)
+                                    setDatePickerVisible(false)
+                                }}
+                                onCancel={() => {
+                                    setDatePickerVisible(false)
+                                }}
                             />
-                        )}
+                        {/* )} */}
                     </View>
-                    {/* <View
-                        style={[{
-                            backgroundColor: '#F9F9F9',
-                            borderColor: '#05E3D5',
-                            borderRadius: 10,
-                            paddingHorizontal: 5,
-                            marginLeft: 5,
-                            flex: 1
-                        }]}>
-                        <TextInput
-                            onChangeText={text => onChangeSearch(text)}
-                            value={searchValue}
-                            placeholder='Posted On'
-                            placeholderTextColor={'#1E1E1E'}
-                            style={{ fontSize: 16 }}
-                        />
-                    </View> */}
                     <View
                         style={[{
                             backgroundColor: '#F9F9F9',
@@ -250,7 +243,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                     </View>
 
                 </View>
-                <ScrollView style={{ marginBottom: 60 }}>
+                <ScrollView>
 
                     {
                         isListView &&
