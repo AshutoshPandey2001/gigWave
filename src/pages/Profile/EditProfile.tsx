@@ -9,7 +9,7 @@ const EditProfileScreen = () => {
         firstname: yup.string().required('First Name is required'),
         lastname: yup.string().required('Last Name is required'),
         email: yup.string().email("Please enter valid email")
-            .required('Email is required'),
+            .required('Email is required').matches(/@[^.]*\./,"Please enter valid email"),
         phone: yup.string().required('Phone number is required')
             .min(10, 'Phone number must be 10 digit number')
             .max(10, 'Phone number must be 10 digit number'),
@@ -19,7 +19,7 @@ const EditProfileScreen = () => {
     })
     return (
         <SafeAreaView>
-            <ScrollView contentContainerStyle={styles.container}>
+            <ScrollView contentContainerStyle={styles.container} >
                 <View style={[GlobalStyle.container]}>
                     <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                         <View style={[styles.profileImg, { marginRight: 10 }]}>

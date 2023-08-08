@@ -16,7 +16,7 @@ const RegisterScreen = ({ navigation }: any) => {
         firstname: yup.string().required('First Name is required'),
         lastname: yup.string().required('Last Name is required'),
         email: yup.string().email("Please enter valid email")
-            .required('Email is required'),
+            .required('Email is required').matches(/@[^.]*\./,"Please enter valid email"),
         address: yup.string().required('Address is required'),
 
     })
