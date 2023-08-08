@@ -1,11 +1,12 @@
-import { View, Text, SafeAreaView, ScrollView, StyleSheet, TextInput, Pressable, Image } from 'react-native'
-import React, { useEffect } from 'react'
+import { View, Text, SafeAreaView, ScrollView, StyleSheet, TextInput, Pressable, Image, Animated } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { GlobalStyle } from '../../globalStyle'
 import { Formik } from 'formik'
 import SelectDropdown from 'react-native-select-dropdown'
 import MicIcon from '../../assets/icons/Mic1.svg'
-import * as yup from "yup"
+import * as Animatable from 'react-native-animatable';
 
+import * as yup from "yup"
 const CreategigScreen = ({ navigation }: any) => {
   const gigSchema = yup.object().shape({
     description: yup.string().required('Description is required').min(10, 'Description must be at least 10 characters')
@@ -21,7 +22,50 @@ const CreategigScreen = ({ navigation }: any) => {
       return true;
     })
   }
+  const [isRecording, setIsRecording] = useState(false)
+
   useEffect(() => { }, [])
+  const handleMicIconPress = () => {
+    setIsRecording(true);
+    // Start the long press animation
+    startLongPressAnimation();
+    // Add your logic for when the MicIcon is pressed
+    // You can start recording or perform any other action
+  };
+
+  const handleMicIconPressOut = () => {
+    setIsRecording(false);
+    // Start the press release animation
+    startPressReleaseAnimation();
+    // Add your logic for when the press is released
+  };
+
+  // Define animated values for animations
+  const longPressScale = new Animated.Value(1);
+  const pressReleaseScale = new Animated.Value(1);
+
+  // Animation for long press
+  const startLongPressAnimation = () => {
+    Animated.timing(longPressScale, {
+      toValue: 1.1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  // Animation for press release
+  const startPressReleaseAnimation = () => {
+    Animated.timing(pressReleaseScale, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  };
+  // const handleMicIconPress = () => {
+  //   setIsRecording('true')
+  //   // Add your logic for when the MicIcon is pressed
+  //   // You can start recording or perform any other action
+  // };
   return (
     <SafeAreaView>
       <ScrollView>
@@ -69,7 +113,24 @@ const CreategigScreen = ({ navigation }: any) => {
                         style={{ width: '80%', fontSize: 16 }}
                       />
                       <View style={{ alignItems: 'center' }}>
-                        <MicIcon height={50} width={50} style={{ padding: 10 }} />
+                        <Pressable
+                          onPress={handleMicIconPress}
+                          onPressOut={handleMicIconPressOut}
+                        >
+                          <Animated.View
+                            style={[
+                              { alignItems: 'center' },
+                              {
+                                transform: [
+                                  { scale: isRecording ? longPressScale : pressReleaseScale },
+                                ],
+                              },
+                            ]}
+                          >
+                            <MicIcon height={70} width={70} style={{ padding: 10 }} />
+                          </Animated.View>
+                        </Pressable>
+                        {/* <MicIcon height={70} width={70} style={{ padding: 10 }} /> */}
                       </View>
                     </View>
                   </View>
@@ -167,7 +228,6 @@ const Style = StyleSheet.create({
     borderRadius: 15,
     fontSize: 16,
     padding: 10,
-
   },
   inputLabel: { color: '#05E3D5', fontSize: 16 }
 })

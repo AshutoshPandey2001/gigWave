@@ -66,8 +66,8 @@ export const GlobalStyle = StyleSheet.create({
         margin: 15,
         paddingBottom: 85
     },
-    containerGig: {
-        margin: 10,
+    containerMessage: {
+        margin: 25,
         paddingBottom: 85
     },
     card: {

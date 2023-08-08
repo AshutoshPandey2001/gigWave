@@ -1,4 +1,4 @@
-import { Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { GlobalStyle } from '../../globalStyle'
 import SelectDropdown from 'react-native-select-dropdown'
@@ -8,16 +8,30 @@ import { RootState } from '../../redux/store'
 import SearchIcon from '../../assets/icons/gig Search bar.svg'
 import MicIcon from '../../assets/icons/Mic.svg'
 import MarkerIcon from '../../assets/icons/marker.svg'
+import DatePicker from 'react-native-date-picker'
 
 const SearchGigScreen = ({ navigation }: any) => {
     const [searchValue, setSearchValue] = useState('')
     const { isListView }: any = useSelector((state: RootState) => state.isListView)
     const [proLists, setProLists] = useState([])
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null); // Specify the type as Date | null
+    const [datePickerVisible, setDatePickerVisible] = useState(false);
 
     const onChangeSearch = (value: any) => {
         setSearchValue(value)
     }
+    const openDatePicker = () => {
+        setDatePickerVisible(true);
+    };
 
+    const handleDateChange = (date: Date) => {
+        setSelectedDate(date);
+        setDatePickerVisible(false);
+        // Do something with the selected date
+    };
+    const formatDate = (date: { toISOString: () => string }) => {
+        return date.toISOString().split('T')[0]; // Extract only the date part
+    };
     useEffect(() => {
         getProList();
     }, [])
@@ -157,7 +171,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                             alignItems: 'center',
                             overflow: 'hidden'
                         }]}>
-                        <MarkerIcon height={25} width={25} color={'black'}/>
+                        <MarkerIcon height={25} width={25} color={'black'} />
                         <TextInput
                             onChangeText={text => console.log(text)}
                             value={'San Francisco'}
@@ -167,7 +181,35 @@ const SearchGigScreen = ({ navigation }: any) => {
                             style={{ fontSize: 16 }}
                         />
                     </View>
-                    <View
+                    <View>
+                        <View
+                            style={{
+                                backgroundColor: '#F9F9F9',
+                                borderColor: '#05E3D5',
+                                borderRadius: 10,
+                                paddingHorizontal: 5,
+                                marginLeft: 5,
+                                flex: 1,
+                            }}
+                        >
+                            <TextInput
+                                onPressIn={openDatePicker}
+                                value={selectedDate ? formatDate(selectedDate) : searchValue} // Display the selected date in the TextInput
+                                placeholder='Posted On'
+                                placeholderTextColor={'#1E1E1E'}
+                                // editable={false}
+                                style={{ fontSize: 16, color: '#000' }} // Adjust text color if needed
+                            />
+                        </View>
+                        {datePickerVisible && (
+                            <DatePicker
+                                date={selectedDate || new Date()}
+                                mode='date'
+                                onDateChange={handleDateChange}
+                            />
+                        )}
+                    </View>
+                    {/* <View
                         style={[{
                             backgroundColor: '#F9F9F9',
                             borderColor: '#05E3D5',
@@ -183,7 +225,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                             placeholderTextColor={'#1E1E1E'}
                             style={{ fontSize: 16 }}
                         />
-                    </View>
+                    </View> */}
                     <View
                         style={[{
                             backgroundColor: '#F9F9F9',
@@ -228,6 +270,14 @@ const SearchGigScreen = ({ navigation }: any) => {
 export default SearchGigScreen
 
 const styles = StyleSheet.create({
-    cardContainer: { marginBottom: 10 }
+    cardContainer: { marginBottom: 10 },
+    inputContainer: {
+        backgroundColor: '#F9F9F9',
+        borderColor: '#05E3D5',
+        borderRadius: 10,
+        paddingHorizontal: 5,
+        marginLeft: 5,
+        flex: 1,
+    },
 
 })
