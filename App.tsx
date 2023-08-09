@@ -9,6 +9,7 @@ import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import {
+  SafeAreaView,
   StyleSheet,
   View
 } from 'react-native';
@@ -36,15 +37,17 @@ function App(): JSX.Element {
   }, [user])
 
   return (
-    <NavigationContainer theme={DefaultTheme}>
-      {isLoggedIn ?
-        <TabNavigator />
-        : <Stack.Navigator initialRouteName="Login">
-          <Stack.Screen name="Auth" options={{ headerShown: false }}
-            component={AuthNavigator} />
-        </Stack.Navigator>
-      }
-    </NavigationContainer>
+    <SafeAreaView style={{ flex: 1 }}>
+      <NavigationContainer theme={DefaultTheme}>
+        {isLoggedIn ?
+          <TabNavigator />
+          : <Stack.Navigator initialRouteName="Login">
+            <Stack.Screen name="Auth" options={{ headerShown: false }}
+              component={AuthNavigator} />
+          </Stack.Navigator>
+        }
+      </NavigationContainer>
+    </SafeAreaView>
   );
 }
 
