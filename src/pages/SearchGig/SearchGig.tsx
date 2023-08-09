@@ -9,6 +9,7 @@ import SearchIcon from '../../assets/icons/gig Search bar.svg'
 import MicIcon from '../../assets/icons/Mic.svg'
 import MarkerIcon from '../../assets/icons/marker.svg'
 import DatePicker from 'react-native-date-picker'
+import MapView from 'react-native-maps'
 
 const SearchGigScreen = ({ navigation }: any) => {
     const [searchValue, setSearchValue] = useState('')
@@ -119,10 +120,21 @@ const SearchGigScreen = ({ navigation }: any) => {
             </View>
         )
     }
-    const MapView = (props: any) => {
+    const MyMapView = (props: any) => {
         return (
-            <View style={{ height: '100%', width: '100%' }}>
-                <Image resizeMode='contain' style={{ height: '100%', width: '100%' }} source={require('../../assets/images/mapImage.png')} />
+            <View style={{ height: '75%', width: '100%' }}>
+                <MapView
+                    style={{ flex: 1 }}
+                    initialRegion={{
+                        latitude: 37.78825,
+                        longitude: -122.4324,
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421,
+                    }}
+                >
+                    {/* Add markers, polygons, etc. here */}
+                </MapView>
+                {/* <Image resizeMode='contain' style={{ height: '100%', width: '100%' }} source={require('../../assets/images/mapImage.png')} /> */}
             </View>
         )
     }
@@ -136,13 +148,13 @@ const SearchGigScreen = ({ navigation }: any) => {
                         borderColor: '#05E3D5',
                         borderWidth: 1,
                         borderRadius: 10,
-                        
+
                         display: 'flex',
                         flexDirection: 'row',
                         alignItems: 'center',
                         padding: 5
                     }}>
-                    <SearchIcon height={25} width={25} style={{ marginLeft:5  }} />
+                    <SearchIcon height={25} width={25} style={{ marginLeft: 5 }} />
                     <TextInput
                         onChangeText={text => onChangeSearch(text)}
                         value={searchValue}
@@ -156,7 +168,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                     flexDirection: 'row',
                     alignItems: 'center',
                     marginTop: 10,
-                    marginBottom:10,
+                    marginBottom: 10,
                     justifyContent: 'space-between'
                 }}>
 
@@ -203,20 +215,20 @@ const SearchGigScreen = ({ navigation }: any) => {
                             />
                         </View>
                         {/* {datePickerVisible && ( */}
-                            <DatePicker
-                                modal
-                                open={datePickerVisible}
-                                date={selectedDate || new Date()}
-                                mode='date'
-                                // onDateChange={handleDateChange}
-                                onConfirm={(date) => {
-                                    handleDateChange(date)
-                                    setDatePickerVisible(false)
-                                }}
-                                onCancel={() => {
-                                    setDatePickerVisible(false)
-                                }}
-                            />
+                        <DatePicker
+                            modal
+                            open={datePickerVisible}
+                            date={selectedDate || new Date()}
+                            mode='date'
+                            // onDateChange={handleDateChange}
+                            onConfirm={(date) => {
+                                handleDateChange(date)
+                                setDatePickerVisible(false)
+                            }}
+                            onCancel={() => {
+                                setDatePickerVisible(false)
+                            }}
+                        />
                         {/* )} */}
                     </View>
                     <View
@@ -253,7 +265,7 @@ const SearchGigScreen = ({ navigation }: any) => {
             </View>
             {
                 !isListView &&
-                <MapView />
+                <MyMapView />
 
             }
         </SafeAreaView>

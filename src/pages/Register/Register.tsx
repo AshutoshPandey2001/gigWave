@@ -1,5 +1,5 @@
 import { Formik } from 'formik'
-import React from 'react'
+import React, { useState } from 'react'
 import { Pressable, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useDispatch } from 'react-redux'
@@ -9,6 +9,8 @@ import LockIcon from '../../assets/icons/lock.svg'
 import PersonIcon from '../../assets/icons/person.svg'
 import { GlobalStyle } from '../../globalStyle'
 import { setUser } from '../../redux/action/Auth/authAction'
+import LocationSearch from '../../components/LocationSearch'
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 const RegisterScreen = ({ navigation }: any) => {
     const dispatch = useDispatch();
@@ -16,7 +18,7 @@ const RegisterScreen = ({ navigation }: any) => {
         firstname: yup.string().required('First Name is required'),
         lastname: yup.string().required('Last Name is required'),
         email: yup.string().email("Please enter valid email")
-            .required('Email is required').matches(/@[^.]*\./,"Please enter valid email"),
+            .required('Email is required').matches(/@[^.]*\./, "Please enter valid email"),
         address: yup.string().required('Address is required'),
 
     })
@@ -24,13 +26,20 @@ const RegisterScreen = ({ navigation }: any) => {
         console.log('values', values);
         dispatch(setUser(values))
     }
+    const [selectedLocation, setSelectedLocation] = useState<any | null>(null);
+
+    const handleLocationChange = (location: any) => {
+        console.log('location', location);
+        setSelectedLocation(location);
+        // Do something with the selected location
+    };
     return (
         <SafeAreaView style={GlobalStyle.safeAreaCotainer}>
             <StatusBar
                 backgroundColor="#fff"
                 barStyle="dark-content" // Here is where you change the font-color
             />
-            <ScrollView automaticallyAdjustKeyboardInsets={true}>
+            <ScrollView nestedScrollEnabled={true}>
                 <View style={GlobalStyle.centerContentPage}>
                     <View style={Style.authContainer}>
                         <GigwaveIcon />
@@ -101,11 +110,22 @@ const RegisterScreen = ({ navigation }: any) => {
                                             <Text style={GlobalStyle.errorMsg}>{errors.email}</Text>
                                         }
                                     </View>
+                                    {/* <LocationSearch
+                                        placeholder="Address"
+                                        notifyChange={handleLocationChange}
+                                    /> */}
                                     <View style={[GlobalStyle.fieldwithIcon]}>
                                         <View style={{ marginRight: 10 }}>
                                             <LockIcon />
                                             {/* <Image source={require('../../assets/icons/lock.png')} /> */}
                                         </View>
+                                        {/* <View style={{ height: 400 }}> */}
+                                        {/* <LocationSearch
+                                            placeholder="Address"
+                                            notifyChange={handleLocationChange}
+                                        /> */}
+
+                                        {/* </View> */}
                                         <TextInput style={{ flex: 1, fontSize: 16 }}
                                             onChangeText={handleChange('address')}
                                             onBlur={() => { handleBlur('address') }}

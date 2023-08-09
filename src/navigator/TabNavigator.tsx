@@ -16,6 +16,7 @@ import { RootState } from '../redux/store';
 import HomeStack from './HomeStack';
 import MessageStack from './MessageStack';
 import SearchGigStack from './SearchGigStack';
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
 
@@ -169,6 +170,14 @@ const TabNavigator = () => {
                                             </View>
                                         )
                                     },
+                                    tabBarStyle: ((route) => {
+                                        const routeName = getFocusedRouteNameFromRoute(route)
+                                        console.log(routeName)
+                                        if (routeName === 'Chat') {
+                                            return { display: "none" }
+                                        }
+                                        return
+                                    })(route),
                                     headerShown: false
                                 };
                             }}

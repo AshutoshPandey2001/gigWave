@@ -127,7 +127,7 @@ const HomeScreen = ({ navigation }: any) => {
   const ProHome = () => {
     return (
       <ScrollView>
-        <View style={[GlobalStyle.container]}>
+        <View style={[GlobalStyle.homecontainer]}>
           <View style={Style.cardContainer}>
             <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Suggested Gigs</Text>
             {

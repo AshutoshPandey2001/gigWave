@@ -66,7 +66,7 @@ export const GlobalStyle = StyleSheet.create({
         margin: 15,
         paddingBottom: 85
     },
-    containerMessage: {
+    homecontainer: {
         margin: 25,
         paddingBottom: 85
     },
