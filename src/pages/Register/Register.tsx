@@ -27,19 +27,24 @@ const RegisterScreen = ({ navigation }: any) => {
         dispatch(setUser(values))
     }
     const [selectedLocation, setSelectedLocation] = useState<any | null>(null);
+    const [isModalVisible, setModalVisible] = useState(false);
 
     const handleLocationChange = (location: any) => {
+        setModalVisible(false)
         console.log('location', location);
         setSelectedLocation(location);
         // Do something with the selected location
     };
+    const closeModel = () => {
+        setModalVisible(false)
+    }
     return (
         <SafeAreaView style={GlobalStyle.safeAreaCotainer}>
             <StatusBar
                 backgroundColor="#fff"
                 barStyle="dark-content" // Here is where you change the font-color
             />
-            <ScrollView nestedScrollEnabled={true}>
+            <ScrollView nestedScrollEnabled={true} keyboardShouldPersistTaps={'always'}>
                 <View style={GlobalStyle.centerContentPage}>
                     <View style={Style.authContainer}>
                         <GigwaveIcon />
@@ -56,7 +61,7 @@ const RegisterScreen = ({ navigation }: any) => {
                             validationSchema={registerSchema}
                             onSubmit={values => onRegister(values)}
                         >
-                            {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched }) => (
+                            {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched, setFieldValue }) => (
                                 <View style={{ padding: 10 }}>
                                     <View style={[GlobalStyle.fieldwithIcon]}>
                                         <View style={{ marginRight: 10 }}>
@@ -120,18 +125,26 @@ const RegisterScreen = ({ navigation }: any) => {
                                             {/* <Image source={require('../../assets/icons/lock.png')} /> */}
                                         </View>
                                         {/* <View style={{ height: 400 }}> */}
-                                        {/* <LocationSearch
+                                        <LocationSearch
                                             placeholder="Address"
-                                            notifyChange={handleLocationChange}
-                                        /> */}
-
+                                            isModalVisible={isModalVisible}
+                                            // notifyChange={handleLocationChange}
+                                            notifyChange={location => {
+                                                setModalVisible(false);
+                                                setFieldValue('address', location.description)
+                                                    // values.address = location.description
+                                                    ;
+                                            }}
+                                            closeModel={closeModel}
+                                        />
+                                        <Text style={{ width: '100%' }} onPress={() => setModalVisible(true)}>{values.address ? values.address : 'address'}</Text>
                                         {/* </View> */}
-                                        <TextInput style={{ flex: 1, fontSize: 16 }}
+                                        {/* <TextInput style={{ flex: 1, fontSize: 16 }}
                                             onChangeText={handleChange('address')}
                                             onBlur={() => { handleBlur('address') }}
                                             value={values.address}
                                             placeholder='Address'
-                                        />
+                                        /> */}
                                     </View>
                                     <View style={{ marginBottom: 10 }}>
                                         {errors.address && touched.address &&

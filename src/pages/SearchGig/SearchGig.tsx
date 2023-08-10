@@ -10,6 +10,7 @@ import MicIcon from '../../assets/icons/Mic.svg'
 import MarkerIcon from '../../assets/icons/marker.svg'
 import DatePicker from 'react-native-date-picker'
 import MapView from 'react-native-maps'
+import LocationSearch from '../../components/LocationSearch'
 
 const SearchGigScreen = ({ navigation }: any) => {
     const [searchValue, setSearchValue] = useState('')
@@ -17,7 +18,10 @@ const SearchGigScreen = ({ navigation }: any) => {
     const [proLists, setProLists] = useState([])
     const [selectedDate, setSelectedDate] = useState<Date | null>(new Date()); // Specify the type as Date | null
     const [datePickerVisible, setDatePickerVisible] = useState(false);
-
+    const [isModalVisible, setModalVisible] = useState(false);
+    const closeModel = () => {
+        setModalVisible(false)
+    }
     const onChangeSearch = (value: any) => {
         setSearchValue(value)
     }
@@ -181,17 +185,33 @@ const SearchGigScreen = ({ navigation }: any) => {
                             flex: 1,
                             flexDirection: 'row',
                             alignItems: 'center',
-                            overflow: 'hidden'
+                            overflow: 'hidden',
+                            justifyContent: 'center'
                         }]}>
                         <MarkerIcon height={25} width={25} color={'black'} />
-                        <TextInput
+
+                        <LocationSearch
+                            placeholder="Address"
+                            isModalVisible={isModalVisible}
+                            // notifyChange={handleLocationChange}
+                            notifyChange={location => {
+                                setModalVisible(false);
+                                console.log('location', location);
+
+                                // values.address = location.description
+                                ;
+                            }}
+                            closeModel={closeModel}
+                        />
+                        <Text style={{ width: '100%', fontSize: 16, color: '#000' }} onPress={() => setModalVisible(true)}>San Francisco</Text>
+                        {/* <TextInput
                             onChangeText={text => console.log(text)}
                             value={'San Francisco'}
                             placeholder='City'
                             placeholderTextColor={'#1E1E1E'}
                             // keyboardType='number-pad'
                             style={{ fontSize: 16 }}
-                        />
+                        /> */}
                     </View>
                     <View>
                         <View
@@ -202,9 +222,12 @@ const SearchGigScreen = ({ navigation }: any) => {
                                 paddingHorizontal: 5,
                                 marginLeft: 5,
                                 flex: 1,
+                                alignItems: 'center',
+                                justifyContent: 'center'
                             }}
                         >
-                            <TextInput
+                            <Text style={{ width: '100%', fontSize: 16, color: '#000' }} onPress={openDatePicker}>{selectedDate ? formatDate(selectedDate) : 'Posted On'}</Text>
+                            {/* <TextInput
                                 onPressIn={openDatePicker}
                                 value={selectedDate ? formatDate(selectedDate) : ''} // Display the selected date in the TextInput
                                 placeholder='Posted On'
@@ -212,7 +235,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                                 editable={true}
                                 aria-disabled
                                 style={{ fontSize: 16, color: '#000' }} // Adjust text color if needed
-                            />
+                            /> */}
                         </View>
                         {/* {datePickerVisible && ( */}
                         <DatePicker

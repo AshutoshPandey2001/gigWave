@@ -5,8 +5,8 @@ import { Formik } from 'formik'
 import SelectDropdown from 'react-native-select-dropdown'
 import MicIcon from '../../assets/icons/Mic1.svg'
 import * as Animatable from 'react-native-animatable';
-
 import * as yup from "yup"
+import LocationSearch from '../../components/LocationSearch'
 const CreategigScreen = ({ navigation }: any) => {
   const gigSchema = yup.object().shape({
     description: yup.string().required('Description is required').min(10, 'Description must be at least 10 characters')
@@ -23,8 +23,12 @@ const CreategigScreen = ({ navigation }: any) => {
     })
   }
   const [isRecording, setIsRecording] = useState(false)
+  const [isModalVisible, setModalVisible] = useState(false);
 
   useEffect(() => { }, [])
+  const closeModel = () => {
+    setModalVisible(false)
+  }
   const handleMicIconPress = () => {
     setIsRecording(true);
     // Start the long press animation
@@ -68,7 +72,7 @@ const CreategigScreen = ({ navigation }: any) => {
   // };
   return (
     <SafeAreaView>
-      <ScrollView>
+      <ScrollView keyboardShouldPersistTaps={'always'}>
         <View style={[GlobalStyle.container]}>
           <View style={Style.cardContainer}>
             <Text style={[GlobalStyle.blackColor, { fontSize: 22, fontWeight: 'bold' }]}>How It Works</Text>
@@ -143,7 +147,24 @@ const CreategigScreen = ({ navigation }: any) => {
                     <View
                       style={Style.inputField}>
                       <Text style={Style.inputLabel}>Address</Text>
-                      <TextInput
+
+                      <LocationSearch
+                        placeholder="Address"
+                        isModalVisible={isModalVisible}
+                        // notifyChange={handleLocationChange}
+                        notifyChange={location => {
+                          setModalVisible(false);
+                          setFieldValue('address', location.description)
+                            // values.address = location.description
+                            ;
+                        }}
+                        closeModel={closeModel}
+                      />
+                      <Text style={{
+                        width: '100%', height: 50, fontSize: 16
+                      }} onPress={() => setModalVisible(true)}>{values.address ? values.address : ''}</Text>
+
+                      {/* <TextInput
                         editable
                         multiline
                         numberOfLines={2}
@@ -151,7 +172,7 @@ const CreategigScreen = ({ navigation }: any) => {
                         onBlur={() => { handleBlur('address') }}
                         value={values.address}
                         style={{ fontSize: 16 }}
-                      />
+                      /> */}
                     </View>
                     {errors.address && touched.address &&
                       <Text style={GlobalStyle.errorMsg}>{errors.address}</Text>

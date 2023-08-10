@@ -1,55 +1,75 @@
 import React, { useRef, useState } from 'react'
-import { ScrollView, StyleSheet, View, TouchableOpacity, Modal } from 'react-native';
+import { ScrollView, StyleSheet, View, TouchableOpacity, Modal, Text } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import LockIcon from '../assets/icons/lock.svg'
+import { GlobalStyle } from '../globalStyle';
+import BackButtonIcon from '../assets/icons/Backbutton.svg'
 
 interface LocationSearchProps {
     placeholder: string;
+    isModalVisible: boolean;
     notifyChange: (location: any) => void;
+    closeModel: () => void;
 }
 
-const LocationSearch = ({ placeholder, notifyChange }: LocationSearchProps) => {
+const LocationSearch = ({ placeholder, isModalVisible, notifyChange, closeModel }: LocationSearchProps) => {
     const autocompleteRef = useRef<any | null>(null);
-    const [isModalVisible, setModalVisible] = useState(false);
+    // const [isModalVisible, setModalVisible] = useState(false);
+    console.log('isModalVisible', isModalVisible);
 
     const apiKey = "AIzaSyA5sBOIt1fXpYGll4Kb_808VXSwly-M37o"
     const handlePress = (data: any, details: any) => {
         // if (autocompleteRef.current) {
         //     autocompleteRef.current.setAddressText('');
         // }
-        console.log('details.geometry.location', details.geometry.location, data);
+        console.log('details.geometry.location', data);
 
-        setModalVisible(false);
-        notifyChange(details.geometry.location);
+        // setModalVisible(false);
+        // notifyChange(details.geometry.location);
+        notifyChange(data);
     };
-    const toggleModal = () => {
-        setModalVisible(!isModalVisible);
-    };
+    // const toggleModal = () => {
+    //     setModalVisible(!isModalVisible);
+    // };
 
     return (
-        <ScrollView horizontal={true} style={{ width: "100%", flexDirection: 'row' }}>
-            <View>
-                <TouchableOpacity onPress={toggleModal} style={styles.lockIconContainer}>
-                    <Modal visible={isModalVisible} animationType="slide" >
-                        <ScrollView contentContainerStyle={styles.modalContent} horizontal={true} style={{ width: "100%", flexDirection: 'row' }}>
-                            <GooglePlacesAutocomplete
-                                placeholder={placeholder}
-                                minLength={2}
-                                fetchDetails={true}
-                                listViewDisplayed={false}
-                                onPress={(data, details) => handlePress(data, details)}
-                                query={{
-                                    key: apiKey,
-                                    language: 'en'
-                                }}
-                                nearbyPlacesAPI='GooglePlacesSearch'
-                                debounce={300}
-                                ref={autocompleteRef}
+        <ScrollView horizontal={true} style={{ width: "100%", flexDirection: 'row' }} keyboardShouldPersistTaps={'always'}>
+            <View >
+                {/* <TouchableOpacity onPress={toggleModal} style={styles.lockIconContainer} > */}
+                <Modal visible={isModalVisible} animationType="slide" >
+                    <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
+                        <BackButtonIcon onPress={closeModel} />
+                        <Text style={{ fontWeight: 'bold', fontSize: 16 }}> Search {placeholder}</Text>
 
-                            />
-                        </ScrollView>
-                    </Modal>
-                </TouchableOpacity>
+                    </View>
+
+                    <GooglePlacesAutocomplete
+                        placeholder={placeholder}
+                        minLength={2}
+                        fetchDetails={true}
+                        listViewDisplayed={false}
+                        keyboardShouldPersistTaps={'handled'}
+                        onPress={(data, details = null) => handlePress(data, details)}
+                        onFail={error => console.log('error', error)}
+                        onNotFound={() => console.log('no results')}
+                        query={{
+                            key: apiKey,
+                            language: 'en'
+                        }}
+                        nearbyPlacesAPI='GooglePlacesSearch'
+                        debounce={300}
+                        ref={autocompleteRef}
+                        styles={{
+                            container: GlobalStyle.container,
+                            textInput: [GlobalStyle.card, { height: 50 }],
+                            listView: { backgroundColor: '#f5f5f5' },
+                            row: { backgroundColor: '#f5f5f5', }
+                        }}
+
+                    />
+
+
+                </Modal>
+                {/* </TouchableOpacity> */}
 
             </View >
         </ScrollView>
@@ -78,7 +98,6 @@ const LocationSearch = ({ placeholder, notifyChange }: LocationSearchProps) => {
 
 const styles = StyleSheet.create({
     lockIconContainer: {
-
         padding: 10,
         borderWidth: 1,
         borderColor: 'gray',
@@ -89,6 +108,21 @@ const styles = StyleSheet.create({
     modalContent: {
         flexGrow: 1,
         backgroundColor: 'white',
+    },
+    closeButton: {
+        top: 10,
+        right: 10,
+        backgroundColor: 'rgba(255, 255, 255, 0.7)',
+        padding: 10,
+        borderRadius: 5,
+    },
+    autocompleteContainer: {
+
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        paddingHorizontal: 10,
+        marginBottom: 10,
     },
 });
 export default LocationSearch
