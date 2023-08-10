@@ -1,23 +1,36 @@
 
-import React from 'react';
-import { Image, Pressable, Text, View } from 'react-native';
-import { GlobalStyle } from '../globalStyle';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import React, { useLayoutEffect } from 'react';
+import { Image, Pressable, View } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import HeaderProfile from '../components/HeaderProfile';
 import HelpScreen from '../pages/Help/Help';
 import HomeScreen from '../pages/Home/Home';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import HeaderProfile from '../components/HeaderProfile';
+import ChatScreen from '../pages/Message/Chat';
+import EditProfileScreen from '../pages/Profile/EditProfile';
+import ViewProfileScreen from '../pages/Profile/ViewProfile';
 import SingleproScreen from '../pages/Single-Pro/Singlepro';
 import ViewGigScreen from '../pages/ViewGig/ViewGig';
-import ViewProfileScreen from '../pages/Profile/ViewProfile';
-import EditProfileScreen from '../pages/Profile/EditProfile';
-import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import { GlobalStyle } from '../globalStyle';
+import { setIsCreateButton } from '../redux/action/User/userTypeSlice';
 
 
-const HomeStack = ({ navigation }: any) => {
+const HomeStack = ({ navigation, route }: any) => {
     const GigStack = createNativeStackNavigator();
+    const dispatch=useDispatch()
     const { userType }: any = useSelector((state: RootState) => state.userType)
-
+    useLayoutEffect(() => {
+        const routeName = getFocusedRouteNameFromRoute(route);
+        if (routeName === "DirectChat") {
+            dispatch(setIsCreateButton(false))
+            navigation.setOptions({ tabBarStyle: GlobalStyle.noTabBar });
+        } else {
+            dispatch(setIsCreateButton(true))
+            navigation.setOptions({ tabBarStyle: GlobalStyle.tabBar });
+        }
+    }, [navigation, route])
     function HeaderRight() {
         return (
             <View style={{ display: 'flex', alignItems: 'center', flexDirection: 'row', margin: 15 }}>
@@ -86,6 +99,15 @@ const HomeStack = ({ navigation }: any) => {
                 headerShadowVisible: false,
                 contentStyle: { backgroundColor: "#fff" }
             }} />
+            <GigStack.Screen name="DirectChat" component={ChatScreen}
+                options={{
+                    headerStyle: { backgroundColor: '#fff' },
+                    contentStyle: { backgroundColor: "#fff" },
+                    headerShadowVisible: false,
+                    headerBackVisible: false,
+                    headerShown: false
+                }}
+            />
         </GigStack.Navigator>
     )
 }

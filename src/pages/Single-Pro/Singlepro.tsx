@@ -2,7 +2,7 @@ import React from 'react'
 import { Image, Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native'
 import { GlobalStyle } from '../../globalStyle'
 
-const SingleproScreen = () => {
+const SingleproScreen = ({navigation}:any) => {
     return (
         <SafeAreaView>
             <ScrollView>
@@ -20,7 +20,7 @@ const SingleproScreen = () => {
                             </View>
                         </View>
                         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: -15 }}>
-                            <Pressable style={[GlobalStyle.button, { width: '50%', backgroundColor: '#000', marginRight: 10 }]}>
+                            <Pressable style={[GlobalStyle.button, { width: '50%', backgroundColor: '#000', marginRight: 10 }]} onPress={()=>navigation.navigate('DirectChat')}>
                                 <Text style={[GlobalStyle.btntext, { fontWeight: 'bold', fontSize: 18 }]}>Message Pro</Text>
                             </Pressable>
                             <Pressable style={[GlobalStyle.button, { width: '50%' }]}>

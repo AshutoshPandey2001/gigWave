@@ -6,7 +6,8 @@ export const store = configureStore({
   reducer: {
     user: userReducer,
     userType: userTypeReducer,
-    isListView: userTypeReducer
+    isListView: userTypeReducer,
+    isCreateButton:userTypeReducer
   }
 })
 

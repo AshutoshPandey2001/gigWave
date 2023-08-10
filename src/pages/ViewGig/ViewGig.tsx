@@ -32,7 +32,7 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                                     <Pressable style={[GlobalStyle.button, { flex: 1, backgroundColor: '#000', margin: 5, paddingHorizontal: 15 }]}>
                                         <Text style={[GlobalStyle.btntext, { fontWeight: 'bold', fontSize: 16 }]}>Not Interested</Text>
                                     </Pressable>
-                                    <Pressable onPress={() => navigation.navigate('Message')} style={[GlobalStyle.button, { flex: 1, backgroundColor: '#05E3D5', margin: 5, paddingHorizontal: 10 }]}>
+                                    <Pressable onPress={() => navigation.navigate('DirectChat')} style={[GlobalStyle.button, { flex: 1, backgroundColor: '#05E3D5', margin: 5, paddingHorizontal: 10 }]}>
                                         <Text style={[GlobalStyle.blackColor, { fontWeight: 'bold', fontSize: 16 }]}>Message Creator</Text>
                                     </Pressable>
                                 </> :

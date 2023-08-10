@@ -1,5 +1,5 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import { Pressable, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import AddIcon from '../assets/icons/Add.svg';
@@ -16,19 +16,17 @@ import { RootState } from '../redux/store';
 import HomeStack from './HomeStack';
 import MessageStack from './MessageStack';
 import SearchGigStack from './SearchGigStack';
-import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
+import { getFocusedRouteNameFromRoute, useNavigation, useRoute } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
     const [hideCreate, setHideCreate] = useState(false)
     const [currentScreen, setCurrentScreen] = useState(null)
-
     const { userType }: any = useSelector((state: RootState) => state.userType)
-    const { isListView }: any = useSelector((state: RootState) => state.isListView)
+    const { isCreateButton }: any = useSelector((state: RootState) => state.isCreateButton)
+    console.log(isCreateButton, 'isCreateButton');
 
-
-    const dispatch = useDispatch();
     useEffect(() => {
         if (currentScreen === 4) {
             setHideCreate(true)
@@ -38,18 +36,11 @@ const TabNavigator = () => {
 
     }, [currentScreen])
 
-    function HeaderLeft() {
-        return (
-            <View style={{ flex: 1, margin: 15 }}>
-                <HeaderProfile />
-            </View>
-        );
-    }
     const CustomTabButton = ({ children, onPress }: any) => (
 
         <>
             {
-                userType === "CREATOR" &&
+                userType === "CREATOR" && isCreateButton &&
                 <>
 
                     {hideCreate ?
@@ -101,26 +92,7 @@ const TabNavigator = () => {
                 screenOptions={() => ({
                     headerBackgroundContainerStyle: '#fff',
                     tabBarShowLabel: false,
-                    tabBarStyle: {
-                        borderWidth: 0,
-                        shadowRadius: 2,
-                        shadowOffset: {
-                            width: 0,
-                            height: -5,
-                        },
-
-                        shadowColor: '#555',
-                        shadowOpacity: 0.2,
-                        borderColor: '#fff',
-                        elevation: 10,
-                        borderTopLeftRadius: 25,
-                        borderTopRightRadius: 25,
-                        backgroundColor: '#f5f5f5',
-                        position: 'absolute',
-                        padding: 10,
-                        width: '100%',
-                        height: 80,
-                    }
+                    tabBarStyle: GlobalStyle.tabBar
                 })}
             >
                 <Tab.Screen
@@ -138,47 +110,40 @@ const TabNavigator = () => {
                 />
                 {userType &&
                     <>
-                        <Tab.Screen name="Home" component={HomeStack} options={{
+                        <Tab.Screen name="Home" component={HomeStack} options={({ route }) => ({
                             tabBarIcon: ({ size, focused, color }) => {
                                 return (
-                                    // <Image
-                                    //     resizeMode='contain'
-                                    //     style={{ width: 40, height: 40, borderTopLeftRadius: 20 }}
-                                    //     source={require('../assets/icons/home.png')}
-                                    // />
                                     <View>
                                         <HomeIcon />
                                     </View>
                                 );
                             },
-
                             headerShown: false
-                        }} />
+                        })} />
                         <Tab.Screen name="Message" component={MessageStack}
-
                             options={({ route }) => {
                                 return {
                                     tabBarIcon: () => {
                                         return (
-                                            // <Image
-                                            //     resizeMode='contain'
-                                            //     style={{ width: 40, height: 40 }}
-                                            //     source={require('../assets/icons/message.png')}
-                                            // />
                                             <View>
                                                 <MessageIcon />
                                             </View>
                                         )
                                     },
-                                    tabBarStyle: ((route) => {
-                                        const routeName = getFocusedRouteNameFromRoute(route)
-                                        console.log(routeName)
-                                        if (routeName === 'Chat') {
-                                            return { display: "none" }
-                                        }
-                                        return
-                                    })(route),
-                                    headerShown: false
+                                    // tabBarStyle: ((route) => {
+                                    //     const routeName = getFocusedRouteNameFromRoute(route)
+                                    //     console.log(routeName)
+                                    //     if (routeName === 'Chat') {
+                                    //         setHideCreate(true)
+                                    //         return { position: "absolute", height: 0 }
+                                    //     }
+                                    //     else {
+                                    //         setHideCreate(false)
+                                    //         return GlobalStyle.tabBar
+                                    //     }
+
+                                    // })(route),
+                                    headerShown: false,
                                 };
                             }}
 
@@ -186,11 +151,6 @@ const TabNavigator = () => {
                         {userType === "PRO" && <Tab.Screen name="SearchGig" component={SearchGigStack} options={{
                             tabBarIcon: ({ size, focused, color }) => {
                                 return (
-                                    // <Image
-                                    //     resizeMode='contain'
-                                    //     style={{ width: 40, height: 40 }}
-                                    //     source={require('../assets/icons/search-tab.png')}
-                                    // />
                                     <View>
                                         <SearchIcon />
                                     </View>
@@ -224,20 +184,13 @@ const TabNavigator = () => {
                                 tabBarIcon: ({ size, focused, color }) => {
                                     return (
                                         <View style={GlobalStyle.shadowProp}>
-                                            {/* <Image
-                                                style={{ width: 70, height: 70, marginEnd: 10 }}
-                                                source={require('../assets/icons/add.png')}
-                                            /> */}
                                             <AddIcon />
                                         </View>
                                     );
                                 },
                                 headerTitleAlign: 'center',
                                 headerTitle: 'Create Gig',
-                                tabBarButton: (props) => (
-                                    <CustomTabButton {...props} />
-                                )
-
+                                tabBarButton: (props) => <CustomTabButton {...props} />
                             }} />
                         }
                     </>

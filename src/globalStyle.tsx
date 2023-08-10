@@ -87,5 +87,26 @@ export const GlobalStyle = StyleSheet.create({
         shadowRadius: 5,
         elevation: 5
     },
-    headerLeft: { display: 'flex', alignItems: 'center', flexDirection: 'row' }
+    headerLeft: { display: 'flex', alignItems: 'center', flexDirection: 'row' },
+    tabBar: {
+        borderWidth: 0,
+        shadowRadius: 2,
+        shadowOffset: {
+            width: 0,
+            height: -5,
+        },
+
+        shadowColor: '#555',
+        shadowOpacity: 0.2,
+        borderColor: '#fff',
+        elevation: 10,
+        borderTopLeftRadius: 25,
+        borderTopRightRadius: 25,
+        backgroundColor: '#f5f5f5',
+        position: 'absolute',
+        padding: 10,
+        width: '100%',
+        height: 80,
+    },
+    noTabBar: { position: "absolute", height: 0 }
 })

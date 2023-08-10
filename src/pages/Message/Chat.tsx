@@ -1,12 +1,17 @@
 import Voice from '@react-native-voice/voice';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+    Image, SafeAreaView, ScrollView, StyleSheet,
+    Text, Pressable,
+    TextInput, TouchableOpacity, View
+} from 'react-native';
 import MicIcon from '../../assets/icons/Mic.svg';
 import CamaraIcon from '../../assets/icons/camera.svg';
 import MarkerIcon from '../../assets/icons/marker.svg';
 import SendIcon from '../../assets/icons/send.svg';
 import OnlineIcon from '../../assets/icons/online.svg';
+import BackIcon from '../../assets/icons/Backbutton.svg';
 import { GlobalStyle } from '../../globalStyle';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
@@ -122,6 +127,12 @@ const ChatScreen = ({ navigation }: any) => {
 
     return (
         <SafeAreaView style={{ height: '100%' }}>
+            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: 80,padding:20 }}>
+                <Pressable onPress={() => navigation.goBack()}>
+                    <BackIcon />
+                </Pressable>
+                <Text style={{ flex: 1, marginLeft: 26, fontSize: 20, color: '#000', fontWeight: 'bold' }}>Chatting with Lala</Text>
+            </View>
             <ScrollView>
                 <View style={[GlobalStyle.container, { marginTop: 0 }]}>
                     <View>

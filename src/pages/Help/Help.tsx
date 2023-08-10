@@ -119,7 +119,7 @@ const Style = StyleSheet.create({
     localCardStyle: {
         display: 'flex',
         flexDirection: 'row',
-        paddingVertical: 0,
+        paddingVertical: 15,
         paddingHorizontal: 0
     },
     commanmargin: {

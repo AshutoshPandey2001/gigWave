@@ -1,11 +1,16 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { View } from 'react-native';
 import ChatScreen from '../pages/Message/Chat';
 import MessageScreen from '../pages/Message/Message';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import { GlobalStyle } from '../globalStyle';
+import { setIsCreateButton } from '../redux/action/User/userTypeSlice';
+import { useDispatch } from 'react-redux';
 
-const MessageStack = ({navigation}:any) => {
+const MessageStack = ({ navigation, route }: any) => {
     const MsgStack = createNativeStackNavigator();
+    const dispatch = useDispatch();
     function HeaderLeft() {
         return (
             //     <View style={{ flex: 1, margin: 15 }}>
@@ -16,6 +21,16 @@ const MessageStack = ({navigation}:any) => {
             </View>
         );
     }
+    useLayoutEffect(() => {
+        const routeName = getFocusedRouteNameFromRoute(route);
+        if (routeName === "Chat") {
+            dispatch(setIsCreateButton(false))
+            navigation.setOptions({ tabBarStyle: GlobalStyle.noTabBar });
+        } else {
+            dispatch(setIsCreateButton(true))
+            navigation.setOptions({ tabBarStyle: GlobalStyle.tabBar });
+        }
+    }, [navigation, route])
     return (
         <MsgStack.Navigator initialRouteName="Msg" screenOptions={{
             contentStyle: {
@@ -46,7 +61,8 @@ const MessageStack = ({navigation}:any) => {
                     headerStyle: { backgroundColor: '#fff' },
                     contentStyle: { backgroundColor: "#fff" },
                     headerShadowVisible: false,
-                    headerBackVisible:true,
+                    headerBackVisible: false,
+                    headerShown: false
                 }}
             />
         </MsgStack.Navigator>
