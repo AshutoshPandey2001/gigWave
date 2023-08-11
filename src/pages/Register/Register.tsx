@@ -137,7 +137,7 @@ const RegisterScreen = ({ navigation }: any) => {
                                             }}
                                             closeModel={closeModel}
                                         />
-                                        <Text style={{ width: '100%' }} onPress={() => setModalVisible(true)}>{values.address ? values.address : 'address'}</Text>
+                                        <Text style={{ width: '100%' ,color:'#000',fontSize:16}} onPress={() => setModalVisible(true)}>{values.address ? values.address : 'address'}</Text>
                                         {/* </View> */}
                                         {/* <TextInput style={{ flex: 1, fontSize: 16 }}
                                             onChangeText={handleChange('address')}

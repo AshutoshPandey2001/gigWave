@@ -36,10 +36,9 @@ const LocationSearch = ({ placeholder, isModalVisible, notifyChange, closeModel 
             <View >
                 {/* <TouchableOpacity onPress={toggleModal} style={styles.lockIconContainer} > */}
                 <Modal visible={isModalVisible} animationType="slide" >
-                    <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
+                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: 40, paddingHorizontal: 15 }}>
                         <BackButtonIcon onPress={closeModel} />
-                        <Text style={{ fontWeight: 'bold', fontSize: 16 }}> Search {placeholder}</Text>
-
+                        <Text style={{ fontWeight: 'bold', fontSize: 18, flex: 1, paddingLeft: 20,color:'#000' }}> Search {placeholder}</Text>
                     </View>
 
                     <GooglePlacesAutocomplete
@@ -51,6 +50,7 @@ const LocationSearch = ({ placeholder, isModalVisible, notifyChange, closeModel 
                         onPress={(data, details = null) => handlePress(data, details)}
                         onFail={error => console.log('error', error)}
                         onNotFound={() => console.log('no results')}
+                        enablePoweredByContainer={false}
                         query={{
                             key: apiKey,
                             language: 'en'
@@ -61,7 +61,7 @@ const LocationSearch = ({ placeholder, isModalVisible, notifyChange, closeModel 
                         styles={{
                             container: GlobalStyle.container,
                             textInput: [GlobalStyle.card, { height: 50 }],
-                            listView: { backgroundColor: '#f5f5f5' },
+                            listView: { backgroundColor: '#f5f5f5',borderRadius:10 },
                             row: { backgroundColor: '#f5f5f5', }
                         }}
 

@@ -161,7 +161,7 @@ const CreategigScreen = ({ navigation }: any) => {
                         closeModel={closeModel}
                       />
                       <Text style={{
-                        width: '100%', height: 50, fontSize: 16
+                        width: '100%', height: 50, fontSize: 16,color:'#000'
                       }} onPress={() => setModalVisible(true)}>{values.address ? values.address : ''}</Text>
 
                       {/* <TextInput
