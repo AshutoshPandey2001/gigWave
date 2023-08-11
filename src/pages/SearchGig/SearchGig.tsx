@@ -181,14 +181,15 @@ const SearchGigScreen = ({ navigation }: any) => {
                             backgroundColor: '#F9F9F9',
                             borderColor: '#05E3D5',
                             borderRadius: 10,
-                            paddingHorizontal: 5,
+                            paddingHorizontal: 10,
                             flex: 1,
+                            height: 50,
                             flexDirection: 'row',
                             alignItems: 'center',
                             overflow: 'hidden',
                             justifyContent: 'center'
                         }]}>
-                        <MarkerIcon height={25} width={25} color={'black'} />
+                        <MarkerIcon height={22} width={22} color={'black'} />
 
                         <LocationSearch
                             placeholder="Address"
