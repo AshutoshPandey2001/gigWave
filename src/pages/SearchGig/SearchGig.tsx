@@ -19,6 +19,7 @@ const SearchGigScreen = ({ navigation }: any) => {
     const [selectedDate, setSelectedDate] = useState<Date | null>(new Date()); // Specify the type as Date | null
     const [datePickerVisible, setDatePickerVisible] = useState(false);
     const [isModalVisible, setModalVisible] = useState(false);
+    const [location, setLocation] = useState<any>();
     const closeModel = () => {
         setModalVisible(false)
     }
@@ -198,13 +199,14 @@ const SearchGigScreen = ({ navigation }: any) => {
                             notifyChange={location => {
                                 setModalVisible(false);
                                 console.log('location', location);
-
-                                // values.address = location.description
-                                ;
+                                setLocation(location)
+                                    // values.address = location.description
+                                    
                             }}
                             closeModel={closeModel}
                         />
-                        <Text style={{ width: '100%', fontSize: 16, color: '#000' }} onPress={() => setModalVisible(true)}>San Francisco</Text>
+                        
+                        <Text numberOfLines={1} style={{ width: '100%', fontSize: 16, color: '#000',paddingLeft:10 }} onPress={() => setModalVisible(true)}>{location? location?.description: 'San Francisco'}</Text>
                         {/* <TextInput
                             onChangeText={text => console.log(text)}
                             value={'San Francisco'}
