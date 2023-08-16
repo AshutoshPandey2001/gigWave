@@ -6,6 +6,7 @@ import GigwaveIcon from '../../assets/icons/gigwave.svg'
 import LockIcon from '../../assets/icons/lock.svg'
 import PhoneIcon from '../../assets/icons/phone.svg'
 import { GlobalStyle } from '../../globalStyle'
+import { getOtp, verifyOtp } from '../../services/authServices/authServices'
 
 const LoginScreen = ({ navigation }: any) => {
   const [isOtpsent, setOtpSend] = useState(false);
@@ -19,16 +20,33 @@ const LoginScreen = ({ navigation }: any) => {
   const loginCodeSchema = yup.object().shape({
     code: yup.string().required('Code is required')
   })
-  const onLogin = (values: any) => {
+  const onLogin = async (values: any) => {
     // console.log('values', values);
+    try {
+      const response = await getOtp(values.phone);
+      // if (response === true) {
+      console.log('Response:', response);
+      if (response) {
+        setOtpSend(true)
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
     setMobile(values.phone)
-    setOtpSend(true)
   }
-  const onSubmit = (values: any) => {
-    // console.log('values', values);
-    setOtpSend(false)
-    navigation.navigate('Register')
-
+  const onSubmit = async (values: any) => {
+    try {
+      const response = await verifyOtp(mobile, values.phone);
+      // if (response === true) {
+      console.log('verify otp Response:', response);
+      if (response) {
+        setOtpSend(false)
+        navigation.navigate('Register', { mobileNumber: mobile })
+      }
+      navigation.navigate('Register', { mobileNumber: mobile })
+    } catch (error) {
+      console.error('Error:', error);
+    }
   }
   return (
     <SafeAreaView style={GlobalStyle.safeAreaCotainer}>

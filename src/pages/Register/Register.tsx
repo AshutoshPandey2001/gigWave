@@ -11,20 +11,36 @@ import { GlobalStyle } from '../../globalStyle'
 import { setUser } from '../../redux/action/Auth/authAction'
 import LocationSearch from '../../components/LocationSearch'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { useRoute } from '@react-navigation/native';
+import { createUser } from '../../services/authServices/authServices'
 
 const RegisterScreen = ({ navigation }: any) => {
     const dispatch = useDispatch();
+    const route = useRoute();
+    const { mobileNumber } = route.params as { mobileNumber: string };
+
+    console.log('mobileNumber', mobileNumber);
+
     const registerSchema = yup.object().shape({
-        firstname: yup.string().required('First Name is required'),
-        lastname: yup.string().required('Last Name is required'),
+        fname: yup.string().required('First Name is required'),
+        lname: yup.string().required('Last Name is required'),
         email: yup.string().email("Please enter valid email")
             .required('Email is required').matches(/@[^.]*\./, "Please enter valid email"),
         address: yup.string().required('Address is required'),
 
     })
-    const onRegister = (values: any) => {
+    const onRegister = async (values: any) => {
         console.log('values', values);
-        dispatch(setUser(values))
+        try {
+            const response = await createUser({ ...values, phone: mobileNumber });
+            // if (response === true) {
+            dispatch(setUser(response))
+
+            console.log('Create user data Response:', response);
+
+        } catch (error) {
+            console.error('Error:', error);
+        }
     }
     const [selectedLocation, setSelectedLocation] = useState<any | null>(null);
     const [isModalVisible, setModalVisible] = useState(false);
@@ -53,8 +69,8 @@ const RegisterScreen = ({ navigation }: any) => {
                         <Text style={{ color: '#949494', marginBottom: 20, fontSize: 18 }}>Please enter your details to register</Text>
                         <Formik
                             initialValues={{
-                                firstname: '',
-                                lastname: '',
+                                fname: '',
+                                lname: '',
                                 email: '',
                                 address: ''
                             }}
@@ -69,15 +85,15 @@ const RegisterScreen = ({ navigation }: any) => {
                                             {/* <Image source={require('../../assets/icons/person.png')} /> */}
                                         </View>
                                         <TextInput style={{ flex: 1, fontSize: 16 }}
-                                            onChangeText={handleChange('firstname')}
-                                            onBlur={() => { handleBlur('firstname') }}
-                                            value={values.firstname}
+                                            onChangeText={handleChange('fname')}
+                                            onBlur={() => { handleBlur('fname') }}
+                                            value={values.fname}
                                             placeholder='First Name'
                                         />
                                     </View>
                                     <View style={{ marginBottom: 10 }}>
-                                        {touched.firstname && errors.firstname &&
-                                            <Text style={GlobalStyle.errorMsg}>{errors.firstname}</Text>
+                                        {touched.fname && errors.fname &&
+                                            <Text style={GlobalStyle.errorMsg}>{errors.fname}</Text>
                                         }
                                     </View>
                                     <View style={[GlobalStyle.fieldwithIcon]}>
@@ -86,15 +102,15 @@ const RegisterScreen = ({ navigation }: any) => {
                                             {/* <Image source={require('../../assets/icons/person.png')} /> */}
                                         </View>
                                         <TextInput style={{ flex: 1, fontSize: 16 }}
-                                            onChangeText={handleChange('lastname')}
-                                            onBlur={() => { handleBlur('lastname') }}
-                                            value={values.lastname}
+                                            onChangeText={handleChange('lname')}
+                                            onBlur={() => { handleBlur('lname') }}
+                                            value={values.lname}
                                             placeholder='Last Name'
                                         />
                                     </View>
                                     <View style={{ marginBottom: 10 }}>
-                                        {errors.lastname && touched.lastname &&
-                                            <Text style={GlobalStyle.errorMsg}>{errors.lastname}</Text>
+                                        {errors.lname && touched.lname &&
+                                            <Text style={GlobalStyle.errorMsg}>{errors.lname}</Text>
                                         }
                                     </View>
                                     <View style={[GlobalStyle.fieldwithIcon]}>
@@ -137,7 +153,7 @@ const RegisterScreen = ({ navigation }: any) => {
                                             }}
                                             closeModel={closeModel}
                                         />
-                                        <Text style={{ width: '100%' ,color:'#000',fontSize:16}} onPress={() => setModalVisible(true)}>{values.address ? values.address : 'address'}</Text>
+                                        <Text style={{ width: '100%', color: '#000', fontSize: 16 }} onPress={() => setModalVisible(true)}>{values.address ? values.address : 'address'}</Text>
                                         {/* </View> */}
                                         {/* <TextInput style={{ flex: 1, fontSize: 16 }}
                                             onChangeText={handleChange('address')}
