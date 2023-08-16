@@ -7,6 +7,8 @@ import LockIcon from '../../assets/icons/lock.svg'
 import PhoneIcon from '../../assets/icons/phone.svg'
 import { GlobalStyle } from '../../globalStyle'
 import { getOtp, verifyOtp } from '../../services/authServices/authServices'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../redux/store'
 
 const LoginScreen = ({ navigation }: any) => {
   const [isOtpsent, setOtpSend] = useState(false);
@@ -16,6 +18,7 @@ const LoginScreen = ({ navigation }: any) => {
       .min(10, 'Phone number must be 10 digit number')
       .max(10, 'Phone number must be 10 digit number')
   })
+  const firsToken = useSelector((state: RootState) => state.firstToken.firstToken);
 
   const loginCodeSchema = yup.object().shape({
     code: yup.string().required('Code is required')
@@ -23,7 +26,7 @@ const LoginScreen = ({ navigation }: any) => {
   const onLogin = async (values: any) => {
     // console.log('values', values);
     try {
-      const response = await getOtp(values.phone);
+      const response = await getOtp(values.phone,firsToken);
       // if (response === true) {
       console.log('Response:', response);
       if (response) {
@@ -36,7 +39,7 @@ const LoginScreen = ({ navigation }: any) => {
   }
   const onSubmit = async (values: any) => {
     try {
-      const response = await verifyOtp(mobile, values.phone);
+      const response = await verifyOtp(mobile, values.phone,firsToken);
       // if (response === true) {
       console.log('verify otp Response:', response);
       if (response) {

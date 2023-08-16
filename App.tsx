@@ -16,25 +16,33 @@ import {
 
 import AuthNavigator from './src/navigator/AuthNavigator';
 
-import { useSelector, } from 'react-redux';
+import { useDispatch, useSelector, } from 'react-redux';
 import TabNavigator from './src/navigator/TabNavigator';
 import { RootState } from './src/redux/store';
 
 import { LogBox } from 'react-native';
+import { getLoginToken } from './src/services/authServices/authServices';
+import { setFirstToken } from './src/redux/action/Auth/authAction';
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 function App(): JSX.Element {
 
   const Stack = createNativeStackNavigator();
   const user = useSelector((state: RootState) => state.user)
   const [isLoggedIn, setIsLogged] = useState(false);
-
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log('userDetails--------', user.user);
     if (user?.user) {
       setIsLogged(true)
     }
   }, [user])
+  useEffect(() => {
+    getLoginToken().then((res) => {
+      if (res) {
+        dispatch(setFirstToken(res.access_token))
+      }
+    })
+  }, [])
 
   return (
     <SafeAreaView style={{ flex: 1 }}>

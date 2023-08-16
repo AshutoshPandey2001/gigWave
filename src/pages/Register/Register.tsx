@@ -1,26 +1,24 @@
+import { useRoute } from '@react-navigation/native'
 import { Formik } from 'formik'
 import React, { useState } from 'react'
 import { Pressable, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import * as yup from "yup"
 import GigwaveIcon from '../../assets/icons/gigwave.svg'
 import LockIcon from '../../assets/icons/lock.svg'
 import PersonIcon from '../../assets/icons/person.svg'
+import LocationSearch from '../../components/LocationSearch'
 import { GlobalStyle } from '../../globalStyle'
 import { setUser } from '../../redux/action/Auth/authAction'
-import LocationSearch from '../../components/LocationSearch'
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { useRoute } from '@react-navigation/native';
-import { createUser } from '../../services/authServices/authServices'
+import { RootState } from '../../redux/store'
+import { checkUser, createUser } from '../../services/authServices/authServices'
 
 const RegisterScreen = ({ navigation }: any) => {
     const dispatch = useDispatch();
     const route = useRoute();
     const { mobileNumber } = route.params as { mobileNumber: string };
-
-    console.log('mobileNumber', mobileNumber);
-
+    const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
     const registerSchema = yup.object().shape({
         fname: yup.string().required('First Name is required'),
         lname: yup.string().required('Last Name is required'),
@@ -29,28 +27,23 @@ const RegisterScreen = ({ navigation }: any) => {
         address: yup.string().required('Address is required'),
 
     })
-    const onRegister = async (values: any) => {
+    const onRegister = (values: any) => {
         console.log('values', values);
-        try {
-            const response = await createUser({ ...values, phone: mobileNumber });
-            // if (response === true) {
-            dispatch(setUser(response))
+        checkUser(values.email, mobileNumber, firstToken).then((res) => {
+            let response = JSON.parse(JSON.stringify(res))
+            console.log('res', response.status)
+            if (response.status === 404 || response.status === "404") {
+                createUser({ ...values, phone: mobileNumber, user_id: "" }, firstToken).then((response: any) => {
+                    dispatch(setUser(response))
+                    console.log('Create user data Response:', response);
+                }).catch((error) => { console.error("registeration error", JSON.stringify(error)) })
+            }
+        })
 
-            console.log('Create user data Response:', response);
 
-        } catch (error) {
-            console.error('Error:', error);
-        }
     }
-    const [selectedLocation, setSelectedLocation] = useState<any | null>(null);
     const [isModalVisible, setModalVisible] = useState(false);
 
-    const handleLocationChange = (location: any) => {
-        setModalVisible(false)
-        console.log('location', location);
-        setSelectedLocation(location);
-        // Do something with the selected location
-    };
     const closeModel = () => {
         setModalVisible(false)
     }
@@ -64,7 +57,6 @@ const RegisterScreen = ({ navigation }: any) => {
                 <View style={GlobalStyle.centerContentPage}>
                     <View style={Style.authContainer}>
                         <GigwaveIcon />
-                        {/* <Image source={require('../../assets/images/gigwave.png')} /> */}
                         <Text style={[GlobalStyle.title, { marginTop: 20 }]}>Register</Text>
                         <Text style={{ color: '#949494', marginBottom: 20, fontSize: 18 }}>Please enter your details to register</Text>
                         <Formik
@@ -82,7 +74,6 @@ const RegisterScreen = ({ navigation }: any) => {
                                     <View style={[GlobalStyle.fieldwithIcon]}>
                                         <View style={{ marginRight: 10 }}>
                                             <PersonIcon />
-                                            {/* <Image source={require('../../assets/icons/person.png')} /> */}
                                         </View>
                                         <TextInput style={{ flex: 1, fontSize: 16 }}
                                             onChangeText={handleChange('fname')}
@@ -99,7 +90,6 @@ const RegisterScreen = ({ navigation }: any) => {
                                     <View style={[GlobalStyle.fieldwithIcon]}>
                                         <View style={{ marginRight: 10 }}>
                                             <PersonIcon />
-                                            {/* <Image source={require('../../assets/icons/person.png')} /> */}
                                         </View>
                                         <TextInput style={{ flex: 1, fontSize: 16 }}
                                             onChangeText={handleChange('lname')}
@@ -116,7 +106,6 @@ const RegisterScreen = ({ navigation }: any) => {
                                     <View style={[GlobalStyle.fieldwithIcon]}>
                                         <View style={{ marginRight: 10 }}>
                                             <LockIcon />
-                                            {/* <Image source={require('../../assets/icons/lock.png')} /> */}
                                         </View>
                                         <TextInput style={{ flex: 1, fontSize: 16 }}
                                             onChangeText={handleChange('email')}
@@ -131,36 +120,29 @@ const RegisterScreen = ({ navigation }: any) => {
                                             <Text style={GlobalStyle.errorMsg}>{errors.email}</Text>
                                         }
                                     </View>
-                                    {/* <LocationSearch
-                                        placeholder="Address"
-                                        notifyChange={handleLocationChange}
-                                    /> */}
                                     <View style={[GlobalStyle.fieldwithIcon]}>
                                         <View style={{ marginRight: 10 }}>
                                             <LockIcon />
-                                            {/* <Image source={require('../../assets/icons/lock.png')} /> */}
                                         </View>
-                                        {/* <View style={{ height: 400 }}> */}
-                                        <LocationSearch
-                                            placeholder="Address"
-                                            isModalVisible={isModalVisible}
-                                            // notifyChange={handleLocationChange}
-                                            notifyChange={location => {
-                                                setModalVisible(false);
-                                                setFieldValue('address', location.description)
-                                                    // values.address = location.description
-                                                    ;
-                                            }}
-                                            closeModel={closeModel}
-                                        />
-                                        <Text style={{ width: '100%', color: '#000', fontSize: 16 }} onPress={() => setModalVisible(true)}>{values.address ? values.address : 'address'}</Text>
-                                        {/* </View> */}
-                                        {/* <TextInput style={{ flex: 1, fontSize: 16 }}
-                                            onChangeText={handleChange('address')}
-                                            onBlur={() => { handleBlur('address') }}
-                                            value={values.address}
-                                            placeholder='Address'
-                                        /> */}
+                                        {
+                                            isModalVisible &&
+                                            <LocationSearch
+                                                placeholder="Address"
+                                                isModalVisible={isModalVisible}
+                                                notifyChange={location => {
+                                                    setModalVisible(false);
+                                                    setFieldValue('address', location.description)
+                                                }}
+                                                closeModel={closeModel}
+                                            />
+                                        }
+                                        <View style={{ flex: 1 }}>
+                                            {values.address ?
+                                                <Text style={{ color: '#000', fontSize: 16 }} onPress={() => setModalVisible(true)}>{values.address ? values.address : ''}</Text>
+                                                :
+                                                <Text style={{ color: '#a9a9a9', fontSize: 16 }} onPress={() => setModalVisible(true)}>{'Address'}</Text>
+                                            }
+                                        </View>
                                     </View>
                                     <View style={{ marginBottom: 10 }}>
                                         {errors.address && touched.address &&

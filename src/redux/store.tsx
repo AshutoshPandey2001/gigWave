@@ -4,6 +4,7 @@ import userTypeReducer from './action/User/userTypeSlice'
 
 export const store = configureStore({
   reducer: {
+    firstToken:userReducer,
     user: userReducer,
     userType: userTypeReducer,
     isListView: userTypeReducer,
