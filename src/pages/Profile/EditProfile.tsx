@@ -1,14 +1,24 @@
 import { Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { GlobalStyle } from '../../globalStyle'
 import * as yup from "yup"
-import { Formik } from 'formik'
+import { Formik, useFormik } from 'formik'
 import LocationSearch from '../../components/LocationSearch'
-
+import { useSelector } from 'react-redux'
+import { RootState } from '../../redux/store'
 const EditProfileScreen = () => {
+    const user: any = useSelector((state: RootState) => state.user.user);
+    const [initialFormValues, setInitialFormValues] = useState({
+        fname: '',
+        lname: '',
+        email: '',
+        phone: '',
+        address: '',
+        company: '',
+    });
     const Schema = yup.object().shape({
-        firstname: yup.string().required('First Name is required'),
-        lastname: yup.string().required('Last Name is required'),
+        fname: yup.string().required('First Name is required'),
+        lname: yup.string().required('Last Name is required'),
         email: yup.string().email("Please enter valid email")
             .required('Email is required').matches(/@[^.]*\./, "Please enter valid email"),
         phone: yup.string().required('Phone number is required')
@@ -19,6 +29,20 @@ const EditProfileScreen = () => {
 
     })
     const [isModalVisible, setModalVisible] = useState(false);
+
+    useEffect(() => {
+        console.log('useEffect triggered with user:', user);
+
+        setInitialFormValues({
+            fname: user.fname || '',
+            lname: user.lname || '',
+            email: user.email || '',
+            phone: user.phone || '',
+            address: user.address || '',
+            company: user.company || '',
+        });
+    }, [user]);
+
     const closeModel = () => {
         setModalVisible(false)
     }
@@ -35,16 +59,9 @@ const EditProfileScreen = () => {
                         </Pressable>
                     </View>
                     <Formik
-                        initialValues={{
-                            firstname: '',
-                            lastname: '',
-                            email: '',
-                            phone: '',
-                            address: '',
-                            company: '',
-                        }}
+                        initialValues={initialFormValues}
                         validationSchema={Schema}
-                        onSubmit={values => console.log(values)}
+                        onSubmit={values => console.log('values', initialFormValues)}
                     >
                         {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched, setFieldValue }) => (
                             <>
@@ -52,28 +69,30 @@ const EditProfileScreen = () => {
                                     <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>First</Text>
                                     <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
                                         <TextInput style={{ flex: 1, fontSize: 16 }}
-                                            onChangeText={handleChange('firstname')}
-                                            onBlur={() => { handleBlur('firstname') }}
-                                            value={values.firstname}
+                                            onChangeText={handleChange('fname')}
+                                            onBlur={() => { handleBlur('fname') }}
+                                            value={values.fname}
                                             placeholder='First Name'
                                         />
+
+
                                     </View>
-                                    {errors.firstname && touched.firstname &&
-                                        <Text style={GlobalStyle.errorMsg}>{errors.firstname}</Text>
+                                    {errors.fname && touched.fname &&
+                                        <Text style={GlobalStyle.errorMsg}>{errors.fname}</Text>
                                     }
                                 </View>
                                 <View style={styles.cardContainer}>
                                     <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Last</Text>
                                     <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
                                         <TextInput style={{ flex: 1, fontSize: 16 }}
-                                            onChangeText={handleChange('lastname')}
-                                            onBlur={() => { handleBlur('lastname') }}
-                                            value={values.lastname}
+                                            onChangeText={handleChange('lname')}
+                                            onBlur={() => { handleBlur('lname') }}
+                                            value={values.lname}
                                             placeholder='Last Name'
                                         />
                                     </View>
-                                    {errors.lastname && touched.lastname &&
-                                        <Text style={GlobalStyle.errorMsg}>{errors.lastname}</Text>
+                                    {errors.lname && touched.lname &&
+                                        <Text style={GlobalStyle.errorMsg}>{errors.lname}</Text>
                                     }
                                 </View>
                                 <View style={styles.cardContainer}>
@@ -95,27 +114,23 @@ const EditProfileScreen = () => {
                                 <View style={styles.cardContainer}>
                                     <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Address</Text>
                                     <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0, alignItems: 'center', justifyContent: 'center' }]}>
-                                        <LocationSearch
-                                            placeholder="Address"
-                                            isModalVisible={isModalVisible}
-                                            // notifyChange={handleLocationChange}
-                                            notifyChange={location => {
-                                                setModalVisible(false);
-                                                setFieldValue('address', location.description)
-                                                    // values.address = location.description
-                                                    ;
-                                            }}
-                                            closeModel={closeModel}
-                                        />
-                                        <Text style={{
-                                            width: '100%', height: 50, fontSize: 16, paddingTop: 13
-                                        }} onPress={() => setModalVisible(true)}>{values.address ? values.address : 'Address'}</Text>
-                                        {/* <TextInput style={{ flex: 1, fontSize: 16 }}
-                                            onChangeText={handleChange('address')}
-                                            onBlur={() => { handleBlur('address') }}
-                                            value={values.address}
-                                            placeholder='Address'
-                                        /> */}
+                                        {
+                                            isModalVisible &&
+                                            <LocationSearch
+                                                placeholder="Address"
+                                                isModalVisible={isModalVisible}
+                                                notifyChange={location => {
+                                                    setModalVisible(false);
+                                                    setFieldValue('address', location.description)
+                                                }}
+                                                closeModel={closeModel}
+                                            />
+                                        }
+                                        {values.address ?
+                                            <Text style={{ color: '#000', fontSize: 16, paddingTop: 13, width: '100%', height: 50, }} onPress={() => setModalVisible(true)}>{values.address ? values.address : ''}</Text>
+                                            :
+                                            <Text style={{ color: '#a9a9a9', fontSize: 16, paddingTop: 13, width: '100%', height: 50, }} onPress={() => setModalVisible(true)}>{'Address'}</Text>
+                                        }
                                     </View>
                                     {errors.address && touched.address &&
                                         <Text style={GlobalStyle.errorMsg}>{errors.address}</Text>

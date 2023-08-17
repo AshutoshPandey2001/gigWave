@@ -33,7 +33,7 @@ const RegisterScreen = ({ navigation }: any) => {
             let response = JSON.parse(JSON.stringify(res))
             console.log('res', response.status)
             if (response.status === 404 || response.status === "404") {
-                createUser({ ...values, phone: mobileNumber, user_id: "" }, firstToken).then((response: any) => {
+                createUser({ ...values, phone: mobileNumber }, firstToken).then((response: any) => {
                     dispatch(setUser(response))
                     console.log('Create user data Response:', response);
                 }).catch((error) => { console.error("registeration error", JSON.stringify(error)) })

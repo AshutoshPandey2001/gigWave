@@ -1,13 +1,17 @@
 import React from 'react'
 import { Image, Pressable, SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { GlobalStyle } from '../../globalStyle'
 import { setUserType } from '../../redux/action/User/userTypeSlice'
 import HelpSVG from '../../assets/icons/Help.svg'
 import GroupSvg from '../../assets/icons/Group.svg'
+import { RootState } from '../../redux/store'
 
 const RoleScreen = ({ navigation }: any) => {
   const dispatch = useDispatch()
+  const user: any = useSelector((state: RootState) => state.user.user);
+  console.log('user', user);
+
   return (
     <SafeAreaView>
       <StatusBar
@@ -21,7 +25,7 @@ const RoleScreen = ({ navigation }: any) => {
           </View>
           <View style={{ marginLeft: 5 }}>
             <View>
-              <Text style={{ color: '#05E3D5', fontSize: 22 }}>Hi Joshua</Text>
+              <Text style={{ color: '#05E3D5', fontSize: 22 }}>Hi {user ? user.fname : 'Joshua'}</Text>
               <Text style={[GlobalStyle.title, { fontSize: 20 }]}>Welcome to Gigwave</Text>
             </View>
           </View>

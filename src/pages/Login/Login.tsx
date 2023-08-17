@@ -7,10 +7,13 @@ import LockIcon from '../../assets/icons/lock.svg'
 import PhoneIcon from '../../assets/icons/phone.svg'
 import { GlobalStyle } from '../../globalStyle'
 import { getOtp, verifyOtp } from '../../services/authServices/authServices'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
+import { setUser } from '../../redux/action/Auth/authAction'
 
 const LoginScreen = ({ navigation }: any) => {
+  const dispatch = useDispatch();
+
   const [isOtpsent, setOtpSend] = useState(false);
   const [mobile, setMobile] = useState("");
   const loginPhoneSchema = yup.object().shape({
@@ -26,7 +29,7 @@ const LoginScreen = ({ navigation }: any) => {
   const onLogin = async (values: any) => {
     // console.log('values', values);
     try {
-      const response = await getOtp(values.phone,firsToken);
+      const response = await getOtp(values.phone, firsToken);
       // if (response === true) {
       console.log('Response:', response);
       if (response) {
@@ -39,15 +42,17 @@ const LoginScreen = ({ navigation }: any) => {
   }
   const onSubmit = async (values: any) => {
     try {
-      const response = await verifyOtp(mobile, values.phone,firsToken);
+      const response = await verifyOtp(mobile, values.code, firsToken);
       // if (response === true) {
-      console.log('verify otp Response:', response);
-      if (response) {
+      console.log('verify otp Response:', response.status, response);
+      if (response.user) {
+        dispatch(setUser(response.user))
+      } else {
         setOtpSend(false)
         navigation.navigate('Register', { mobileNumber: mobile })
       }
-      navigation.navigate('Register', { mobileNumber: mobile })
     } catch (error) {
+      // navigation.navigate('Register', { mobileNumber: mobile })
       console.error('Error:', error);
     }
   }

@@ -46,6 +46,8 @@ export const getOtp = async (phoneNumber: any, token: any): Promise<any> => {
 };
 
 export const verifyOtp = async (phoneNumber: any, otp: any, token: any): Promise<any> => {
+    console.log('phoneNumber otp', phoneNumber, otp);
+
     try {
         const response = await axios({
             method: 'post',
@@ -63,9 +65,11 @@ export const verifyOtp = async (phoneNumber: any, otp: any, token: any): Promise
 
 
 export const createUser = async (userData: any, token: any): Promise<any> => {
+    console.log(userData, 'userData');
+
     try {
         const response = await axios({
-            method: 'put',
+            method: 'post',
             url: `${API_BASE_URL}/user/`,
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -75,6 +79,8 @@ export const createUser = async (userData: any, token: any): Promise<any> => {
         });
         return response.data; // Return the response data
     } catch (error) {
+        console.log('error', error);
+
         throw error; // Rethrow the error to be caught by the caller
     }
 }
