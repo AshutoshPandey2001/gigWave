@@ -84,6 +84,26 @@ export const createUser = async (userData: any, token: any): Promise<any> => {
         throw error; // Rethrow the error to be caught by the caller
     }
 }
+export const updateUsersDetails = async (userData: any, token: any): Promise<any> => {
+    console.log(userData, 'userData');
+    try {
+        const response = await axios({
+            method: 'put',
+            url: `${API_BASE_URL}/user/`,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            data: userData,
+        });
+        return response.data; // Return the response data
+    } catch (error) {
+        console.log('error', error);
+
+        throw error; // Rethrow the error to be caught by the caller
+    }
+}
+
 export const checkUser = async (email: string, phone: string, token: any): Promise<any> => {
     try {
         const response = await axios({

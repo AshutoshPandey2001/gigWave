@@ -4,17 +4,24 @@ import { GlobalStyle } from '../../globalStyle'
 import * as yup from "yup"
 import { Formik, useFormik } from 'formik'
 import LocationSearch from '../../components/LocationSearch'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
+import { updateUsersDetails } from '../../services/authServices/authServices'
+import { getUserByUserID } from '../../services/userService.tsx/userServices'
+import { setUser } from '../../redux/action/Auth/authAction'
+import { setLoading } from '../../redux/action/General/GeneralSlice'
 const EditProfileScreen = () => {
+    const dispatch = useDispatch();
     const user: any = useSelector((state: RootState) => state.user.user);
+    const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
     const [initialFormValues, setInitialFormValues] = useState({
-        fname: '',
-        lname: '',
-        email: '',
-        phone: '',
-        address: '',
-        company: '',
+        user_id: user.user_id ? user.user_id : '',
+        fname: user.fname ? user.fname : '',
+        lname: user.lname ? user.lname : '',
+        email: user.email ? user.email : '',
+        phone: user.phone ? user.phone : '',
+        address: user.address ? user.address : '',
+        company: user.company ? user.company : '',
     });
     const Schema = yup.object().shape({
         fname: yup.string().required('First Name is required'),
@@ -25,24 +32,25 @@ const EditProfileScreen = () => {
             .min(10, 'Phone number must be 10 digit number')
             .max(10, 'Phone number must be 10 digit number'),
         address: yup.string().required('Address is required'),
-        company: yup.string().required('Company is required'),
-
+        company: yup.string(),
     })
     const [isModalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
-        console.log('useEffect triggered with user:', user);
+        getUserByID()
+    }, []);
 
-        setInitialFormValues({
-            fname: user.fname || '',
-            lname: user.lname || '',
-            email: user.email || '',
-            phone: user.phone || '',
-            address: user.address || '',
-            company: user.company || '',
-        });
-    }, [user]);
+    const getUserByID = async () => {
+        await dispatch(setLoading(true));
+        if (user.is_pro) {
 
+        } else {
+            getUserByUserID(user.user_id, firstToken).then((response) => {
+                dispatch(setLoading(false))
+                dispatch(setUser(response))
+            })
+        }
+    }
     const closeModel = () => {
         setModalVisible(false)
     }
@@ -61,7 +69,17 @@ const EditProfileScreen = () => {
                     <Formik
                         initialValues={initialFormValues}
                         validationSchema={Schema}
-                        onSubmit={values => console.log('values', initialFormValues)}
+                        onSubmit={values => {
+                            dispatch(setLoading(true))
+                            updateUsersDetails(values, firstToken).then((res) => {
+                                dispatch(setLoading(false))
+                                dispatch(setUser(res))
+                            }).catch((e) => {
+                                dispatch(setLoading(false))
+                                console.log('error', e)
+                            }
+                            )
+                        }}
                     >
                         {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched, setFieldValue }) => (
                             <>
@@ -105,6 +123,7 @@ const EditProfileScreen = () => {
                                             keyboardType='phone-pad'
                                             placeholder='Phone'
                                             maxLength={10}
+                                            editable={false}
                                         />
                                     </View>
                                     {errors.phone && touched.phone &&
@@ -145,13 +164,14 @@ const EditProfileScreen = () => {
                                             value={values.email}
                                             keyboardType='email-address'
                                             placeholder='Email'
+                                            editable={false}
                                         />
                                     </View>
                                     {errors.email && touched.email &&
                                         <Text style={GlobalStyle.errorMsg}>{errors.email}</Text>
                                     }
                                 </View>
-                                <View style={styles.cardContainer}>
+                                {user?.is_Pro && <View style={styles.cardContainer}>
                                     <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Company</Text>
                                     <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
                                         <TextInput style={{ flex: 1, fontSize: 16 }}
@@ -159,12 +179,13 @@ const EditProfileScreen = () => {
                                             onBlur={() => { handleBlur('company') }}
                                             value={values.company}
                                             placeholder='Company'
+
                                         />
                                     </View>
                                     {errors.company && touched.company &&
                                         <Text style={GlobalStyle.errorMsg}>{errors.company}</Text>
                                     }
-                                </View>
+                                </View>}
                                 <Pressable style={GlobalStyle.button} onPress={() => handleSubmit()}>
                                     <Text style={GlobalStyle.btntext}>Update</Text>
                                 </Pressable>

@@ -10,6 +10,7 @@ import { getOtp, verifyOtp } from '../../services/authServices/authServices'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
 import { setUser } from '../../redux/action/Auth/authAction'
+import { setLoading } from '../../redux/action/General/GeneralSlice'
 
 const LoginScreen = ({ navigation }: any) => {
   const dispatch = useDispatch();
@@ -29,29 +30,33 @@ const LoginScreen = ({ navigation }: any) => {
   const onLogin = async (values: any) => {
     // console.log('values', values);
     try {
+      await dispatch(setLoading(true))
       const response = await getOtp(values.phone, firsToken);
-      // if (response === true) {
       console.log('Response:', response);
       if (response) {
+        await dispatch(setLoading(false))
         setOtpSend(true)
       }
     } catch (error) {
+      await dispatch(setLoading(false))
       console.error('Error:', error);
     }
     setMobile(values.phone)
   }
   const onSubmit = async (values: any) => {
     try {
+      await dispatch(setLoading(true))
       const response = await verifyOtp(mobile, values.code, firsToken);
-      // if (response === true) {
       console.log('verify otp Response:', response.status, response);
-      if (response.user) {
+      await dispatch(setLoading(false))
+      if (response.user && response.user?.email && response.user?.phone) {
         dispatch(setUser(response.user))
       } else {
         setOtpSend(false)
         navigation.navigate('Register', { mobileNumber: mobile })
       }
     } catch (error) {
+      await dispatch(setLoading(false))
       // navigation.navigate('Register', { mobileNumber: mobile })
       console.error('Error:', error);
     }

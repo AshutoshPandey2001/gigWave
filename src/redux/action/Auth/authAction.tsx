@@ -18,5 +18,5 @@ const userSlice = createSlice({
 })
 export const { setUser, setFirstToken } = userSlice.actions;
 
-const userReducer = userSlice.reducer;
+const userReducer =userSlice.reducer;
 export default userReducer;
