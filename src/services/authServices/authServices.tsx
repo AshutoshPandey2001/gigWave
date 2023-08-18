@@ -46,8 +46,6 @@ export const getOtp = async (phoneNumber: any, token: any): Promise<any> => {
 };
 
 export const verifyOtp = async (phoneNumber: any, otp: any, token: any): Promise<any> => {
-    console.log('phoneNumber otp', phoneNumber, otp);
-
     try {
         const response = await axios({
             method: 'post',

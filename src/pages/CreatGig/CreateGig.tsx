@@ -7,7 +7,14 @@ import MicIcon from '../../assets/icons/Mic1.svg'
 import * as Animatable from 'react-native-animatable';
 import * as yup from "yup"
 import LocationSearch from '../../components/LocationSearch'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '../../redux/store'
+import { createGig } from '../../services/gigService/gigService'
+import { setLoading } from '../../redux/action/General/GeneralSlice'
 const CreategigScreen = ({ navigation }: any) => {
+  const user: any = useSelector((state: RootState) => state.user.user);
+  const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
+  const dispatch = useDispatch();
   const gigSchema = yup.object().shape({
     description: yup.string().required('Description is required').min(10, 'Description must be at least 10 characters')
       .max(400, 'Description must not exceed 400 characters'),
@@ -17,24 +24,37 @@ const CreategigScreen = ({ navigation }: any) => {
   })
   const onCreate = (values: any) => {
     return new Promise((resolve, reject) => {
-      console.log(values);
-      navigation.navigate('Home')
-      return true;
+      let gigValue = {
+        "user_id": user.user_id,
+        "background_check_required": false,
+        "informal_description": values.description,
+        "address": values.address,
+        "gig_type": values.status === "Free" ? "unpaid" : values.status.toLowerCase(),
+        "budget": Number(values.amount)
+      }
+      dispatch(setLoading(true))
+      createGig(gigValue, firstToken).then((res) => {
+        console.log(res, 'response creat gig')
+        navigation.navigate('Home')
+        dispatch(setLoading(false));
+        resolve(true)
+      }).catch((e) => {
+        console.log('error', JSON.stringify(e));
+        dispatch(setLoading(false))
+      })
     })
   }
   const [isRecording, setIsRecording] = useState(false)
   const [isModalVisible, setModalVisible] = useState(false);
 
-  useEffect(() => { }, [])
+  useEffect(() => { dispatch(setLoading(false)) }, [])
   const closeModel = () => {
+
     setModalVisible(false)
   }
   const handleMicIconPress = () => {
     setIsRecording(true);
-    // Start the long press animation
     startLongPressAnimation();
-    // Add your logic for when the MicIcon is pressed
-    // You can start recording or perform any other action
   };
 
   const handleMicIconPressOut = () => {
@@ -65,11 +85,6 @@ const CreategigScreen = ({ navigation }: any) => {
       useNativeDriver: true,
     }).start();
   };
-  // const handleMicIconPress = () => {
-  //   setIsRecording('true')
-  //   // Add your logic for when the MicIcon is pressed
-  //   // You can start recording or perform any other action
-  // };
   return (
     <SafeAreaView>
       <ScrollView keyboardShouldPersistTaps={'always'}>
@@ -161,7 +176,7 @@ const CreategigScreen = ({ navigation }: any) => {
                         closeModel={closeModel}
                       />
                       <Text style={{
-                        width: '100%', height: 50, fontSize: 16,color:'#000'
+                        width: '100%', height: 50, fontSize: 16, color: '#000'
                       }} onPress={() => setModalVisible(true)}>{values.address ? values.address : ''}</Text>
 
                       {/* <TextInput

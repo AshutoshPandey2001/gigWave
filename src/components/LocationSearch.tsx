@@ -14,7 +14,7 @@ interface LocationSearchProps {
 const LocationSearch = ({ placeholder, isModalVisible, notifyChange, closeModel }: LocationSearchProps) => {
     const autocompleteRef = useRef<any | null>(null);
     // const [isModalVisible, setModalVisible] = useState(false);
-    console.log('isModalVisible', isModalVisible);
+    // console.log('isModalVisible', isModalVisible);
 
     const apiKey = "AIzaSyA5sBOIt1fXpYGll4Kb_808VXSwly-M37o"
     const handlePress = (data: any, details: any) => {

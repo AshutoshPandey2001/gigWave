@@ -25,7 +25,6 @@ const TabNavigator = () => {
     const [currentScreen, setCurrentScreen] = useState(null)
     const { userType }: any = useSelector((state: RootState) => state.userType)
     const { isCreateButton }: any = useSelector((state: RootState) => state.isCreateButton)
-    console.log(isCreateButton, 'isCreateButton');
 
     useEffect(() => {
         if (currentScreen === 4) {

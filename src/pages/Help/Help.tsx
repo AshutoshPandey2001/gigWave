@@ -29,7 +29,7 @@ const HelpScreen = ({ route, navigation }: any) => {
                                         {route.params?.title}
                                     </Text>
                                     <Text style={[GlobalStyle.blackColor, { fontSize: 14, margin: 10, }]}>
-                                        {route.params?.msg}
+                                        {route.params?.informal_description}
                                     </Text>
                                 </View>
                             </View>

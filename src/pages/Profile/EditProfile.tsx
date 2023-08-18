@@ -7,7 +7,7 @@ import LocationSearch from '../../components/LocationSearch'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
 import { updateUsersDetails } from '../../services/authServices/authServices'
-import { getUserByUserID } from '../../services/userService.tsx/userServices'
+import { getUserByUserID } from '../../services/userService/userServices'
 import { setUser } from '../../redux/action/Auth/authAction'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
 const EditProfileScreen = () => {
