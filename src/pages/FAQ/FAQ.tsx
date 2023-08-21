@@ -2,26 +2,36 @@ import { View, Text, SafeAreaView, StatusBar, StyleSheet, ScrollView } from 'rea
 import React, { useEffect, useState } from 'react'
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import { GlobalStyle } from '../../globalStyle';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getAllFaq } from '../../services/faqService/faqService';
 import { RootState } from '../../redux/store';
+import { setLoading } from '../../redux/action/General/GeneralSlice';
 
 
 const FAQScreen = () => {
     const [selectedIndex, SetSelectedIndex] = useState(0);
-    const firsToken = useSelector((state: RootState) => state.firstToken.firstToken);
-
+    const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
+    const { userType }: any = useSelector((state: RootState) => state.userType)
+    const [creatorFAQs, setCreatorFAQs] = useState([]);
+    const [proFAQs, setProFAQs] = useState([]);
+    const dispatch = useDispatch();
     useEffect(() => {
-        // getAllFaq(firsToken).then((res) => {
-        //     // res.map((item: any) => item.image = require('../../assets/images/list1.png'))
-        //     console.log('all faqs', res);
-
-
-        // }).catch((error) => {
-        //     console.error(JSON.stringify(error));
-        // })
-    }, [])
-
+        getFAQS()
+    }, [userType])
+    const getFAQS = () => {
+        dispatch(setLoading(true));
+        getAllFaq(firstToken).then((res) => {
+            // res.map((item: any) => item.image = require('../../assets/images/list1.png'))
+            let creatorFAQ = res.filter((item: any) => item.section === "Creator")
+            let proFAQ = res.filter((item: any) => item.section === "Pro")
+            dispatch(setLoading(false))
+            setCreatorFAQs(creatorFAQ);
+            setProFAQs(proFAQ)
+        }).catch((error) => {
+            dispatch(setLoading(false))
+            console.error(JSON.stringify(error));
+        })
+    }
     return (
         <SafeAreaView>
             <StatusBar
@@ -45,99 +55,65 @@ const FAQScreen = () => {
             <ScrollView>
                 <View style={[GlobalStyle.container, { marginBottom: 50 }]}>
                     {selectedIndex === 0 ?
-                        <View>
-                            <View style={Style.cardContainer}>
-                                <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Creator</Text>
-                                <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
-                                        Tap the mic and speak what you need help with (or tap the box below to type).
-                                    </Text>
-                                </View>
-                            </View>
-                            <View style={Style.cardContainer}>
-                                <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Creating a Gig</Text>
-                                <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
-                                        Tap the mic and speak what you need help with (or tap the box below to type).
-                                    </Text>
-                                </View>
-                            </View>
-                            <View style={Style.cardContainer}>
-                                <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Evaluating Pros</Text>
-                                <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
-                                        Tap the mic and speak what you need help with (or tap the box below to type).  Gigwave helps match you with local Pros who
-                                    </Text>
-                                </View>
-                            </View>
-                            <View style={Style.cardContainer}>
-                                <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Paying Pros</Text>
-                                <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
-                                        Tap the mic and speak what you need help with (or tap the box below to type).  Gigwave helps match you with local Pros who
-                                    </Text>
-                                </View>
-                            </View>
-                            <View style={Style.cardContainer}>
-                                <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Free vs Paid</Text>
-                                <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
-                                        Tap the mic and speak what you need help with (or tap the box below to type).  Gigwave helps match you with local Pros who
-                                    </Text>
-                                </View>
-                            </View>
+                        <>
+                            {creatorFAQs.length > 0 ?
+                                <>
+                                    {creatorFAQs.map((item: any, index) => (
+                                        <View key={index}>
+                                            <View style={Style.cardContainer}>
+                                                <Text style={[GlobalStyle.blackColor, Style.commanFont]}>{item?.question}</Text>
+                                                <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
+                                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
+                                                        {item?.answer}
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                        </View>
+                                    ))}
 
-                        </View> :
-                        <View>
-                            <View style={Style.cardContainer}>
-                                <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Pro</Text>
-                                <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
-                                        Tap the mic and speak what you need help with (or tap the box below to type).
-                                    </Text>
+                                </> :
+                                <View>
+                                    <View style={Style.cardContainer}>
+                                        {/* <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Creator</Text> */}
+                                        <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
+                                            <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
+                                                No Data Found.
+                                            </Text>
+                                        </View>
+                                    </View>
                                 </View>
-                            </View>
-                            <View style={Style.cardContainer}>
-                                <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Searching Gigs</Text>
-                                <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
-                                        Tap the mic and speak what you need help with (or tap the box below to type).
-                                    </Text>
+                            }
+                        </>
+                        :
+                        <>
+                            {proFAQs.length > 0 ?
+                                <>
+                                    {proFAQs.map((item: any, index) => (
+                                        <View key={index}>
+                                            <View style={Style.cardContainer}>
+                                                <Text style={[GlobalStyle.blackColor, Style.commanFont]}>{item?.question}</Text>
+                                                <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
+                                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
+                                                        {item?.answer}
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                        </View>
+                                    ))}
+
+                                </> :
+                                <View>
+                                    <View style={Style.cardContainer}>
+                                        {/* <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Creator</Text> */}
+                                        <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
+                                            <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
+                                                No Data Found.
+                                            </Text>
+                                        </View>
+                                    </View>
                                 </View>
-                            </View>
-                            <View style={Style.cardContainer}>
-                                <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Paid vs Free</Text>
-                                <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
-                                        Tap the mic and speak what you need help with (or tap the box below to type).  Gigwave helps match you with local Pros who
-                                    </Text>
-                                </View>
-                            </View>
-                            <View style={Style.cardContainer}>
-                                <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Paying Pros</Text>
-                                <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
-                                        Tap the mic and speak what you need help with (or tap the box below to type).  Gigwave helps match you with local Pros who
-                                    </Text>
-                                </View>
-                            </View>
-                            <View style={Style.cardContainer}>
-                                <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Benefits of Premium & Background Check</Text>
-                                <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
-                                        Tap the mic and speak what you need help with (or tap the box below to type).  Gigwave helps match you with local Pros who
-                                    </Text>
-                                </View>
-                            </View>
-                            <View style={[Style.cardContainer, { marginBottom: 20 }]}>
-                                <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Getting Paid</Text>
-                                <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
-                                        Tap the mic and speak what you need help with (or tap the box below to type).  Gigwave helps match you with local Pros who
-                                    </Text>
-                                </View>
-                            </View>
-                        </View>
+                            }
+                        </>
                     }
                 </View>
             </ScrollView>

@@ -54,7 +54,7 @@ function App(): JSX.Element {
     <SafeAreaView style={{ flex: 1 }}>
       {isLoading &&
         <View style={[styles.container, styles.horizontal]}>
-          <ActivityIndicator size={'large'} hidesWhenStopped={isLoading} />
+          <ActivityIndicator size={'large'}  />
         </View>
       }
       <NavigationContainer theme={DefaultTheme}>
