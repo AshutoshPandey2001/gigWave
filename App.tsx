@@ -35,9 +35,9 @@ function App(): JSX.Element {
   const { isLoading } = useSelector((state: RootState) => state.isLoading)
   const [isLoggedIn, setIsLogged] = useState(false);
   const dispatch = useDispatch();
-
   useEffect(() => {
     if (user?.user) {
+      // console.log('user info', user.user);
       setIsLogged(true)
     }
   }, [user])

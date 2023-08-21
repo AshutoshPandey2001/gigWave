@@ -1,17 +1,35 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import userReducer from './action/Auth/authAction'
 import userTypeReducer from './action/User/userTypeSlice'
 import uiReducer from './action/General/GeneralSlice'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import storage from 'redux-persist/lib/storage'
+import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE, persistReducer } from 'redux-persist';
+const rootReducer = combineReducers({
+  firstToken: userReducer,
+  user: userReducer,
+  userType: userTypeReducer,
+  isListView: userTypeReducer,
+  isCreateButton: userTypeReducer,
+  isLoading: uiReducer  // Add other slice reducers here
+});
 
+const persistConfig = {
+  key: 'root', // key for AsyncStorage
+  storage: AsyncStorage,
+  whitelist: ['user'],
+
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 export const store = configureStore({
-  reducer: {
-    firstToken:userReducer,
-    user: userReducer,
-    userType: userTypeReducer,
-    isListView: userTypeReducer,
-    isCreateButton:userTypeReducer,
-    isLoading:uiReducer
-  }
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 })
 
 export type RootState = ReturnType<typeof store.getState>

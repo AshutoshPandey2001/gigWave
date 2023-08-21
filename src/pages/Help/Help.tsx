@@ -15,10 +15,10 @@ const HelpScreen = ({ route, navigation }: any) => {
         <SafeAreaView>
             <ScrollView>
                 <View style={[GlobalStyle.container, { marginTop: 0 }]}>
-                   
+
                     <Text style={[GlobalStyle.blackColor, Style.commanmargin]}>Gig Need Help For</Text>
                     {route.params &&
-                        <Pressable onPress={() => navigation.navigate('View-gig')}>
+                        <Pressable onPress={() => navigation.navigate('View-gig', route.params)}>
 
                             <View style={[GlobalStyle.card, GlobalStyle.shadowProp, Style.localCardStyle]}>
                                 <View>

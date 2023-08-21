@@ -1,11 +1,27 @@
 import { View, Text, SafeAreaView, StatusBar, StyleSheet, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import { GlobalStyle } from '../../globalStyle';
+import { useSelector } from 'react-redux';
+import { getAllFaq } from '../../services/faqService/faqService';
+import { RootState } from '../../redux/store';
 
 
 const FAQScreen = () => {
     const [selectedIndex, SetSelectedIndex] = useState(0);
+    const firsToken = useSelector((state: RootState) => state.firstToken.firstToken);
+
+    useEffect(() => {
+        // getAllFaq(firsToken).then((res) => {
+        //     // res.map((item: any) => item.image = require('../../assets/images/list1.png'))
+        //     console.log('all faqs', res);
+
+
+        // }).catch((error) => {
+        //     console.error(JSON.stringify(error));
+        // })
+    }, [])
+
     return (
         <SafeAreaView>
             <StatusBar

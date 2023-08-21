@@ -32,3 +32,19 @@ export const getGigByUser = async (user_id: string, token: any): Promise<any> =>
         throw error; // Rethrow the error to be caught by the caller
     }
 }
+
+export const getGigByGig_id = async (gig_id: string, token: any): Promise<any> => {
+    try {
+        const response = await axios({
+            method: 'get',
+            url: `${API_BASE_URL}/gig/${gig_id}`,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data; // Return the response data
+    } catch (error) {
+        throw error; // Rethrow the error to be caught by the caller
+    }
+}

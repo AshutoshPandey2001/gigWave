@@ -7,7 +7,7 @@ import { RootState } from '../../redux/store'
 
 const ViewGigScreen = ({ route, navigation }: any) => {
     const { userType }: any = useSelector((state: RootState) => state.userType)
-    console.log(route.params);
+    console.log('routes parms', route.params);
     return (
         <SafeAreaView>
             <ScrollView>
@@ -22,8 +22,8 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                         <View style={{ display: 'flex', alignItems: 'center' }}>
                             <Image source={require('../../assets/images/baby.png')} style={{ position: 'absolute', zIndex: 999, top: 0 }} />
                             <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { marginTop: 90, paddingTop: 50, display: 'flex', justifyContent: 'center', alignItems: 'center' }]}>
-                                <Text style={[GlobalStyle.blackColor, { fontWeight: 'bold' }]}>Part-time Childcare</Text>
-                                <Text>San Francisco, CA</Text>
+                                <Text style={[GlobalStyle.blackColor, { fontWeight: 'bold' }]}>{route.params.title ? route.params?.title : 'Part-time Childcare'}</Text>
+                                <Text>{route.params.address ? route.params?.address : 'San Francisco, CA'}</Text>
                             </View>
                         </View>
                         {userType === "PRO" ? <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: -15 }}>
@@ -51,7 +51,8 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                         <Text style={[GlobalStyle.blackColor, style.headFont]}>Gig profile</Text>
                         <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
                             <Text style={[GlobalStyle.blackColor]}>
-                                Clean the house, cook and other various household tasks.
+                                {route.params.summary ? route.params?.summary : 'Clean the house, cook and other various household tasks'}
+
                             </Text>
                         </View>
                     </View>
@@ -62,10 +63,12 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                         </View>
                         <View style={[GlobalStyle.card, GlobalStyle.shadowProp, style.space]}>
                             <Text style={[GlobalStyle.blackColor]}>
-                                Paid
+                                {route.params.gig_type ? route.params?.gig_type : 'Paid'}
                             </Text>
                             <Text style={[GlobalStyle.blackColor]}>
-                                $100
+                                ${route.params.budget ? route.params?.budget : '100'}
+
+                                {/* $100 */}
                             </Text>
                         </View>
                     </View>
@@ -73,7 +76,8 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                         <Text style={[GlobalStyle.blackColor, style.headFont]}>Posted On</Text>
                         <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
                             <Text style={[GlobalStyle.blackColor]}>
-                                10/12/2023
+                                {/* 10/12/2023 */}
+                                {route.params.create_date ? route.params?.create_date : '10/12/2023'}
                             </Text>
                         </View>
                     </View>

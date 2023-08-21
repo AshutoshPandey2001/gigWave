@@ -31,6 +31,8 @@ const HomeScreen = ({ navigation }: any) => {
     dispatch(setLoading(true))
     getGigByUser(user.user_id, firstToken).then((res) => {
       res.map((item: any) => item.image = require('../../assets/images/list1.png'))
+      console.log('all gig this user', res);
+
       setLists(res)
       dispatch(setLoading(false))
     }).catch((error) => {
@@ -66,7 +68,7 @@ const HomeScreen = ({ navigation }: any) => {
             }]}
             tintColor='#05E3D5'
             activeFontStyle={{ color: '#fff', fontSize: 20 }}
-            fontStyle={{ color: '#000', fontSize: heightY *0.024 }}
+            fontStyle={{ color: '#000', fontSize: heightY * 0.024 }}
           />
         </View>
         <ScrollView>
