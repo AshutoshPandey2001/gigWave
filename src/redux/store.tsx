@@ -1,10 +1,9 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import userReducer from './action/Auth/authAction'
-import userTypeReducer from './action/User/userTypeSlice'
-import uiReducer from './action/General/GeneralSlice'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import storage from 'redux-persist/lib/storage'
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE, persistReducer } from 'redux-persist';
+import userReducer from './action/Auth/authAction';
+import uiReducer from './action/General/GeneralSlice';
+import userTypeReducer from './action/User/userTypeSlice';
 const rootReducer = combineReducers({
   firstToken: userReducer,
   user: userReducer,
@@ -18,7 +17,6 @@ const persistConfig = {
   key: 'root', // key for AsyncStorage
   storage: AsyncStorage,
   whitelist: ['user'],
-
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
