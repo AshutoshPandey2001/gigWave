@@ -25,15 +25,24 @@ const HomeScreen = ({ navigation }: any) => {
       getList();
     else
       getProList()
-  }, [userType])
+  }, [userType, selectedIndex])
 
   const getList = () => {
     dispatch(setLoading(true))
+    console.log('user.user_id', user.user_id);
+
     getGigByUser(user.user_id, firstToken).then((res) => {
       res.map((item: any) => item.image = require('../../assets/images/list1.png'))
+      if (selectedIndex === 0) {
+        let activegig = res.filter((item: any) => item.status === "active")
+        setLists(activegig)
+
+      } else {
+        let inactivgig = res.filter((item: any) => item.status === "inactive")
+        setLists(inactivgig)
+      }
       console.log('all gig this user', res);
 
-      setLists(res)
       dispatch(setLoading(false))
     }).catch((error) => {
       console.error(JSON.stringify(error));

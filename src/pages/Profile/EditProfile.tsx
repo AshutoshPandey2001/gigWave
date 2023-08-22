@@ -10,11 +10,24 @@ import { updateUsersDetails } from '../../services/authServices/authServices'
 import { getUserByUserID } from '../../services/userService/userServices'
 import { setUser } from '../../redux/action/Auth/authAction'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
+import { getProdetailsbyuserid, updateProUsersDetails } from '../../services/proUserService/proUserService'
+
+interface InitialFormValues {
+    user_id: string,
+    fname: string,
+    lname: string,
+    email: string,
+    phone: string,
+    address: string,
+    company: string,
+}
 const EditProfileScreen = () => {
     const dispatch = useDispatch();
     const user: any = useSelector((state: RootState) => state.user.user);
     const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
-    const [initialFormValues, setInitialFormValues] = useState({
+    const [prouserData, setProuserData] = useState<any>()
+
+    const [initialFormValues, setInitialFormValues] = useState<InitialFormValues>({
         user_id: user.user_id ? user.user_id : '',
         fname: user.fname ? user.fname : '',
         lname: user.lname ? user.lname : '',
@@ -38,14 +51,37 @@ const EditProfileScreen = () => {
 
     useEffect(() => {
         getUserByID()
+
     }, []);
+
+    const formik = useFormik<InitialFormValues>({
+        initialValues: initialFormValues,
+        validationSchema: Schema,
+        onSubmit: ((values: any) => {
+            updateProfile(values)
+        }),
+    });
+    const { handleChange, handleBlur, handleSubmit, values, errors, isValid, touched, setFieldValue } = formik
+
+    console.log('values', values);
 
     const getUserByID = async () => {
         await dispatch(setLoading(true));
         if (user.is_pro) {
-
+            getProdetailsbyuserid(user.user_id, firstToken).then((res) => {
+                console.log(res, 'pro user details', res.company)
+                setProuserData(res)
+                setFieldValue('company', res.company)
+                //   navigation.navigate('Home')
+                dispatch(setLoading(false));
+            }).catch((e) => {
+                console.log('error', JSON.stringify(e));
+                dispatch(setLoading(false))
+            })
         } else {
             getUserByUserID(user.user_id, firstToken).then((response) => {
+                console.log('res', response);
+
                 dispatch(setLoading(false))
                 dispatch(setUser(response))
             })
@@ -53,6 +89,44 @@ const EditProfileScreen = () => {
     }
     const closeModel = () => {
         setModalVisible(false)
+    }
+
+    const updateProfile = async (values: any) => {
+        // await dispatch(setLoading(true));
+        // return new Promise((resolve, reject) => {
+        let provalue = {
+            "company": values.company,
+            "user_id": prouserData?.user_id,
+            "raw_skills_text": prouserData.raw_skills_text,
+            "payments": prouserData.payments,
+            "interest_gig_type": prouserData.interest_gig_type,
+        }
+        dispatch(setLoading(true))
+        console.log('i am updating pro values', provalue);
+        if (user.is_pro) {
+
+            updateProUsersDetails(provalue, firstToken).then((res) => {
+                console.log(res, 'pro user details', res.company)
+                dispatch(setLoading(false));
+            }).catch((e) => {
+                console.log('error', JSON.stringify(e));
+                dispatch(setLoading(false))
+            })
+        }
+
+        updateUsersDetails(values, firstToken).then((response) => {
+            console.log('res', response);
+
+            dispatch(setLoading(false))
+            dispatch(setUser(response))
+
+        }).catch((e) => {
+            console.log('error', JSON.stringify(e));
+            dispatch(setLoading(false))
+        })
+
+        // })
+
     }
     return (
         <SafeAreaView>
@@ -66,132 +140,122 @@ const EditProfileScreen = () => {
                             <Text style={styles.editText}>Upload Photo </Text>
                         </Pressable>
                     </View>
-                    <Formik
+                    {/* <Formik
                         initialValues={initialFormValues}
                         validationSchema={Schema}
-                        onSubmit={values => {
-                            dispatch(setLoading(true))
-                            updateUsersDetails(values, firstToken).then((res) => {
-                                dispatch(setLoading(false))
-                                dispatch(setUser(res))
-                            }).catch((e) => {
-                                dispatch(setLoading(false))
-                                console.log('error', e)
-                            }
-                            )
-                        }}
+                        onSubmit={values => updateProfile(values)}
                     >
-                        {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched, setFieldValue }) => (
-                            <>
-                                <View style={styles.cardContainer}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>First</Text>
-                                    <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
-                                        <TextInput style={{ flex: 1, fontSize: 16 }}
-                                            onChangeText={handleChange('fname')}
-                                            onBlur={() => { handleBlur('fname') }}
-                                            value={values.fname}
-                                            placeholder='First Name'
-                                        />
+                        {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched, setFieldValue }) => ( */}
+                    <>
+                        <View style={styles.cardContainer}>
+                            <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>First</Text>
+                            <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
+                                <TextInput style={{ flex: 1, fontSize: 16 }}
+                                    onChangeText={handleChange('fname')}
+                                    onBlur={() => { handleBlur('fname') }}
+                                    value={values.fname}
+                                    placeholder='First Name'
+                                />
 
 
-                                    </View>
-                                    {errors.fname && touched.fname &&
-                                        <Text style={GlobalStyle.errorMsg}>{errors.fname}</Text>
-                                    }
-                                </View>
-                                <View style={styles.cardContainer}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Last</Text>
-                                    <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
-                                        <TextInput style={{ flex: 1, fontSize: 16 }}
-                                            onChangeText={handleChange('lname')}
-                                            onBlur={() => { handleBlur('lname') }}
-                                            value={values.lname}
-                                            placeholder='Last Name'
-                                        />
-                                    </View>
-                                    {errors.lname && touched.lname &&
-                                        <Text style={GlobalStyle.errorMsg}>{errors.lname}</Text>
-                                    }
-                                </View>
-                                <View style={styles.cardContainer}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Phone</Text>
-                                    <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
-                                        <TextInput style={{ flex: 1, fontSize: 16 }}
-                                            onChangeText={handleChange('phone')}
-                                            onBlur={() => { handleBlur('phone') }}
-                                            value={values.phone}
-                                            keyboardType='phone-pad'
-                                            placeholder='Phone'
-                                            maxLength={10}
-                                            editable={false}
-                                        />
-                                    </View>
-                                    {errors.phone && touched.phone &&
-                                        <Text style={GlobalStyle.errorMsg}>{errors.phone}</Text>
-                                    }
-                                </View>
-                                <View style={styles.cardContainer}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Address</Text>
-                                    <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0, alignItems: 'center', justifyContent: 'center' }]}>
-                                        {
-                                            isModalVisible &&
-                                            <LocationSearch
-                                                placeholder="Address"
-                                                isModalVisible={isModalVisible}
-                                                notifyChange={location => {
-                                                    setModalVisible(false);
-                                                    setFieldValue('address', location.description)
-                                                }}
-                                                closeModel={closeModel}
-                                            />
-                                        }
-                                        {values.address ?
-                                            <Text style={{ color: '#000', fontSize: 16, paddingTop: 13, width: '100%', height: 50, }} onPress={() => setModalVisible(true)}>{values.address ? values.address : ''}</Text>
-                                            :
-                                            <Text style={{ color: '#a9a9a9', fontSize: 16, paddingTop: 13, width: '100%', height: 50, }} onPress={() => setModalVisible(true)}>{'Address'}</Text>
-                                        }
-                                    </View>
-                                    {errors.address && touched.address &&
-                                        <Text style={GlobalStyle.errorMsg}>{errors.address}</Text>
-                                    }
-                                </View>
-                                <View style={styles.cardContainer}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Email</Text>
-                                    <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
-                                        <TextInput style={{ flex: 1, fontSize: 16 }}
-                                            onChangeText={handleChange('email')}
-                                            onBlur={() => { handleBlur('email') }}
-                                            value={values.email}
-                                            keyboardType='email-address'
-                                            placeholder='Email'
-                                            editable={false}
-                                        />
-                                    </View>
-                                    {errors.email && touched.email &&
-                                        <Text style={GlobalStyle.errorMsg}>{errors.email}</Text>
-                                    }
-                                </View>
-                                {user?.is_Pro && <View style={styles.cardContainer}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Company</Text>
-                                    <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
-                                        <TextInput style={{ flex: 1, fontSize: 16 }}
-                                            onChangeText={handleChange('company')}
-                                            onBlur={() => { handleBlur('company') }}
-                                            value={values.company}
-                                            placeholder='Company'
+                            </View>
+                            {errors.fname && touched.fname &&
+                                <Text style={GlobalStyle.errorMsg}>{errors.fname}</Text>
+                            }
+                        </View>
+                        <View style={styles.cardContainer}>
+                            <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Last</Text>
+                            <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
+                                <TextInput style={{ flex: 1, fontSize: 16 }}
+                                    onChangeText={handleChange('lname')}
+                                    onBlur={() => { handleBlur('lname') }}
+                                    value={values.lname}
+                                    placeholder='Last Name'
+                                />
+                            </View>
+                            {errors.lname && touched.lname &&
+                                <Text style={GlobalStyle.errorMsg}>{errors.lname}</Text>
+                            }
+                        </View>
+                        <View style={styles.cardContainer}>
+                            <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Phone</Text>
+                            <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
+                                <TextInput style={{ flex: 1, fontSize: 16 }}
+                                    onChangeText={handleChange('phone')}
+                                    onBlur={() => { handleBlur('phone') }}
+                                    value={values.phone}
+                                    keyboardType='phone-pad'
+                                    placeholder='Phone'
+                                    maxLength={10}
+                                    editable={false}
+                                />
+                            </View>
+                            {errors.phone && touched.phone &&
+                                <Text style={GlobalStyle.errorMsg}>{errors.phone}</Text>
+                            }
+                        </View>
+                        <View style={styles.cardContainer}>
+                            <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Address</Text>
+                            <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0, alignItems: 'center', justifyContent: 'center' }]}>
+                                {
+                                    isModalVisible &&
+                                    <LocationSearch
+                                        placeholder="Address"
+                                        isModalVisible={isModalVisible}
+                                        notifyChange={location => {
+                                            setModalVisible(false);
+                                            setFieldValue('address', location.description)
+                                        }}
+                                        closeModel={closeModel}
+                                    />
+                                }
+                                {values.address ?
+                                    <Text style={{ color: '#000', fontSize: 16, paddingTop: 13, width: '100%', height: 50, }} onPress={() => setModalVisible(true)}>{values.address ? values.address : ''}</Text>
+                                    :
+                                    <Text style={{ color: '#a9a9a9', fontSize: 16, paddingTop: 13, width: '100%', height: 50, }} onPress={() => setModalVisible(true)}>{'Address'}</Text>
+                                }
+                            </View>
+                            {errors.address && touched.address &&
+                                <Text style={GlobalStyle.errorMsg}>{errors.address}</Text>
+                            }
+                        </View>
+                        <View style={styles.cardContainer}>
+                            <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Email</Text>
+                            <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
+                                <TextInput style={{ flex: 1, fontSize: 16 }}
+                                    onChangeText={handleChange('email')}
+                                    onBlur={() => { handleBlur('email') }}
+                                    value={values.email}
+                                    keyboardType='email-address'
+                                    placeholder='Email'
+                                    editable={false}
+                                />
+                            </View>
+                            {errors.email && touched.email &&
+                                <Text style={GlobalStyle.errorMsg}>{errors.email}</Text>
+                            }
+                        </View>
+                        {user?.is_pro && <View style={styles.cardContainer}>
+                            <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Company</Text>
+                            <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
+                                <TextInput style={{ flex: 1, fontSize: 16 }}
+                                    onChangeText={handleChange('company')}
+                                    onBlur={() => { handleBlur('company') }}
+                                    value={values.company}
+                                    placeholder='Company'
 
-                                        />
-                                    </View>
-                                    {errors.company && touched.company &&
-                                        <Text style={GlobalStyle.errorMsg}>{errors.company}</Text>
-                                    }
-                                </View>}
-                                <Pressable style={GlobalStyle.button} onPress={() => handleSubmit()}>
-                                    <Text style={GlobalStyle.btntext}>Update</Text>
-                                </Pressable>
-                            </>
-                        )}
-                    </Formik>
+                                />
+                            </View>
+                            {errors.company && touched.company &&
+                                <Text style={GlobalStyle.errorMsg}>{errors.company}</Text>
+                            }
+                        </View>}
+                        <Pressable style={GlobalStyle.button} onPress={() => handleSubmit()}>
+                            <Text style={GlobalStyle.btntext}>Update</Text>
+                        </Pressable>
+                    </>
+                    {/* )}
+                     </Formik> */}
                 </View>
 
             </ScrollView>

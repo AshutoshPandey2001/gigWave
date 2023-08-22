@@ -1,13 +1,31 @@
 import React from 'react'
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { GlobalStyle } from '../../globalStyle'
 import { RootState } from '../../redux/store'
+import { updateGig } from '../../services/gigService/gigService'
+import { setLoading } from '../../redux/action/General/GeneralSlice'
 
 const ViewGigScreen = ({ route, navigation }: any) => {
     const { userType }: any = useSelector((state: RootState) => state.userType)
     console.log('routes parms', route.params);
+    const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
+    const dispatch = useDispatch()
+    const closeGig = () => {
+        dispatch(setLoading(true));
+
+        updateGig({ gig_id: route.params.gig_id, status: "inactive" }, firstToken)
+            .then((res) => {
+                console.log(res, 'response update gig');
+                navigation.navigate('Home');
+                dispatch(setLoading(false));
+            })
+            .catch((e) => {
+                console.log('error', JSON.stringify(e));
+                dispatch(setLoading(false));
+            });
+    };
     return (
         <SafeAreaView>
             <ScrollView>
@@ -41,7 +59,7 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                                 </Pressable>
                             }
                         </View> : <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: -15 }}>
-                            <Pressable style={[GlobalStyle.button, { width: '90%', backgroundColor: '#000', marginRight: 10 }]}>
+                            <Pressable onPress={() => closeGig()} style={[GlobalStyle.button, { width: '90%', backgroundColor: '#000', marginRight: 10 }]}>
                                 <Text style={[GlobalStyle.btntext, { fontWeight: 'bold', fontSize: 18 }]}>Close Gig</Text>
                             </Pressable>
                         </View>}

@@ -20,8 +20,14 @@ const RegisterScreen = ({ navigation }: any) => {
     const { mobileNumber } = route.params as { mobileNumber: string };
     const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
     const registerSchema = yup.object().shape({
-        fname: yup.string().required('First Name is required'),
-        lname: yup.string().required('Last Name is required'),
+        fname: yup.string().required('First Name is required')
+            .min(2, 'First name must be at least 2 characters long')
+            .max(20, 'First name must not exceed 20 characters')
+            .matches(/^[a-zA-Z0-9\s]*$/, 'Invalid character in first name'),
+        lname: yup.string().required('Last Name is required')
+            .min(2, 'First name must be at least 2 characters long')
+            .max(20, 'First name must not exceed 20 characters')
+            .matches(/^[a-zA-Z0-9\s]*$/, 'Invalid character in first name'),
         email: yup.string().email("Please enter valid email")
             .required('Email is required').matches(/@[^.]*\./, "Please enter valid email"),
         address: yup.string().required('Address is required'),

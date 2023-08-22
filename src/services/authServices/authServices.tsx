@@ -118,3 +118,4 @@ export const checkUser = async (email: string, phone: string, token: any): Promi
         return error; // Rethrow the error to be caught by the caller
     }
 }
+

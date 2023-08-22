@@ -26,6 +26,8 @@ const LoginScreen = ({ navigation }: any) => {
 
   const loginCodeSchema = yup.object().shape({
     code: yup.string().required('Code is required')
+      .matches(/^\d{6}$/, 'OTP code must be six digits')
+
   })
   const onLogin = async (values: any) => {
     // console.log('values', values);
