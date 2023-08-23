@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
 import { createProUsers, getProdetailsbyuserid, updateProUsersDetails } from '../../services/proUserService/proUserService'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
+import { Toast } from 'react-native-toast-message/lib/src/Toast'
 
 
 const ViewProfileScreen = ({ navigation }: any) => {
@@ -54,6 +55,11 @@ const ViewProfileScreen = ({ navigation }: any) => {
                     dispatch(setLoading(false));
                     resolve(true)
                 }).catch((e) => {
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Error',
+                        text2: e,
+                    });
                     console.log('error', JSON.stringify(e));
                     dispatch(setLoading(false))
                 })
@@ -64,6 +70,11 @@ const ViewProfileScreen = ({ navigation }: any) => {
                     dispatch(setLoading(false));
                     resolve(true)
                 }).catch((e) => {
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Error',
+                        text2: e,
+                    });
                     console.log('error', JSON.stringify(e));
                     dispatch(setLoading(false))
                 })

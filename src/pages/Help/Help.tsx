@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
 import { matchProuserwithgig_id, updateGig } from '../../services/gigService/gigService'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
+import { Toast } from 'react-native-toast-message/lib/src/Toast'
 
 const HelpScreen = ({ route, navigation }: any) => {
     const [matchedprouserList, setmatchedprouserList] = useState([])
@@ -20,6 +21,11 @@ const HelpScreen = ({ route, navigation }: any) => {
 
             dispatch(setLoading(false))
         }).catch((error) => {
+            Toast.show({
+                type: 'error',
+                text1: 'Error',
+                text2: error.message,
+            });
             console.error(JSON.stringify(error));
             dispatch(setLoading(false))
         })
@@ -30,10 +36,20 @@ const HelpScreen = ({ route, navigation }: any) => {
         updateGig({ gig_id: route.params.gig_id, status: "inactive" }, firstToken)
             .then((res) => {
                 console.log(res, 'response update gig');
-                navigation.navigate('Home');
+                Toast.show({
+                    type: 'success',
+                    text1: 'Success',
+                    text2: 'Gig Closed Scuuessfully 👋',
+                });
+                navigation.navigate('Home')
                 dispatch(setLoading(false));
             })
             .catch((e) => {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Error',
+                    text2: e.message,
+                });
                 console.log('error', JSON.stringify(e));
                 dispatch(setLoading(false));
             });

@@ -11,10 +11,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
 import { setUser } from '../../redux/action/Auth/authAction'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
+import { Toast } from 'react-native-toast-message/lib/src/Toast'
 
 const LoginScreen = ({ navigation }: any) => {
   const dispatch = useDispatch();
-
   const [isOtpsent, setOtpSend] = useState(false);
   const [mobile, setMobile] = useState("");
   const loginPhoneSchema = yup.object().shape({
@@ -23,7 +23,6 @@ const LoginScreen = ({ navigation }: any) => {
       .max(10, 'Phone number must be 10 digit number')
   })
   const firsToken = useSelector((state: RootState) => state.firstToken.firstToken);
-
   const loginCodeSchema = yup.object().shape({
     code: yup.string().required('Code is required')
       .matches(/^\d{6}$/, 'OTP code must be six digits')
@@ -36,10 +35,20 @@ const LoginScreen = ({ navigation }: any) => {
       const response = await getOtp(values.phone, firsToken);
       console.log('Response:', response);
       if (response) {
+        Toast.show({
+          type: 'success',
+          text1: 'Success',
+          text2: 'OTP sent Scuuessfully 👋',
+        });
         await dispatch(setLoading(false))
         setOtpSend(true)
       }
-    } catch (error) {
+    } catch (error: any) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: error.message,
+      });
       await dispatch(setLoading(false))
       console.error('Error:', error);
     }
@@ -52,12 +61,27 @@ const LoginScreen = ({ navigation }: any) => {
       console.log('verify otp Response:', response.status, response);
       await dispatch(setLoading(false))
       if (response.user && response.user?.email && response.user?.phone) {
+        Toast.show({
+          type: 'success',
+          text1: 'Success',
+          text2: 'OTP Verification Scuuessfully Completed👋',
+        });
         dispatch(setUser(response.user))
       } else {
         setOtpSend(false)
+        Toast.show({
+          type: 'success',
+          text1: 'Success',
+          text2: 'OTP Verification Scuuessfully Completed👋',
+        });
         navigation.navigate('Register', { mobileNumber: mobile })
       }
-    } catch (error) {
+    } catch (error: any) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: error.message,
+      });
       await dispatch(setLoading(false))
       // navigation.navigate('Register', { mobileNumber: mobile })
       console.error('Error:', error);

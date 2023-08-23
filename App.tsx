@@ -25,11 +25,10 @@ import { LogBox } from 'react-native';
 import { getLoginToken } from './src/services/authServices/authServices';
 import { setFirstToken } from './src/redux/action/Auth/authAction';
 import { setLoading } from './src/redux/action/General/GeneralSlice';
-
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 function App(): JSX.Element {
-
   const Stack = createNativeStackNavigator();
   const user = useSelector((state: RootState) => state.user)
   const { isLoading } = useSelector((state: RootState) => state.isLoading)
@@ -66,6 +65,7 @@ function App(): JSX.Element {
           </Stack.Navigator>
         }
       </NavigationContainer>
+      <Toast />
     </SafeAreaView>
   );
 }

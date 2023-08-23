@@ -85,3 +85,20 @@ export const matchProuserwithgig_id = async (gig_id: any, token: any): Promise<a
         throw error; // Rethrow the error to be caught by the caller
     }
 }
+
+export const getGigThumbnail = async (gig_id: any, token: any): Promise<any> => {
+
+    try {
+        const response = await axios({
+            method: 'get',
+            url: `${API_BASE_URL}/gig/image/${gig_id}`,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data; // Return the response data
+    } catch (error) {
+        throw error; // Rethrow the error to be caught by the caller
+    }
+}

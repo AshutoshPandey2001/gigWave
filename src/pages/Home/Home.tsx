@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { GlobalStyle } from '../../globalStyle';
 import { RootState } from '../../redux/store';
 import MicIcon from '../../assets/icons/Mic1.svg'
-import { getGigByUser } from '../../services/gigService/gigService';
+import { getGigByUser, getGigThumbnail } from '../../services/gigService/gigService';
 import { setLoading } from '../../redux/action/General/GeneralSlice';
 var heightY = Dimensions.get("window").height;
 
@@ -33,6 +33,13 @@ const HomeScreen = ({ navigation }: any) => {
 
     getGigByUser(user.user_id, firstToken).then((res) => {
       res.map((item: any) => item.image = require('../../assets/images/list1.png'))
+      // res.map((item: any) => item.image = getGigThumbnail(item.gig_id, firstToken).then((res1) => {
+      //   console.log('response of image', res1);
+
+      // }).catch((error) => {
+      //   console.error(JSON.stringify(error));
+      //   dispatch(setLoading(false))
+      // }));
       if (selectedIndex === 0) {
         let activegig = res.filter((item: any) => item.status === "active")
         setLists(activegig)

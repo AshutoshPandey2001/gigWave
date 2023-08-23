@@ -6,6 +6,7 @@ import { GlobalStyle } from '../../globalStyle'
 import { RootState } from '../../redux/store'
 import { updateGig } from '../../services/gigService/gigService'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
+import { Toast } from 'react-native-toast-message/lib/src/Toast'
 
 const ViewGigScreen = ({ route, navigation }: any) => {
     const { userType }: any = useSelector((state: RootState) => state.userType)
@@ -18,10 +19,20 @@ const ViewGigScreen = ({ route, navigation }: any) => {
         updateGig({ gig_id: route.params.gig_id, status: "inactive" }, firstToken)
             .then((res) => {
                 console.log(res, 'response update gig');
+                Toast.show({
+                    type: 'success',
+                    text1: 'Success',
+                    text2: 'Gig Closed Scuuessfully 👋',
+                });
                 navigation.navigate('Home');
                 dispatch(setLoading(false));
             })
             .catch((e) => {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Error',
+                    text2: e.message,
+                });
                 console.log('error', JSON.stringify(e));
                 dispatch(setLoading(false));
             });

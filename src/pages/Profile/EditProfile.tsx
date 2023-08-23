@@ -11,6 +11,7 @@ import { getUserByUserID } from '../../services/userService/userServices'
 import { setUser } from '../../redux/action/Auth/authAction'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
 import { getProdetailsbyuserid, updateProUsersDetails } from '../../services/proUserService/proUserService'
+import { Toast } from 'react-native-toast-message/lib/src/Toast'
 
 interface InitialFormValues {
     user_id: string,
@@ -116,11 +117,20 @@ const EditProfileScreen = () => {
 
         updateUsersDetails(values, firstToken).then((response) => {
             console.log('res', response);
-
+            Toast.show({
+                type: 'success',
+                text1: 'Success',
+                text2: 'Profile Updated Scuuessfully 👋',
+            });
             dispatch(setLoading(false))
             dispatch(setUser(response))
 
         }).catch((e) => {
+            Toast.show({
+                type: 'error',
+                text1: 'Error',
+                text2: e.message,
+            });
             console.log('error', JSON.stringify(e));
             dispatch(setLoading(false))
         })

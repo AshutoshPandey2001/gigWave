@@ -11,6 +11,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
 import { createGig } from '../../services/gigService/gigService'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
+
 const CreategigScreen = ({ navigation }: any) => {
   const user: any = useSelector((state: RootState) => state.user.user);
   const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
@@ -35,15 +37,31 @@ const CreategigScreen = ({ navigation }: any) => {
       dispatch(setLoading(true))
       createGig(gigValue, firstToken).then((res) => {
         console.log(res, 'response creat gig')
+        Toast.show({
+          type: 'success',
+          text1: 'Success',
+          text2: 'Gig Created Scuuessfully 👋',
+
+
+        });
+        // SuccessToast({
+        //   text1: 'Gig Created Scuuessfully',
+        // })
         navigation.navigate('Home')
         dispatch(setLoading(false));
         resolve(true)
       }).catch((e) => {
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: e.message,
+        });
         console.log('error', JSON.stringify(e));
         dispatch(setLoading(false))
       })
     })
   }
+
   const [isRecording, setIsRecording] = useState(false)
   const [isModalVisible, setModalVisible] = useState(false);
 

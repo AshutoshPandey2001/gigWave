@@ -13,6 +13,7 @@ import { GlobalStyle } from '../../globalStyle'
 import { setUser } from '../../redux/action/Auth/authAction'
 import { RootState } from '../../redux/store'
 import { checkUser, createUser } from '../../services/authServices/authServices'
+import { Toast } from 'react-native-toast-message/lib/src/Toast'
 
 const RegisterScreen = ({ navigation }: any) => {
     const dispatch = useDispatch();
@@ -40,9 +41,21 @@ const RegisterScreen = ({ navigation }: any) => {
             console.log('res', response.status)
             if (response.status === 404 || response.status === "404") {
                 createUser({ ...values, phone: mobileNumber }, firstToken).then((response: any) => {
+                    Toast.show({
+                        type: 'success',
+                        text1: 'Success',
+                        text2: 'Registration Scuuessfully Completed👋',
+                    });
                     dispatch(setUser(response))
                     console.log('Create user data Response:', response);
-                }).catch((error) => { console.error("registeration error", JSON.stringify(error)) })
+                }).catch((error) => {
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Error',
+                        text2: error.message,
+                    });
+                    console.error("registeration error", JSON.stringify(error))
+                })
             }
         })
 
