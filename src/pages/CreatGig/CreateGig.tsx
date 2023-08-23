@@ -40,7 +40,7 @@ const CreategigScreen = ({ navigation }: any) => {
         Toast.show({
           type: 'success',
           text1: 'Success',
-          text2: 'Gig Created Scuuessfully 👋',
+          text2: 'Gig Created successfully',
 
 
         });

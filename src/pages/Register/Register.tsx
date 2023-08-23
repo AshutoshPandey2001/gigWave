@@ -44,7 +44,7 @@ const RegisterScreen = ({ navigation }: any) => {
                     Toast.show({
                         type: 'success',
                         text1: 'Success',
-                        text2: 'Registration Scuuessfully Completed👋',
+                        text2: 'Registration Successfully Completed',
                     });
                     dispatch(setUser(response))
                     console.log('Create user data Response:', response);

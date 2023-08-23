@@ -39,7 +39,7 @@ const HelpScreen = ({ route, navigation }: any) => {
                 Toast.show({
                     type: 'success',
                     text1: 'Success',
-                    text2: 'Gig Closed Scuuessfully 👋',
+                    text2: 'Gig Closed Sucessfully',
                 });
                 navigation.navigate('Home')
                 dispatch(setLoading(false));
@@ -112,8 +112,8 @@ const HelpScreen = ({ route, navigation }: any) => {
                                 </Pressable>
                             )
                             : <View style={{ marginTop: 50 }}>
-                                <Text style={{ color: 'red', fontWeight: 'bold', fontSize: 18, textAlign: 'center' }}>
-                                    No matches found for the given gig
+                                <Text style={{  fontWeight: 'bold', fontSize: 18, textAlign: 'center' }}>
+                                    No matches found
                                 </Text>
                             </View>}
                         {/* <Pressable onPress={() => navigation.navigate('Single-pro')}>

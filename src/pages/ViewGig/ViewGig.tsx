@@ -22,7 +22,7 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                 Toast.show({
                     type: 'success',
                     text1: 'Success',
-                    text2: 'Gig Closed Scuuessfully 👋',
+                    text2: 'Gig Closed Successfully',
                 });
                 navigation.navigate('Home');
                 dispatch(setLoading(false));

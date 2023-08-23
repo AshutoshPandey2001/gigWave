@@ -38,7 +38,7 @@ const LoginScreen = ({ navigation }: any) => {
         Toast.show({
           type: 'success',
           text1: 'Success',
-          text2: 'OTP sent Scuuessfully 👋',
+          text2: 'OTP sent successfully 👋',
         });
         await dispatch(setLoading(false))
         setOtpSend(true)
@@ -64,7 +64,7 @@ const LoginScreen = ({ navigation }: any) => {
         Toast.show({
           type: 'success',
           text1: 'Success',
-          text2: 'OTP Verification Scuuessfully Completed👋',
+          text2: 'OTP Verification Successfully Completed',
         });
         dispatch(setUser(response.user))
       } else {
@@ -72,7 +72,7 @@ const LoginScreen = ({ navigation }: any) => {
         Toast.show({
           type: 'success',
           text1: 'Success',
-          text2: 'OTP Verification Scuuessfully Completed👋',
+          text2: 'OTP Verification Successfully Completed',
         });
         navigation.navigate('Register', { mobileNumber: mobile })
       }

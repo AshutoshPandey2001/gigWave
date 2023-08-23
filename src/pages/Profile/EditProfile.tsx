@@ -120,7 +120,7 @@ const EditProfileScreen = () => {
             Toast.show({
                 type: 'success',
                 text1: 'Success',
-                text2: 'Profile Updated Scuuessfully 👋',
+                text2: 'Profile Updated Successfully',
             });
             dispatch(setLoading(false))
             dispatch(setUser(response))
