@@ -12,6 +12,7 @@ import { setUser } from '../../redux/action/Auth/authAction'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
 import { getProdetailsbyuserid, updateProUsersDetails } from '../../services/proUserService/proUserService'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
+import UploadPhotosScreen from '../../components/CamaraRool'
 
 interface InitialFormValues {
     user_id: string,
@@ -49,6 +50,7 @@ const EditProfileScreen = () => {
         company: yup.string(),
     })
     const [isModalVisible, setModalVisible] = useState(false);
+    const [iscamaraModalVisible, setIscamaraModalVisible] = useState(false);
 
     useEffect(() => {
         getUserByID()
@@ -91,7 +93,9 @@ const EditProfileScreen = () => {
     const closeModel = () => {
         setModalVisible(false)
     }
-
+    const closecamaraModel = () => {
+        setIscamaraModalVisible(false)
+    }
     const updateProfile = async (values: any) => {
         // await dispatch(setLoading(true));
         // return new Promise((resolve, reject) => {
@@ -146,9 +150,13 @@ const EditProfileScreen = () => {
                         <View style={[styles.profileImg, { marginRight: 10 }]}>
                             <Image resizeMode='contain' style={styles.profileImg} source={require('../../assets/images/avatar_profile.png')} />
                         </View>
-                        <Pressable onPress={() => console.log('Edit-Profile')}>
+                        <Pressable onPress={() => setIscamaraModalVisible(true)}>
                             <Text style={styles.editText}>Upload Photo </Text>
                         </Pressable>
+                        {
+                            iscamaraModalVisible && <UploadPhotosScreen isVisible={iscamaraModalVisible} onClose={closecamaraModel} />
+
+                        }
                     </View>
                     {/* <Formik
                         initialValues={initialFormValues}
