@@ -4,7 +4,7 @@ import { GlobalStyle } from '../../globalStyle'
 import MicIcon from '../../assets/icons/Mic1.svg'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
-import { createProUsers, getProdetailsbyuserid, updateProUsersDetails } from '../../services/proUserService/proUserService'
+import { backGroundCheck_pro, createProUsers, getProdetailsbyuserid, updateProUsersDetails } from '../../services/proUserService/proUserService'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
 
@@ -14,7 +14,7 @@ const ViewProfileScreen = ({ navigation }: any) => {
     const [skillValue, setSkillValue] = useState("")
     const [backgroundCheck, setBackGroudCheck] = useState(false)
     const [payment, setPayment] = useState(false)
-    const [intrestGigType, setIntrestGigType] = useState('unpaid')
+    const [interestGigType, setInterestGigType] = useState('unpaid')
     const [alreadyProuser, setalreadyprouser] = useState(false)
     const user: any = useSelector((state: RootState) => state.user.user);
     const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
@@ -24,7 +24,7 @@ const ViewProfileScreen = ({ navigation }: any) => {
         getProdetailsbyuserid(user.user_id, firstToken).then((res) => {
             setSkillValue(res.raw_skills_text)
             setPayment(res.payments)
-            setIntrestGigType(res.interest_gig_type)
+            setInterestGigType(res.interest_gig_type)
             setalreadyprouser(true)
             console.log(res, 'pro user details')
             //   navigation.navigate('Home')
@@ -35,9 +35,9 @@ const ViewProfileScreen = ({ navigation }: any) => {
         })
     }, [])
 
-    const updateProprofile = (intrestgigType: any) => {
-        setIntrestGigType(intrestgigType)
-        console.log('calling', intrestGigType);
+    const updateProprofile = (interestgigType: any) => {
+        setInterestGigType(interestgigType)
+        console.log('calling', interestGigType);
 
         return new Promise((resolve, reject) => {
             let provalue = {
@@ -45,7 +45,7 @@ const ViewProfileScreen = ({ navigation }: any) => {
                 "user_id": user.user_id,
                 "raw_skills_text": skillValue,
                 // "payments": false,
-                "interest_gig_type": intrestgigType,
+                "interest_gig_type": interestgigType,
             }
             dispatch(setLoading(true))
             if (alreadyProuser) {
@@ -79,6 +79,16 @@ const ViewProfileScreen = ({ navigation }: any) => {
                     dispatch(setLoading(false))
                 })
             }
+
+        })
+    }
+
+    const backGroundCheck = () => {
+        backGroundCheck_pro(user.user_id, user.email, firstToken).then((res) => {
+            console.log('backGroundCheck', res);
+            setBackGroudCheck(res)
+        }).catch((e) => {
+            console.log(e, 'error');
 
         })
     }
@@ -116,7 +126,7 @@ const ViewProfileScreen = ({ navigation }: any) => {
                             </View>
                         </View>
                         <View style={styles.btnMargin}>
-                            <Pressable style={[GlobalStyle.button, { backgroundColor: '#000' }]} onPress={() => updateProprofile(intrestGigType)}>
+                            <Pressable style={[GlobalStyle.button, { backgroundColor: '#000' }]} onPress={() => updateProprofile(interestGigType)}>
                                 <Text style={GlobalStyle.btntext}>Update Skills</Text>
                             </Pressable>
                         </View>
@@ -126,7 +136,7 @@ const ViewProfileScreen = ({ navigation }: any) => {
                             </Pressable>
                         </View>
                         <View style={styles.btnMargin}>
-                            <Pressable style={[GlobalStyle.button, { backgroundColor: '#000' }]} onPress={() => backgroundCheck ? setBackGroudCheck(false) : setBackGroudCheck(true)}>
+                            <Pressable style={[GlobalStyle.button, { backgroundColor: '#000' }]} onPress={() => backGroundCheck()}>
                                 <Text style={GlobalStyle.btntext}>{backgroundCheck ? 'Remove Background Check' : 'Add Background Check'}</Text>
                             </Pressable>
                         </View>
@@ -141,10 +151,10 @@ const ViewProfileScreen = ({ navigation }: any) => {
                     <View style={styles.cardContainer}>
                         <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Alert</Text>
                         <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { display: 'flex', flexDirection: 'row', alignItems: 'center' }]}>
-                            <Pressable style={[GlobalStyle.button, intrestGigType === 'paid' ? { backgroundColor: 'lightgray' } : GlobalStyle.button, { padding: 0, marginTop: 0, marginRight: 30 }]} onPress={() => updateProprofile('unpaid')}>
+                            <Pressable style={[GlobalStyle.button, interestGigType === 'paid' ? { backgroundColor: 'lightgray' } : GlobalStyle.button, { padding: 0, marginTop: 0, marginRight: 30 }]} onPress={() => updateProprofile('unpaid')}>
                                 <Text style={{ color: '#000', fontWeight: 'bold' }}>Free</Text>
                             </Pressable>
-                            <Pressable style={[GlobalStyle.button, intrestGigType === 'unpaid' ? { backgroundColor: 'lightgray' } : GlobalStyle.button, {
+                            <Pressable style={[GlobalStyle.button, interestGigType === 'unpaid' ? { backgroundColor: 'lightgray' } : GlobalStyle.button, {
                                 padding: 0, marginTop: 0
                             }]} onPress={() => updateProprofile('paid')}>
                                 <Text style={{ color: '#000', fontWeight: 'bold' }}>Paid</Text>

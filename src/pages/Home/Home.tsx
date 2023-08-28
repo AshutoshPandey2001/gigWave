@@ -5,15 +5,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { GlobalStyle } from '../../globalStyle';
 import { RootState } from '../../redux/store';
 import MicIcon from '../../assets/icons/Mic1.svg'
-import { getGigByUser, getGigThumbnail } from '../../services/gigService/gigService';
+import { getGigByGig_id, getGigByUser, getGigThumbnail } from '../../services/gigService/gigService';
 import { setLoading } from '../../redux/action/General/GeneralSlice';
+import { getMatchedGigbyuserid } from '../../services/proUserService/proUserService';
 var heightY = Dimensions.get("window").height;
 
 const HomeScreen = ({ navigation }: any) => {
   const [selectedIndex, SetSelectedIndex] = useState(0);
 
   const [lists, setLists] = useState([])
-  const [proLists, setProLists] = useState([])
+  const [proLists, setProLists] = useState<any[]>([])
   const [skillValue, setSkillValue] = useState("I do clean the house, cook and other various household tasks.  I also play the piano and violin at weddings.")
   const { userType }: any = useSelector((state: RootState) => state.userType)
   const user: any = useSelector((state: RootState) => state.user.user);
@@ -56,15 +57,56 @@ const HomeScreen = ({ navigation }: any) => {
       dispatch(setLoading(false))
     })
   }
-  const getProList = () => {
-    let option = JSON.parse(JSON.stringify([
-      { image: require('../../assets/images/list1.png'), title: 'Help for Dad', msg: 'Experience working with elderly, Housecleaning, Cooking.', paymentStatus: 'Paid', isProList: true },
-      { image: require('../../assets/images/list2.png'), title: 'Move a couch', msg: 'Experience working with elderly, Housecleaning, Cooking.', paymentStatus: 'Unpaid', isProList: false },
-      { image: require('../../assets/images/piano.png'), title: 'Play Piano', msg: 'Seeking  piano player for two hour family reunion', paymentStatus: 'Paid', isProList: true }
-    ]))
-    setProLists(option)
-  }
+  // const getProList = async () => {
+  //   let temp_data: any[] = []
+  //   getMatchedGigbyuserid(user.user_id, firstToken).then((res) => {
+  //     res.map((item: any) => {
+  //       getGigByGig_id(item.gig_id, firstToken).then((gig) => {
+  //         temp_data.push({ ...gig, image: require('../../assets/images/list1.png') })
+  //       }).catch((e) => {
+  //         console.log(e, 'error');
 
+  //       })
+
+  //     })
+  //     console.log('all gig this user', res);
+
+  //     dispatch(setLoading(false))
+  //   }).catch((error) => {
+  //     console.error(JSON.stringify(error));
+  //     dispatch(setLoading(false))
+  //   })
+  //   // let option = JSON.parse(JSON.stringify([
+  //   //   { image: require('../../assets/images/list1.png'), title: 'Help for Dad', msg: 'Experience working with elderly, Housecleaning, Cooking.', paymentStatus: 'Paid', isProList: true },
+  //   //   { image: require('../../assets/images/list2.png'), title: 'Move a couch', msg: 'Experience working with elderly, Housecleaning, Cooking.', paymentStatus: 'Unpaid', isProList: false },
+  //   //   { image: require('../../assets/images/piano.png'), title: 'Play Piano', msg: 'Seeking  piano player for two hour family reunion', paymentStatus: 'Paid', isProList: true }
+  //   // ]))
+  //   setProLists(temp_data)
+  // }
+  const getProList = async () => {
+    try {
+      dispatch(setLoading(true));
+
+      const matchedGigs = await getMatchedGigbyuserid(user.user_id, firstToken);
+      const tempData: any[] = [];
+
+      for (const item of matchedGigs) {
+        try {
+          const gig = await getGigByGig_id(item.gig_id, firstToken);
+          tempData.push({ ...gig, image: require('../../assets/images/list1.png') });
+        } catch (e) {
+          console.log(e, 'error');
+        }
+      }
+
+      console.log('all gig this user', matchedGigs);
+      setProLists(tempData);
+      dispatch(setLoading(false));
+    } catch (error) {
+      console.error(JSON.stringify(error));
+      dispatch(setLoading(false));
+    }
+  }
   const CreatorHome = () => {
     return (
       <>
@@ -179,12 +221,12 @@ const HomeScreen = ({ navigation }: any) => {
                             {item.title}
                           </Text>
                           <Text style={[GlobalStyle.blackColor, Style.message]}>
-                            {item.msg}
+                            {item.summary}
                           </Text>
                         </View>
                         <View style={{ padding: 10 }}>
-                          <Pressable style={{ backgroundColor: item.paymentStatus === 'Paid' ? '#21AF2F' : '#989898', borderRadius: 5, paddingHorizontal: 10, width: 'auto' }}>
-                            <Text style={{ color: '#fff' }}>{item.paymentStatus}</Text>
+                          <Pressable style={{ backgroundColor: item.gig_type === 'paid' ? '#21AF2F' : '#989898', borderRadius: 5, paddingHorizontal: 10, width: 'auto' }}>
+                            <Text style={{ color: '#fff' }}>{item.gig_type}</Text>
                           </Pressable>
                         </View>
                       </Pressable>

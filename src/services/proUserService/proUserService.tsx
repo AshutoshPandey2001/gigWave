@@ -57,3 +57,71 @@ export const getProdetailsbyuserid = async (user_id: string, token: any): Promis
         throw error; // Rethrow the error to be caught by the caller
     }
 }
+
+
+export const getMatchedGigbyuserid = async (user_id: string, token: any): Promise<any> => {
+    try {
+        const response = await axios({
+            method: 'get',
+            url: `${API_BASE_URL}/pro/gigs/${user_id}`,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data; // Return the response data
+    } catch (error) {
+        throw error; // Rethrow the error to be caught by the caller
+    }
+}
+
+export const searchGigbyParameter = async (searchParms: any, token: any): Promise<any> => {
+    try {
+        const response = await axios({
+            method: 'post',
+            url: `${API_BASE_URL}/pro/gig/search`,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            data: searchParms
+        });
+        return response.data; // Return the response data
+    } catch (error) {
+        throw error; // Rethrow the error to be caught by the caller
+    }
+}
+
+export const proInterestgig = async (interestValue: any, token: any): Promise<any> => {
+    try {
+        const response = await axios({
+            method: 'post',
+            url: `${API_BASE_URL}/pro/gig/interest`,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            data: interestValue
+        });
+        return response.data; // Return the response data
+    } catch (error) {
+        throw error; // Rethrow the error to be caught by the caller
+    }
+}
+
+
+export const backGroundCheck_pro = async (user_id: any, email: any, token: any): Promise<any> => {
+    try {
+        const response = await axios({
+            method: 'post',
+            url: `${API_BASE_URL}/pro/request-background-check?user_id=${user_id}&user_email=${email}`,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data; // Return the response data
+    } catch (error) {
+        throw error; // Rethrow the error to be caught by the caller
+    }
+}

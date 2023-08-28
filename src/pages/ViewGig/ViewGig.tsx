@@ -7,9 +7,12 @@ import { RootState } from '../../redux/store'
 import { updateGig } from '../../services/gigService/gigService'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
+import { proInterestgig } from '../../services/proUserService/proUserService'
 
 const ViewGigScreen = ({ route, navigation }: any) => {
     const { userType }: any = useSelector((state: RootState) => state.userType)
+    const user: any = useSelector((state: RootState) => state.user.user);
+
     console.log('routes parms', route.params);
     const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
     const dispatch = useDispatch()
@@ -37,6 +40,28 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                 dispatch(setLoading(false));
             });
     };
+    const gigInterest = () => {
+        dispatch(setLoading(true));
+
+        proInterestgig({
+            "gig_id": route.params.gig_id,
+            "pro_id": user.user_id
+        }, firstToken).then((res) => {
+            console.log('Interest gig response', res);
+            dispatch(setLoading(false));
+
+        }).catch((error) => {
+            Toast.show({
+                type: 'error',
+                text1: 'Error',
+                text2: error.message,
+            });
+            dispatch(setLoading(false));
+
+            console.log(error, 'error');
+
+        })
+    }
     return (
         <SafeAreaView>
             <ScrollView>
@@ -65,7 +90,7 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                                         <Text style={[GlobalStyle.blackColor, { fontWeight: 'bold', fontSize: 16 }]}>Message Creator</Text>
                                     </Pressable>
                                 </> :
-                                <Pressable style={[GlobalStyle.button, { flex: 1, backgroundColor: '#000', margin: 5, paddingHorizontal: 10 }]}>
+                                <Pressable style={[GlobalStyle.button, { flex: 1, backgroundColor: '#000', margin: 5, paddingHorizontal: 10 }]} onPress={() => gigInterest()}>
                                     <Text style={[GlobalStyle.btntext, { fontWeight: 'bold', fontSize: 18 }]}>I’m Interested</Text>
                                 </Pressable>
                             }

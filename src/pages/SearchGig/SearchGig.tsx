@@ -2,29 +2,55 @@ import { Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput
 import React, { useEffect, useState } from 'react'
 import { GlobalStyle } from '../../globalStyle'
 import SelectDropdown from 'react-native-select-dropdown'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
-// import SearchIcon from '../../assets/icons/Search.svg'
 import SearchIcon from '../../assets/icons/gig Search bar.svg'
 import MicIcon from '../../assets/icons/Mic.svg'
 import MarkerIcon from '../../assets/icons/marker.svg'
 import DatePicker from 'react-native-date-picker'
 import MapView from 'react-native-maps'
 import LocationSearch from '../../components/LocationSearch'
+import { searchGigbyParameter } from '../../services/proUserService/proUserService'
+import { setLoading } from '../../redux/action/General/GeneralSlice'
+import { Toast } from 'react-native-toast-message/lib/src/Toast'
+import debounce from 'lodash.debounce';
+import { getGigByGig_id } from '../../services/gigService/gigService'
 
 const SearchGigScreen = ({ navigation }: any) => {
+    const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
+    const dispatch = useDispatch()
     const [searchValue, setSearchValue] = useState('')
+    const [gigType, setGigType] = useState('')
     const { isListView }: any = useSelector((state: RootState) => state.isListView)
-    const [proLists, setProLists] = useState([])
+    const [proLists, setProLists] = useState<any[]>([])
     const [selectedDate, setSelectedDate] = useState<Date | null>(new Date()); // Specify the type as Date | null
     const [datePickerVisible, setDatePickerVisible] = useState(false);
     const [isModalVisible, setModalVisible] = useState(false);
     const [location, setLocation] = useState<any>();
+
     const closeModel = () => {
         setModalVisible(false)
     }
     const onChangeSearch = (value: any) => {
         setSearchValue(value)
+        debouncedSearch(value, location, gigType)
+    }
+    const onChangeLocation = (value: any) => {
+        setLocation(value)
+        debouncedSearch(searchValue, value, gigType)
+
+    }
+    const onChangegigType = (value: any) => {
+        let interestgig = undefined
+        if (value === "Free") {
+            interestgig = "unpaid"
+            setGigType('unpaid')
+        } else {
+            interestgig = "paid"
+            setGigType('paid')
+        }
+        debouncedSearch(searchValue, location, interestgig)
+
     }
     const openDatePicker = () => {
         setDatePickerVisible(true);
@@ -44,13 +70,13 @@ const SearchGigScreen = ({ navigation }: any) => {
 
     const getProList = () => {
         let option = JSON.parse(JSON.stringify([
-            { image: require('../../assets/images/list1.png'), title: 'Help for Dad', msg: 'Experience working with elderly, Housecleaning, Cooking.', paymentStatus: 'Paid', isProList: true },
-            { image: require('../../assets/images/list2.png'), title: 'Move a couch', msg: 'Experience working with elderly, Housecleaning, Cooking.', paymentStatus: 'Unpaid', isProList: false },
-            { image: require('../../assets/images/piano.png'), title: 'Play Piano', msg: 'Seeking  piano player for two hour family reunion', paymentStatus: 'Paid', isProList: true },
-            { image: require('../../assets/images/list2.png'), title: 'Move a couch', msg: 'Experience working with elderly, Housecleaning, Cooking.', paymentStatus: 'Unpaid', isProList: false },
-            { image: require('../../assets/images/piano.png'), title: 'Play Piano', msg: 'Seeking  piano player for two hour family reunion', paymentStatus: 'Paid', isProList: true },
-            { image: require('../../assets/images/list2.png'), title: 'Move a couch', msg: 'Experience working with elderly, Housecleaning, Cooking.', paymentStatus: 'Unpaid', isProList: false },
-            { image: require('../../assets/images/piano.png'), title: 'Play Piano', msg: 'Seeking  piano player for two hour family reunion', paymentStatus: 'Paid', isProList: true }
+            { image: require('../../assets/images/list1.png'), title: 'Help for Dad', summary: 'Experience working with elderly, Housecleaning, Cooking.', gig_type: 'Paid', isProList: true },
+            { image: require('../../assets/images/list2.png'), title: 'Move a couch', summary: 'Experience working with elderly, Housecleaning, Cooking.', gig_type: 'Unpaid', isProList: false },
+            { image: require('../../assets/images/piano.png'), title: 'Play Piano', summary: 'Seeking  piano player for two hour family reunion', gig_type: 'Paid', isProList: true },
+            { image: require('../../assets/images/list2.png'), title: 'Move a couch', summary: 'Experience working with elderly, Housecleaning, Cooking.', gig_type: 'Unpaid', isProList: false },
+            { image: require('../../assets/images/piano.png'), title: 'Play Piano', summary: 'Seeking  piano player for two hour family reunion', gig_type: 'Paid', isProList: true },
+            { image: require('../../assets/images/list2.png'), title: 'Move a couch', summary: 'Experience working with elderly, Housecleaning, Cooking.', gig_type: 'Unpaid', isProList: false },
+            { image: require('../../assets/images/piano.png'), title: 'Play Piano', summary: 'Seeking  piano player for two hour family reunion', gig_type: 'Paid', isProList: true }
         ]))
         setProLists(option)
     }
@@ -76,12 +102,12 @@ const SearchGigScreen = ({ navigation }: any) => {
                                                 {item.title}
                                             </Text>
                                             <Text style={[GlobalStyle.blackColor, { fontSize: 16, margin: 10, }]}>
-                                                {item.msg}
+                                                {item.summary}
                                             </Text>
                                         </View>
                                         <View style={{ padding: 10 }}>
-                                            <Pressable style={{ backgroundColor: item.paymentStatus === 'Paid' ? '#21AF2F' : '#989898', borderRadius: 5, paddingHorizontal: 10, width: 'auto' }}>
-                                                <Text style={{ color: '#fff' }}>{item.paymentStatus}</Text>
+                                            <Pressable style={{ backgroundColor: item.gig_type === 'Paid' ? '#21AF2F' : '#989898', borderRadius: 5, paddingHorizontal: 10, width: 'auto' }}>
+                                                <Text style={{ color: '#fff' }}>{item.gig_type}</Text>
                                             </Pressable>
                                         </View>
                                     </Pressable>
@@ -144,6 +170,55 @@ const SearchGigScreen = ({ navigation }: any) => {
         )
     }
 
+    const searchGigs = async (searchValue: any, location: any, gigType: any) => {
+        if (!searchValue || !location || !gigType) {
+            return;
+        }
+        const gigParms = await {
+            "city": location,
+            "search_query": searchValue,
+            "interest_gig_type": gigType
+        }
+
+        try {
+            dispatch(setLoading(true));
+            const matchedGigs = await searchGigbyParameter(gigParms, firstToken);
+            const tempData: any[] = [];
+
+            for (const item of matchedGigs) {
+                try {
+                    const gig = await getGigByGig_id(item.gig_id, firstToken);
+                    tempData.push({ ...gig, image: require('../../assets/images/list1.png') });
+                } catch (e) {
+                    console.log(e, 'error');
+                }
+            }
+
+            console.log('all gig this user', matchedGigs);
+            setProLists(tempData);
+            dispatch(setLoading(false));
+        } catch (error) {
+            console.error(JSON.stringify(error));
+            dispatch(setLoading(false));
+        }
+        // searchGigbyParameter(gigParms, firstToken).then((res) => {
+        //     console.log(res, 'response for search gigs')
+
+        //     dispatch(setLoading(false));
+        // }).catch((e) => {
+        //     Toast.show({
+        //         type: 'error',
+        //         text1: 'Error',
+        //         text2: e.message,
+        //     });
+        //     console.log('error', JSON.stringify(e));
+        //     dispatch(setLoading(false))
+        // })
+    }
+    // const debouncedSearch = debounce(searchGigs, 5000);
+    const debouncedSearch = debounce((search: string, location: string, gigType: string) => {
+        searchGigs(search, location, gigType);
+    }, 3000);
     return (
         <SafeAreaView>
             <View style={{ marginHorizontal: 10, marginTop: 0 }}>
@@ -199,14 +274,15 @@ const SearchGigScreen = ({ navigation }: any) => {
                             notifyChange={location => {
                                 setModalVisible(false);
                                 console.log('location', location);
-                                setLocation(location)
-                                    // values.address = location.description
-                                    
+                                onChangeLocation(location.structured_formatting.main_text)
+                                // setLocation(location.description)
+                                // values.address = location.description
+
                             }}
                             closeModel={closeModel}
                         />
-                        
-                        <Text numberOfLines={1} style={{ width: '100%', fontSize: 16, color: '#000',paddingLeft:10 }} onPress={() => setModalVisible(true)}>{location? location?.description: 'San Francisco'}</Text>
+
+                        <Text numberOfLines={1} style={{ width: '100%', fontSize: 16, color: '#000', paddingLeft: 10 }} onPress={() => setModalVisible(true)}>{location ? location : 'San Francisco'}</Text>
                         {/* <TextInput
                             onChangeText={text => console.log(text)}
                             value={'San Francisco'}
@@ -269,6 +345,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                         <SelectDropdown
                             data={['Free', 'Paid']}
                             onSelect={(selectedItem) => {
+                                onChangegigType(selectedItem)
                                 // setFieldValue('status', selectedItem)
                             }}
                             buttonStyle={{ backgroundColor: 'transparent' }}
@@ -296,6 +373,7 @@ const SearchGigScreen = ({ navigation }: any) => {
             }
         </SafeAreaView>
     )
+
 }
 
 export default SearchGigScreen
