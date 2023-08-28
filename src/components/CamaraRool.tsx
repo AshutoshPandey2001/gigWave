@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity, Text, Modal, ScrollView, Image } from 'react-native';
+import { Image, Modal, Text, TouchableOpacity, View } from 'react-native';
 import { RNCamera } from 'react-native-camera';
-import { launchImageLibrary, ImagePickerResponse, ImageLibraryOptions } from 'react-native-image-picker';
+import fs from 'react-native-fs';
+import { ImageLibraryOptions, launchImageLibrary } from 'react-native-image-picker';
 import { useSelector } from 'react-redux';
+import BackButtonIcon from '../assets/icons/Backbutton.svg';
+import { GlobalStyle } from '../globalStyle';
 import { RootState } from '../redux/store';
 import { uploadProfilePhoto } from '../services/userService/userServices';
-import fs from 'react-native-fs';
-import BackButtonIcon from '../assets/icons/Backbutton.svg'
-import { Buffer } from 'buffer'; // You may need to install the "buffer" package
-import { GlobalStyle } from '../globalStyle'
 
 // import Modal from 'react-native-modal';
 
@@ -44,8 +43,8 @@ const UploadPhotosScreen = ({ isVisible, onClose }: UploadPhotosProps) => {
             //     .catch((error: any) => {
             //         console.log('Error reading image:', error);
             //     });
-            setCapturedImage(data.uri); // Store the captured image URI
-            setShowCamera(false);
+            // setCapturedImage(data.uri); // Store the captured image URI
+            // setShowCamera(false);
         }
     };
     const retakePhoto = () => {
@@ -56,20 +55,22 @@ const UploadPhotosScreen = ({ isVisible, onClose }: UploadPhotosProps) => {
     const uploadPhoto = () => {
         if (capturedImage) {
             fs.readFile(capturedImage, 'base64')
-                .then((base64Image: any) => {
-                    console.log('base64Image', base64Image);
+                .then(async (base64Image: any) => {
+                    // console.log('base64Image', base64Image);
                     // const binaryImageData = Buffer.from(base64Image, 'base64'); // Convert base64 to binary
-                    // console.log('binaryImageData', binaryImageData);
+                    const base64Response = await fetch(`data:image/jpeg;base64,${base64Image}`);
+                    console.log('binaryImageData', base64Response);
 
-                    uploadProfilePhoto(user.user_id, firstToken, base64Image)
-                        .then((res) => {
-                            console.log(res, 'uploaded image');
-                            onClose()
-                            // You might want to perform additional actions here after successful upload
-                        })
-                        .catch((e) => {
-                            console.log('error', JSON.stringify(e));
-                        });
+
+                    // uploadProfilePhoto(user.user_id, firstToken, base64Image)
+                    //     .then((res) => {
+                    //         console.log(res, 'uploaded image');
+                    //         onClose()
+                    //         // You might want to perform additional actions here after successful upload
+                    //     })
+                    //     .catch((e) => {
+                    //         console.log('error', JSON.stringify(e));
+                    //     });
                 })
                 .catch((error: any) => {
                     console.log('Error reading image:', error);
@@ -88,7 +89,7 @@ const UploadPhotosScreen = ({ isVisible, onClose }: UploadPhotosProps) => {
             // },
         };
 
-        launchImageLibrary(options, (response: any) => {
+        launchImageLibrary(options, async (response: any) => {
             console.log('image response', response);
 
             if (response.didCancel) {
@@ -99,24 +100,30 @@ const UploadPhotosScreen = ({ isVisible, onClose }: UploadPhotosProps) => {
                 const selectedImage = response.assets[0];
 
                 if (selectedImage) {
-                    console.log('selected image', selectedImage.uri);
-                    fs.readFile(selectedImage.uri, 'base64')
-                        .then((base64Image: any) => {
-                            console.log('base64Image', base64Image);
 
-                            uploadProfilePhoto(user.user_id, firstToken, base64Image)
-                                .then((res) => {
-                                    console.log(res, 'uploaded image');
-                                    onClose()
-                                    // You might want to perform additional actions here after successful upload
-                                })
-                                .catch((e) => {
-                                    console.log('error', JSON.stringify(e));
-                                });
+
+                    // const response = await fetch(selectedImage.uri);
+                    // const blob = await response.blob();
+                    // console.log('blob-----------------',selectedImage);
+                    uploadProfilePhoto(user.user_id, firstToken, selectedImage)
+                        .then((res) => {
+                            console.log(res, 'uploaded image');
+                            onClose()
+                            // You might want to perform additional actions here after successful upload
                         })
-                        .catch((error: any) => {
-                            console.log('Error reading image:', error);
+                        .catch((e) => {
+                            console.log('error', JSON.stringify(e));
                         });
+                    // fs.readFile(selectedImage.uri, 'base64')
+                    //     .then(async(base64Image: any) => {
+                    //         console.log('base64Image', base64Image);
+                    //         const base64Response = await fetch(`data:image/jpeg;base64,${base64Image}`);
+                    //         console.log('binaryImageData', base64Response);
+                    //      
+                    //     })
+                    //     .catch((error: any) => {
+                    //         console.log('Error reading image:', error);
+                    //     });
                     // You can use the selectedImage.uri as needed
                 } else {
                     console.log('No photo selected');

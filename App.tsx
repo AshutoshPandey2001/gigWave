@@ -12,7 +12,8 @@ import {
   SafeAreaView,
   ActivityIndicator,
   StyleSheet,
-  View
+  View,
+  Platform
 } from 'react-native';
 
 import AuthNavigator from './src/navigator/AuthNavigator';
@@ -52,6 +53,7 @@ function App(): JSX.Element {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       {isLoading &&
+      
         <View style={[styles.container, styles.horizontal]}>
           <ActivityIndicator size={'large'} />
         </View>
@@ -93,7 +95,9 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
     margin: 'auto',
-    backgroundColor: "rgba(255,255,255,0.7)"
+    backgroundColor: "rgba(255,255,255,0.7)",
+    elevation: Platform.OS === "android" ? 50 : 0,
+    shadowColor:"rgba(255,255,255,0.7)"
   },
   horizontal: {
     flexDirection: 'row',

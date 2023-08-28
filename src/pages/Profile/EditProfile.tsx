@@ -1,18 +1,18 @@
-import { Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { useFormik } from 'formik'
 import React, { useEffect, useState } from 'react'
-import { GlobalStyle } from '../../globalStyle'
-import * as yup from "yup"
-import { Formik, useFormik } from 'formik'
-import LocationSearch from '../../components/LocationSearch'
+import { Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { ImageLibraryOptions, launchImageLibrary } from 'react-native-image-picker'
+import { Toast } from 'react-native-toast-message/lib/src/Toast'
 import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '../../redux/store'
-import { updateUsersDetails } from '../../services/authServices/authServices'
-import { getUserByUserID } from '../../services/userService/userServices'
+import * as yup from "yup"
+import LocationSearch from '../../components/LocationSearch'
+import { GlobalStyle } from '../../globalStyle'
 import { setUser } from '../../redux/action/Auth/authAction'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
+import { RootState } from '../../redux/store'
+import { updateUsersDetails } from '../../services/authServices/authServices'
 import { getProdetailsbyuserid, updateProUsersDetails } from '../../services/proUserService/proUserService'
-import { Toast } from 'react-native-toast-message/lib/src/Toast'
-import UploadPhotosScreen from '../../components/CamaraRool'
+import { getUserByUserID, uploadProfilePhoto } from '../../services/userService/userServices'
 
 interface InitialFormValues {
     user_id: string,
@@ -96,6 +96,39 @@ const EditProfileScreen = () => {
     const closecamaraModel = () => {
         setIscamaraModalVisible(false)
     }
+    const selectImage = () => {
+        console.log('i am on select photo from galary');
+
+        const options: ImageLibraryOptions = {
+            mediaType: 'photo', // Add this 
+        };
+
+        launchImageLibrary(options, async (response: any) => {
+            console.log('image response', response);
+
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            } else if (response.assets && response.assets.length > 0) {
+                const selectedImage = response.assets[0];
+                if (selectedImage) {
+                    uploadProfilePhoto(user.user_id, firstToken, selectedImage)
+                        .then((res) => {
+                            console.log(res, 'uploaded image');
+                            // You might want to perform additional actions here after successful upload
+                        })
+                        .catch((e) => {
+                            console.log('error', JSON.stringify(e));
+                        });
+
+                } else {
+                    console.log('No photo selected');
+                }
+            }
+        });
+    };
+
     const updateProfile = async (values: any) => {
         // await dispatch(setLoading(true));
         // return new Promise((resolve, reject) => {
@@ -150,13 +183,12 @@ const EditProfileScreen = () => {
                         <View style={[styles.profileImg, { marginRight: 10 }]}>
                             <Image resizeMode='contain' style={styles.profileImg} source={require('../../assets/images/avatar_profile.png')} />
                         </View>
-                        <Pressable onPress={() => setIscamaraModalVisible(true)}>
+                        <Pressable onPress={() => selectImage()}>
                             <Text style={styles.editText}>Upload Photo </Text>
                         </Pressable>
-                        {
+                        {/* {
                             iscamaraModalVisible && <UploadPhotosScreen isVisible={iscamaraModalVisible} onClose={closecamaraModel} />
-
-                        }
+                        } */}
                     </View>
                     {/* <Formik
                         initialValues={initialFormValues}
