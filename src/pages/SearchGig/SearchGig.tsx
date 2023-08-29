@@ -40,6 +40,13 @@ const SearchGigScreen = ({ navigation }: any) => {
         debouncedSearch(searchValue, value, gigType)
 
     }
+    const separateAddressComponents = (addressJSON: any) => {
+        const terms = addressJSON.terms.slice(-3); // Extract last three terms
+        const city = terms[0].value;
+        const state = terms[1].value;
+        const country = terms[2].value;
+        return { city, state, country };
+    }
     const onChangegigType = (value: any) => {
         let interestgig = undefined
         if (value === "Free") {
@@ -174,8 +181,13 @@ const SearchGigScreen = ({ navigation }: any) => {
         if (!searchValue || !location || !gigType) {
             return;
         }
+        const { city, state, country } = await separateAddressComponents(location);
+        console.log('city, state, country', city, state, country);
+
         const gigParms = await {
-            "city": location,
+            "city": city,
+            "country": country,
+            "state": state,
             "search_query": searchValue,
             "interest_gig_type": gigType
         }
@@ -194,26 +206,14 @@ const SearchGigScreen = ({ navigation }: any) => {
                 }
             }
 
-            console.log('all gig this user', matchedGigs);
+            console.log('all gig Searched', matchedGigs);
             setProLists(tempData);
             dispatch(setLoading(false));
         } catch (error) {
             console.error(JSON.stringify(error));
             dispatch(setLoading(false));
         }
-        // searchGigbyParameter(gigParms, firstToken).then((res) => {
-        //     console.log(res, 'response for search gigs')
 
-        //     dispatch(setLoading(false));
-        // }).catch((e) => {
-        //     Toast.show({
-        //         type: 'error',
-        //         text1: 'Error',
-        //         text2: e.message,
-        //     });
-        //     console.log('error', JSON.stringify(e));
-        //     dispatch(setLoading(false))
-        // })
     }
     // const debouncedSearch = debounce(searchGigs, 5000);
     const debouncedSearch = debounce((search: string, location: string, gigType: string) => {
@@ -274,7 +274,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                             notifyChange={location => {
                                 setModalVisible(false);
                                 console.log('location', location);
-                                onChangeLocation(location.structured_formatting.main_text)
+                                onChangeLocation(location)
                                 // setLocation(location.description)
                                 // values.address = location.description
 
@@ -282,7 +282,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                             closeModel={closeModel}
                         />
 
-                        <Text numberOfLines={1} style={{ width: '100%', fontSize: 16, color: '#000', paddingLeft: 10 }} onPress={() => setModalVisible(true)}>{location ? location : 'San Francisco'}</Text>
+                        <Text numberOfLines={1} style={{ width: '100%', fontSize: 16, color: '#000', paddingLeft: 10 }} onPress={() => setModalVisible(true)}>{location ? location.description : 'San Francisco'}</Text>
                         {/* <TextInput
                             onChangeText={text => console.log(text)}
                             value={'San Francisco'}
