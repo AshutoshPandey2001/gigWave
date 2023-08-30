@@ -1,6 +1,6 @@
 import { useFormik } from 'formik'
 import React, { useEffect, useState } from 'react'
-import { Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Alert, Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import { ImageLibraryOptions, launchImageLibrary } from 'react-native-image-picker'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
 import { useDispatch, useSelector } from 'react-redux'
@@ -12,7 +12,9 @@ import { setLoading } from '../../redux/action/General/GeneralSlice'
 import { RootState } from '../../redux/store'
 import { updateUsersDetails } from '../../services/authServices/authServices'
 import { getProdetailsbyuserid, updateProUsersDetails } from '../../services/proUserService/proUserService'
-import { getUserByUserID, uploadProfilePhoto } from '../../services/userService/userServices'
+import { getProfilePhoto, getUserByUserID, uploadProfilePhoto } from '../../services/userService/userServices'
+import fs from 'react-native-fs';
+
 
 interface InitialFormValues {
     user_id: string,
@@ -28,6 +30,7 @@ const EditProfileScreen = () => {
     const user: any = useSelector((state: RootState) => state.user.user);
     const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
     const [prouserData, setProuserData] = useState<any>()
+    const [profilePic, setProfilePic] = useState<any>()
 
     const [initialFormValues, setInitialFormValues] = useState<InitialFormValues>({
         user_id: user.user_id ? user.user_id : '',
@@ -54,7 +57,7 @@ const EditProfileScreen = () => {
 
     useEffect(() => {
         getUserByID()
-
+        getProfileImage()
     }, []);
 
     const formik = useFormik<InitialFormValues>({
@@ -67,7 +70,12 @@ const EditProfileScreen = () => {
     const { handleChange, handleBlur, handleSubmit, values, errors, isValid, touched, setFieldValue } = formik
 
     console.log('values', values);
-
+    const getProfileImage = () => {
+        getProfilePhoto(user.user_id, firstToken).then((res) => {
+            console.log('res', res);
+            setProfilePic(res)
+        })
+    }
     const getUserByID = async () => {
         await dispatch(setLoading(true));
         if (user.is_pro) {
@@ -100,33 +108,29 @@ const EditProfileScreen = () => {
         console.log('i am on select photo from galary');
 
         const options: ImageLibraryOptions = {
-            mediaType: 'photo', // Add this 
+            mediaType: 'photo',
+            quality: 0.5,
+            includeBase64: true
         };
 
         launchImageLibrary(options, async (response: any) => {
-            console.log('image response', response);
-
             if (response.didCancel) {
                 console.log('User cancelled image picker');
             } else if (response.error) {
                 console.log('ImagePicker Error: ', response.error);
             } else if (response.assets && response.assets.length > 0) {
-                const selectedImage = response.assets[0];
-                if (selectedImage) {
-                    uploadProfilePhoto(user.user_id, firstToken, selectedImage)
-                        .then((res) => {
-                            console.log(res, 'uploaded image');
-                            // You might want to perform additional actions here after successful upload
-                        })
-                        .catch((e) => {
-                            console.log('error', JSON.stringify(e));
-                        });
+                dispatch(setLoading(true))
 
-                } else {
-                    console.log('No photo selected');
-                }
+                const selectedImage = response.assets[0];
+
+                uploadProfilePhoto(user.user_id, firstToken, selectedImage.base64)
+                    .then((res) => {
+                        dispatch(setLoading(false))
+                        console.log(res, 'uploaded image');
+                        // You might want to perform additional actions here after successful upload
+                    }).catch((err) => console.error(err))
             }
-        });
+        })
     };
 
     const updateProfile = async (values: any) => {

@@ -23,26 +23,18 @@ export const getUserByUserID = async (userID: any, token: any): Promise<any> => 
 
 
 export const uploadProfilePhoto = async (userID: any, token: any, image: any): Promise<any> => {
-    console.log('image', image);
     return new Promise((resolve, reject) => {
-        const formData = new FormData();
-        // const imageuri = image.uri.replace("file:///", "file://")
-        // console.log(imageuri, 'imageuri')
-        const file = {
-            uri: image.uri,
-            type: image.type,
-            name: image.fileName,
-            size: image.fileSize
-        };
-        formData.append('file', file);
         axios({
             method: 'post',
-            url: `${API_BASE_URL}/user/image/?user_id=${userID}`,
+            url: `${API_BASE_URL}/user/imageb64/`,
             headers: {
                 'Authorization': `Bearer ${token}`,
-                'Content-Type': 'multipart/form-data',
+                'Content-Type': 'application/json'
             },
-            data: formData
+            data: {
+                "user_id": userID,
+                "base64_image": image
+            }
         }).then((response) => {
             console.log(response, '---------------------')
             resolve(response.data)
@@ -54,3 +46,21 @@ export const uploadProfilePhoto = async (userID: any, token: any, image: any): P
 
 
 };
+
+export const getProfilePhoto = async (userID: any, token: any) => {
+    return new Promise((resolve, reject) => {
+        axios({
+            method: 'get',
+            url: `${API_BASE_URL}/user/image/${userID}`,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+
+        }).then((response) => {
+            resolve(response.data)
+        }).catch((error) => {
+            reject(error)
+        })
+    })
+}
