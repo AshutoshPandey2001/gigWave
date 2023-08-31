@@ -83,8 +83,12 @@ const ViewProfileScreen = ({ navigation }: any) => {
         })
     }
 
-    const backGroundCheck = () => {
-        backGroundCheck_pro(user.user_id, user.email, firstToken).then((res) => {
+    const backGroundCheck = async () => {
+        let userData = await {
+            "email": user.email,
+            "user_id": user.user_id
+        }
+        backGroundCheck_pro(userData, firstToken).then((res) => {
             console.log('backGroundCheck', res);
             setBackGroudCheck(res)
         }).catch((e) => {

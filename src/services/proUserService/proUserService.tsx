@@ -110,15 +110,16 @@ export const proInterestgig = async (interestValue: any, token: any): Promise<an
 }
 
 
-export const backGroundCheck_pro = async (user_id: any, email: any, token: any): Promise<any> => {
+export const backGroundCheck_pro = async (userData: any, token: any): Promise<any> => {
     try {
         const response = await axios({
             method: 'post',
-            url: `${API_BASE_URL}/pro/request-background-check?user_id=${user_id}&user_email=${email}`,
+            url: `${API_BASE_URL}/pro/request-background-check`,
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
             },
+            data: userData
         });
         return response.data; // Return the response data
     } catch (error) {

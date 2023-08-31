@@ -57,50 +57,14 @@ const HomeScreen = ({ navigation }: any) => {
       dispatch(setLoading(false))
     })
   }
-  // const getProList = async () => {
-  //   let temp_data: any[] = []
-  //   getMatchedGigbyuserid(user.user_id, firstToken).then((res) => {
-  //     res.map((item: any) => {
-  //       getGigByGig_id(item.gig_id, firstToken).then((gig) => {
-  //         temp_data.push({ ...gig, image: require('../../assets/images/list1.png') })
-  //       }).catch((e) => {
-  //         console.log(e, 'error');
-
-  //       })
-
-  //     })
-  //     console.log('all gig this user', res);
-
-  //     dispatch(setLoading(false))
-  //   }).catch((error) => {
-  //     console.error(JSON.stringify(error));
-  //     dispatch(setLoading(false))
-  //   })
-  //   // let option = JSON.parse(JSON.stringify([
-  //   //   { image: require('../../assets/images/list1.png'), title: 'Help for Dad', msg: 'Experience working with elderly, Housecleaning, Cooking.', paymentStatus: 'Paid', isProList: true },
-  //   //   { image: require('../../assets/images/list2.png'), title: 'Move a couch', msg: 'Experience working with elderly, Housecleaning, Cooking.', paymentStatus: 'Unpaid', isProList: false },
-  //   //   { image: require('../../assets/images/piano.png'), title: 'Play Piano', msg: 'Seeking  piano player for two hour family reunion', paymentStatus: 'Paid', isProList: true }
-  //   // ]))
-  //   setProLists(temp_data)
-  // }
   const getProList = async () => {
     try {
       dispatch(setLoading(true));
 
       const matchedGigs = await getMatchedGigbyuserid(user.user_id, firstToken);
-      const tempData: any[] = [];
-
-      for (const item of matchedGigs) {
-        try {
-          const gig = await getGigByGig_id(item.gig_id, firstToken);
-          tempData.push({ ...gig, image: require('../../assets/images/list1.png') });
-        } catch (e) {
-          console.log(e, 'error');
-        }
-      }
-
+      matchedGigs.map((item: any) => item.image = require('../../assets/images/list1.png'))
       console.log('all gig this user', matchedGigs);
-      setProLists(tempData);
+      setProLists(matchedGigs);
       dispatch(setLoading(false));
     } catch (error) {
       console.error(JSON.stringify(error));

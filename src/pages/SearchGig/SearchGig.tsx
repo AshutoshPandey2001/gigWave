@@ -1,4 +1,4 @@
-import { Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View, TouchableOpacity } from 'react-native'
+import { Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View, TouchableOpacity, PermissionsAndroid } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { GlobalStyle } from '../../globalStyle'
 import SelectDropdown from 'react-native-select-dropdown'
@@ -7,18 +7,28 @@ import { RootState } from '../../redux/store'
 import SearchIcon from '../../assets/icons/gig Search bar.svg'
 import MicIcon from '../../assets/icons/Mic.svg'
 import MarkerIcon from '../../assets/icons/marker.svg'
+import MapMarkerIcon from '../../assets/icons/map-marker.svg'
 import DatePicker from 'react-native-date-picker'
-import MapView from 'react-native-maps'
+import MapView, { Marker, Region } from 'react-native-maps'
 import LocationSearch from '../../components/LocationSearch'
 import { searchGigbyParameter } from '../../services/proUserService/proUserService'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
 import debounce from 'lodash.debounce';
 import { getGigByGig_id } from '../../services/gigService/gigService'
+import Geolocation from '@react-native-community/geolocation';
+import { PERMISSIONS, request } from 'react-native-permissions';
+import { Platform } from 'react-native';
 
 const SearchGigScreen = ({ navigation }: any) => {
     const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
     const dispatch = useDispatch()
+    const [initialRegion, setInitialRegion] = useState<Region>({
+        latitude: 0,
+        longitude: 0,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+    });
     const [searchValue, setSearchValue] = useState('')
     const [gigType, setGigType] = useState('')
     const { isListView }: any = useSelector((state: RootState) => state.isListView)
@@ -73,7 +83,59 @@ const SearchGigScreen = ({ navigation }: any) => {
     };
     useEffect(() => {
         getProList();
+        checkPermission();
     }, [])
+    const requestLocationPermission = async () => {
+        console.log('i am in');
+
+        if (Platform.OS === 'android') {
+            const permissionStatus = await PermissionsAndroid.request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+            if (permissionStatus === 'granted') {
+                getCurrentLocation();
+            }
+        }
+    };
+    const checkPermission = async () => {
+        const permission = PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+
+        try {
+            const hasPermission = await PermissionsAndroid.check(permission);
+            if (hasPermission) {
+                getCurrentLocation()
+                console.log('Permission already granted');
+            } else {
+                const status = await PermissionsAndroid.request(permission);
+                if (status === PermissionsAndroid.RESULTS.GRANTED) {
+                    getCurrentLocation()
+                    console.log('Permission granted');
+                } else {
+                    console.log('Permission denied');
+                }
+            }
+        } catch (error) {
+            console.error('Error checking or requesting permission:', error);
+        }
+    };
+    const getCurrentLocation = () => {
+        Geolocation.getCurrentPosition(
+            position => {
+                const { latitude, longitude } = position.coords;
+                console.log('latitude, longitude', latitude, longitude);
+
+                setInitialRegion({
+                    latitude,
+                    longitude,
+                    latitudeDelta: 0.0922,
+                    longitudeDelta: 0.0421,
+                });
+            },
+            error => {
+                console.error(error);
+                // Handle location permission error here
+            },
+            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+        );
+    }
 
     const getProList = () => {
         let option = JSON.parse(JSON.stringify([
@@ -163,14 +225,12 @@ const SearchGigScreen = ({ navigation }: any) => {
             <View style={{ height: '75%', width: '100%' }}>
                 <MapView
                     style={{ flex: 1 }}
-                    initialRegion={{
-                        latitude: 37.78825,
-                        longitude: -122.4324,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421,
-                    }}
+                    initialRegion={initialRegion}
                 >
-                    {/* Add markers, polygons, etc. here */}
+                    {/* Display user's current location with a marker */}
+
+                    <Marker coordinate={{ latitude: initialRegion.latitude, longitude: initialRegion.longitude }} pinColor="#05E3D5"
+                        title="Your Location" />
                 </MapView>
                 {/* <Image resizeMode='contain' style={{ height: '100%', width: '100%' }} source={require('../../assets/images/mapImage.png')} /> */}
             </View>
@@ -195,19 +255,10 @@ const SearchGigScreen = ({ navigation }: any) => {
         try {
             dispatch(setLoading(true));
             const matchedGigs = await searchGigbyParameter(gigParms, firstToken);
-            const tempData: any[] = [];
-
-            for (const item of matchedGigs) {
-                try {
-                    const gig = await getGigByGig_id(item.gig_id, firstToken);
-                    tempData.push({ ...gig, image: require('../../assets/images/list1.png') });
-                } catch (e) {
-                    console.log(e, 'error');
-                }
-            }
+            matchedGigs.map((item: any) => item.image = require('../../assets/images/list1.png'))
 
             console.log('all gig Searched', matchedGigs);
-            setProLists(tempData);
+            setProLists(matchedGigs);
             dispatch(setLoading(false));
         } catch (error) {
             console.error(JSON.stringify(error));
