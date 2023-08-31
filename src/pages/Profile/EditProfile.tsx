@@ -70,10 +70,16 @@ const EditProfileScreen = () => {
     const { handleChange, handleBlur, handleSubmit, values, errors, isValid, touched, setFieldValue } = formik
 
     console.log('values', values);
-    const getProfileImage = () => {
-        getProfilePhoto(user.user_id, firstToken).then((res) => {
-            console.log('res', res);
-            setProfilePic(res)
+    const getProfileImage = async () => {
+        getProfilePhoto(user.user_id, firstToken).then(async (res: any) => {
+            // console.log('res', res);
+            // const dataURI = await `data:image/jpeg;base64,${res}`; // Assuming res is a base64 encoded image
+            // console.log('image data url', dataURI);
+
+            // setProfilePic(dataURI);
+        }).catch((e) => {
+            console.error(e, 'error when getting profile image');
+
         })
     }
     const getUserByID = async () => {
@@ -89,14 +95,16 @@ const EditProfileScreen = () => {
                 console.log('error', JSON.stringify(e));
                 dispatch(setLoading(false))
             })
-        } else {
-            getUserByUserID(user.user_id, firstToken).then((response) => {
-                console.log('res', response);
-
-                dispatch(setLoading(false))
-                dispatch(setUser(response))
-            })
         }
+        getUserByUserID(user.user_id, firstToken).then((response) => {
+            console.log('res', response);
+            const dataURI = `data:image/jpeg;base64,${response.base64_img}`; // Assuming res is a base64 encoded image
+            console.log('image data url', dataURI);
+
+            setProfilePic(dataURI);
+            dispatch(setLoading(false))
+            dispatch(setUser(response))
+        })
     }
     const closeModel = () => {
         setModalVisible(false)
@@ -185,7 +193,8 @@ const EditProfileScreen = () => {
                 <View style={[GlobalStyle.container]}>
                     <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                         <View style={[styles.profileImg, { marginRight: 10 }]}>
-                            <Image resizeMode='contain' style={styles.profileImg} source={require('../../assets/images/avatar_profile.png')} />
+                            {/* <Image resizeMode='contain' style={styles.profileImg} source={require('../../assets/images/avatar_profile.png')} /> */}
+                            <Image resizeMode='contain' style={[styles.profileImg]} source={user.base64_img ? { uri: `data:image/jpeg;base64,${user.base64_img}` } : require('../../assets/images/avatar_profile.png')} />
                         </View>
                         <Pressable onPress={() => selectImage()}>
                             <Text style={styles.editText}>Upload Photo </Text>
@@ -324,6 +333,18 @@ const styles = StyleSheet.create({
         flexGrow: 1,
     },
     cardContainer: { marginTop: 10, marginBottom: 5 },
-    profileImg: { height: 80, width: 80 },
+    profileImg: {
+        height: 80, width: 80,
+        borderRadius: 40, // Half of the height or width for a circular effect
+        resizeMode: 'cover',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 2, // Android shadow
+    },
     editText: { color: '#05E3D5', fontSize: 20 }
 })

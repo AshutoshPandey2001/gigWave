@@ -108,5 +108,19 @@ export const GlobalStyle = StyleSheet.create({
         width: '100%',
         height: 80,
     },
-    noTabBar: { position: "absolute", height: 0 }
+    noTabBar: { position: "absolute", height: 0 },
+    profileImg: {
+        height: 65,
+        width: 65,
+        borderRadius: 35, // Half of the height or width for a circular effect
+        resizeMode: 'cover',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 2, // Android shadow
+    },
 })

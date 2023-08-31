@@ -98,7 +98,8 @@ const ViewProfileScreen = ({ navigation }: any) => {
                 <View style={[GlobalStyle.container]}>
                     <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                         <View style={[styles.profileImg, { marginRight: 10 }]}>
-                            <Image resizeMode='contain' style={styles.profileImg} source={require('../../assets/images/avatar_profile.png')} />
+                            {/* <Image resizeMode='contain' style={styles.profileImg} source={require('../../assets/images/avatar_profile.png')} /> */}
+                            <Image resizeMode='contain' style={[styles.profileImg]} source={user.base64_img ? { uri: `data:image/jpeg;base64,${user.base64_img}` } : require('../../assets/images/avatar_profile.png')} />
                         </View>
                         <Pressable onPress={() => navigation.navigate('Edit-Profile')}>
                             <Text style={styles.editText}>Edit </Text>
@@ -172,7 +173,19 @@ export default ViewProfileScreen
 
 const styles = StyleSheet.create({
     cardContainer: { marginTop: 20, marginBottom: 10 },
-    profileImg: { height: 80, width: 80 },
+    profileImg: {
+        height: 80, width: 80,
+        borderRadius: 40, // Half of the height or width for a circular effect
+        resizeMode: 'cover',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 2, // Android shadow
+    },
     editText: { color: '#05E3D5', fontSize: 20 },
     btnMargin: { marginTop: 10 }
 })

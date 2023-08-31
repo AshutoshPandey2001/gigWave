@@ -21,7 +21,8 @@ const RoleScreen = ({ navigation }: any) => {
       <View style={{ marginHorizontal: 10 }}>
         <View style={[GlobalStyle.headerLeft]}>
           <View>
-            <Image resizeMode='contain' source={require('../../assets/images//avatar_profile.png')} />
+            {/* <Image resizeMode='contain'style={[GlobalStyle.profileImg]} source={require('../../assets/images//avatar_profile.png')} /> */}
+            <Image resizeMode='contain' style={[GlobalStyle.profileImg]} source={user.base64_img ? { uri: `data:image/jpeg;base64,${user.base64_img}` } : require('../../assets/images/avatar_profile.png')} />
           </View>
           <View style={{ marginLeft: 5 }}>
             <View>
