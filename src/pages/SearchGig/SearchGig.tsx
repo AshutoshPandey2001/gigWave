@@ -9,7 +9,7 @@ import MicIcon from '../../assets/icons/Mic.svg'
 import MarkerIcon from '../../assets/icons/marker.svg'
 import MapMarkerIcon from '../../assets/icons/map-marker.svg'
 import DatePicker from 'react-native-date-picker'
-import MapView, { Marker, Region } from 'react-native-maps'
+import MapView, { Callout, Marker, Region } from 'react-native-maps'
 import LocationSearch from '../../components/LocationSearch'
 import { searchGigbyParameter } from '../../services/proUserService/proUserService'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
@@ -19,6 +19,7 @@ import { getGigByGig_id } from '../../services/gigService/gigService'
 import Geolocation from '@react-native-community/geolocation';
 import { PERMISSIONS, request } from 'react-native-permissions';
 import { Platform } from 'react-native';
+import { geocodeLocationByName } from '../../services/googleMapServices'
 
 const SearchGigScreen = ({ navigation }: any) => {
     const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
@@ -37,6 +38,7 @@ const SearchGigScreen = ({ navigation }: any) => {
     const [datePickerVisible, setDatePickerVisible] = useState(false);
     const [isModalVisible, setModalVisible] = useState(false);
     const [location, setLocation] = useState<any>();
+    const [nearbyLocationsgigs, setNearbyLocationsgigs] = useState<any>([]);
 
     const closeModel = () => {
         setModalVisible(false)
@@ -85,16 +87,7 @@ const SearchGigScreen = ({ navigation }: any) => {
         getProList();
         checkPermission();
     }, [])
-    const requestLocationPermission = async () => {
-        console.log('i am in');
 
-        if (Platform.OS === 'android') {
-            const permissionStatus = await PermissionsAndroid.request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
-            if (permissionStatus === 'granted') {
-                getCurrentLocation();
-            }
-        }
-    };
     const checkPermission = async () => {
         const permission = PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
 
@@ -139,13 +132,13 @@ const SearchGigScreen = ({ navigation }: any) => {
 
     const getProList = () => {
         let option = JSON.parse(JSON.stringify([
-            { image: require('../../assets/images/list1.png'), title: 'Help for Dad', summary: 'Experience working with elderly, Housecleaning, Cooking.', gig_type: 'Paid', isProList: true },
-            { image: require('../../assets/images/list2.png'), title: 'Move a couch', summary: 'Experience working with elderly, Housecleaning, Cooking.', gig_type: 'Unpaid', isProList: false },
-            { image: require('../../assets/images/piano.png'), title: 'Play Piano', summary: 'Seeking  piano player for two hour family reunion', gig_type: 'Paid', isProList: true },
-            { image: require('../../assets/images/list2.png'), title: 'Move a couch', summary: 'Experience working with elderly, Housecleaning, Cooking.', gig_type: 'Unpaid', isProList: false },
-            { image: require('../../assets/images/piano.png'), title: 'Play Piano', summary: 'Seeking  piano player for two hour family reunion', gig_type: 'Paid', isProList: true },
-            { image: require('../../assets/images/list2.png'), title: 'Move a couch', summary: 'Experience working with elderly, Housecleaning, Cooking.', gig_type: 'Unpaid', isProList: false },
-            { image: require('../../assets/images/piano.png'), title: 'Play Piano', summary: 'Seeking  piano player for two hour family reunion', gig_type: 'Paid', isProList: true }
+            { thumbnail_img_url: require('../../assets/images/list1.png'), title: 'Help for Dad', summary: 'Experience working with elderly, Housecleaning, Cooking.', gig_type: 'Paid', isProList: true },
+            { thumbnail_img_url: require('../../assets/images/list2.png'), title: 'Move a couch', summary: 'Experience working with elderly, Housecleaning, Cooking.', gig_type: 'Unpaid', isProList: false },
+            { thumbnail_img_url: require('../../assets/images/piano.png'), title: 'Play Piano', summary: 'Seeking  piano player for two hour family reunion', gig_type: 'Paid', isProList: true },
+            { thumbnail_img_url: require('../../assets/images/list2.png'), title: 'Move a couch', summary: 'Experience working with elderly, Housecleaning, Cooking.', gig_type: 'Unpaid', isProList: false },
+            { thumbnail_img_url: require('../../assets/images/piano.png'), title: 'Play Piano', summary: 'Seeking  piano player for two hour family reunion', gig_type: 'Paid', isProList: true },
+            { thumbnail_img_url: require('../../assets/images/list2.png'), title: 'Move a couch', summary: 'Experience working with elderly, Housecleaning, Cooking.', gig_type: 'Unpaid', isProList: false },
+            { thumbnail_img_url: require('../../assets/images/piano.png'), title: 'Play Piano', summary: 'Seeking  piano player for two hour family reunion', gig_type: 'Paid', isProList: true }
         ]))
         setProLists(option)
     }
@@ -164,7 +157,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                                         paddingHorizontal: 0
                                     }]} >
                                         <View>
-                                            <Image resizeMode='contain' style={{ borderTopLeftRadius: 15, borderBottomLeftRadius: 15, height: 120 }} source={item.image} />
+                                            <Image resizeMode='contain' style={{ borderTopLeftRadius: 15, borderBottomLeftRadius: 15, height: 120 }} source={item.thumbnail_img_url} />
                                         </View>
                                         <View style={{ flex: 1, width: 100 }}>
                                             <Text style={[GlobalStyle.blackColor, { fontSize: 18, marginHorizontal: 10, paddingTop: 10, fontWeight: 'bold' }]}>
@@ -229,8 +222,40 @@ const SearchGigScreen = ({ navigation }: any) => {
                 >
                     {/* Display user's current location with a marker */}
 
-                    <Marker coordinate={{ latitude: initialRegion.latitude, longitude: initialRegion.longitude }} pinColor="#05E3D5"
-                        title="Your Location" />
+                    <Marker
+                        coordinate={{
+                            latitude: initialRegion.latitude,
+                            longitude: initialRegion.longitude,
+                        }}
+                        pinColor="#05E3D5"
+                        title="Your Location"
+                    >
+                        {/* Callout to display location name */}
+                        <Callout>
+                            <View>
+                                <Text>{'Your Location'}</Text>
+                            </View>
+                        </Callout>
+                    </Marker>
+
+                    {nearbyLocationsgigs.map((location: any, index: number) => (
+                        <Marker
+                            key={index}
+                            coordinate={{
+                                latitude: location.latitude,
+                                longitude: location.longitude,
+                            }}
+                            pinColor="red"
+                            title={location.locationName}
+                        >
+                            {/* Callout to display location name */}
+                            <Callout>
+                                <View>
+                                    <Text>{location.locationName}</Text>
+                                </View>
+                            </Callout>
+                        </Marker>
+                    ))}
                 </MapView>
                 {/* <Image resizeMode='contain' style={{ height: '100%', width: '100%' }} source={require('../../assets/images/mapImage.png')} /> */}
             </View>
@@ -259,6 +284,20 @@ const SearchGigScreen = ({ navigation }: any) => {
 
             console.log('all gig Searched', matchedGigs);
             setProLists(matchedGigs);
+            if (!isListView) {
+                let temp_data: any[] = []
+                matchedGigs.map((gig: any) => {
+                    geocodeLocationByName(gig.address).then((res: any) => {
+                        console.log('response', res);
+
+                        temp_data.push(res)
+                    }).catch((error: any) => {
+                        console.error(error);
+
+                    })
+                })
+                setNearbyLocationsgigs(temp_data)
+            }
             dispatch(setLoading(false));
         } catch (error) {
             console.error(JSON.stringify(error));

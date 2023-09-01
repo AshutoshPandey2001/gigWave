@@ -70,11 +70,11 @@ const LoginScreen = ({ navigation }: any) => {
       } else {
         setOtpSend(false)
         Toast.show({
-          type: 'success',
-          text1: 'Success',
-          text2: 'OTP Verification Successfully Completed',
+          type: 'error',
+          text1: 'Error',
+          text2: 'You Mobile number is Register',
         });
-        navigation.navigate('Register', { mobileNumber: mobile })
+        // navigation.navigate('Register', { mobileNumber: mobile })
       }
     } catch (error: any) {
       Toast.show({

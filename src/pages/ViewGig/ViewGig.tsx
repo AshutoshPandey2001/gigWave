@@ -74,7 +74,7 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                     </View>
                     <View style={{ marginTop: 10 }}>
                         <View style={{ display: 'flex', alignItems: 'center' }}>
-                            <Image source={require('../../assets/images/baby.png')} style={{ position: 'absolute', zIndex: 999, top: 0 }} />
+                            <Image source={{ uri: route.params.thumbnail_img_url }} style={{ position: 'absolute', zIndex: 999, top: 0 }} />
                             <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { marginTop: 90, paddingTop: 50, display: 'flex', justifyContent: 'center', alignItems: 'center' }]}>
                                 <Text style={[GlobalStyle.blackColor, { fontWeight: 'bold' }]}>{route.params.title ? route.params?.title : 'Part-time Childcare'}</Text>
                                 <Text>{route.params.address ? route.params?.address : 'San Francisco, CA'}</Text>

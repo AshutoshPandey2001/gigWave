@@ -33,7 +33,7 @@ const HomeScreen = ({ navigation }: any) => {
     console.log('user.user_id', user.user_id);
 
     getGigByUser(user.user_id, firstToken).then((res) => {
-      res.map((item: any) => item.image = require('../../assets/images/list1.png'))
+      // res.map((item: any) => item.image = require('../../assets/images/list1.png'))
       // res.map((item: any) => item.image = getGigThumbnail(item.gig_id, firstToken).then((res1) => {
       //   console.log('response of image', res1);
 
@@ -62,7 +62,7 @@ const HomeScreen = ({ navigation }: any) => {
       dispatch(setLoading(true));
 
       const matchedGigs = await getMatchedGigbyuserid(user.user_id, firstToken);
-      matchedGigs.map((item: any) => item.image = require('../../assets/images/list1.png'))
+      // matchedGigs.map((item: any) => item.image = item.thumbnail_img_url)
       console.log('all gig this user', matchedGigs);
       setProLists(matchedGigs);
       dispatch(setLoading(false));
@@ -114,7 +114,7 @@ const HomeScreen = ({ navigation }: any) => {
                             display: 'flex', flexDirection: 'row',
                           }} >
                           <View>
-                            <Image resizeMode='contain' style={Style.imageStyle} source={item.image} />
+                            <Image resizeMode='contain' style={Style.imageStyle} source={{ uri: item.thumbnail_img_url }} />
                           </View>
                           <View style={{ flex: 1, width: 100 }}>
                             <View style={{
@@ -178,7 +178,9 @@ const HomeScreen = ({ navigation }: any) => {
                         paddingHorizontal: 0
                       }]} >
                         <View>
-                          <Image resizeMode='contain' style={Style.imageStyle} source={item.image} />
+                          <Image resizeMode='contain' style={Style.imageStyle} source={{ uri: item.thumbnail_img_url }} onError={(error) => console.error('Image loading error:', error)}
+
+                          />
                         </View>
                         <View style={{ flex: 1, width: 100 }}>
                           <Text style={[GlobalStyle.blackColor, Style.title]}>

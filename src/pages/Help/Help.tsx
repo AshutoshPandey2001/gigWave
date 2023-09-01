@@ -65,7 +65,7 @@ const HelpScreen = ({ route, navigation }: any) => {
 
                             <View style={[GlobalStyle.card, GlobalStyle.shadowProp, Style.localCardStyle]}>
                                 <View>
-                                    <Image resizeMode='contain' style={{ borderTopLeftRadius: 15, borderBottomLeftRadius: 15, height: 120 }} source={route.params?.image} />
+                                    <Image resizeMode='contain' style={{ borderTopLeftRadius: 15, borderBottomLeftRadius: 15, height: 120 }} source={{ uri: route.params?.thumbnail_img_url }} />
                                 </View>
                                 <View style={{ flex: 1, width: 100 }}>
                                     <Text style={[GlobalStyle.blackColor, Style.commanPaddingFontSize, { marginHorizontal: 10 }]}>
@@ -112,7 +112,7 @@ const HelpScreen = ({ route, navigation }: any) => {
                                 </Pressable>
                             )
                             : <View style={{ marginTop: 50 }}>
-                                <Text style={{  fontWeight: 'bold', fontSize: 18, textAlign: 'center' }}>
+                                <Text style={{ fontWeight: 'bold', fontSize: 18, textAlign: 'center' }}>
                                     No matches found
                                 </Text>
                             </View>}
