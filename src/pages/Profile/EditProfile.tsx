@@ -117,7 +117,7 @@ const EditProfileScreen = () => {
 
         const options: ImageLibraryOptions = {
             mediaType: 'photo',
-            quality: 0.5,
+            quality: 0.2,
             includeBase64: true
         };
 
@@ -136,7 +136,7 @@ const EditProfileScreen = () => {
                         dispatch(setLoading(false))
                         console.log(res, 'uploaded image');
                         // You might want to perform additional actions here after successful upload
-                    }).catch((err) => console.error(err))
+                    }).catch((err) => { dispatch(setLoading(false)); console.error(err) })
             }
         })
     };

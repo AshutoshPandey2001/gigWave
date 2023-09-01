@@ -1,12 +1,12 @@
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import React, { useEffect, useState } from 'react';
-import { Image, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View, TextInput, Dimensions } from 'react-native';
+import { Dimensions, Image, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import MicIcon from '../../assets/icons/Mic1.svg';
 import { GlobalStyle } from '../../globalStyle';
-import { RootState } from '../../redux/store';
-import MicIcon from '../../assets/icons/Mic1.svg'
-import { getGigByGig_id, getGigByUser, getGigThumbnail } from '../../services/gigService/gigService';
 import { setLoading } from '../../redux/action/General/GeneralSlice';
+import { RootState } from '../../redux/store';
+import { getGigByUser } from '../../services/gigService/gigService';
 import { getMatchedGigbyuserid } from '../../services/proUserService/proUserService';
 var heightY = Dimensions.get("window").height;
 
@@ -33,14 +33,6 @@ const HomeScreen = ({ navigation }: any) => {
     console.log('user.user_id', user.user_id);
 
     getGigByUser(user.user_id, firstToken).then((res) => {
-      // res.map((item: any) => item.image = require('../../assets/images/list1.png'))
-      // res.map((item: any) => item.image = getGigThumbnail(item.gig_id, firstToken).then((res1) => {
-      //   console.log('response of image', res1);
-
-      // }).catch((error) => {
-      //   console.error(JSON.stringify(error));
-      //   dispatch(setLoading(false))
-      // }));
       if (selectedIndex === 0) {
         let activegig = res.filter((item: any) => item.status === "active")
         setLists(activegig)
@@ -49,7 +41,7 @@ const HomeScreen = ({ navigation }: any) => {
         let inactivgig = res.filter((item: any) => item.status === "inactive")
         setLists(inactivgig)
       }
-      console.log('all gig this user', res);
+      // console.log('all gig this user', res);
 
       dispatch(setLoading(false))
     }).catch((error) => {
@@ -62,8 +54,6 @@ const HomeScreen = ({ navigation }: any) => {
       dispatch(setLoading(true));
 
       const matchedGigs = await getMatchedGigbyuserid(user.user_id, firstToken);
-      // matchedGigs.map((item: any) => item.image = item.thumbnail_img_url)
-      console.log('all gig this user', matchedGigs);
       setProLists(matchedGigs);
       dispatch(setLoading(false));
     } catch (error) {
@@ -114,7 +104,10 @@ const HomeScreen = ({ navigation }: any) => {
                             display: 'flex', flexDirection: 'row',
                           }} >
                           <View>
-                            <Image resizeMode='contain' style={Style.imageStyle} source={{ uri: item.thumbnail_img_url }} />
+                            <Image resizeMode='contain' style={Style.imageStyle}
+                              source={{ uri: item.thumbnail_img_url }}
+                              onError={(error) => console.error('Image loading error:', error)} />
+
                           </View>
                           <View style={{ flex: 1, width: 100 }}>
                             <View style={{
@@ -178,9 +171,9 @@ const HomeScreen = ({ navigation }: any) => {
                         paddingHorizontal: 0
                       }]} >
                         <View>
-                          <Image resizeMode='contain' style={Style.imageStyle} source={{ uri: item.thumbnail_img_url }} onError={(error) => console.error('Image loading error:', error)}
+                          <Image resizeMode='contain' style={Style.imageStyle} source={{ uri: item.thumbnail_img_url }}
+                            onError={(error) => console.error('Image loading error:', error)} />
 
-                          />
                         </View>
                         <View style={{ flex: 1, width: 100 }}>
                           <Text style={[GlobalStyle.blackColor, Style.title]}>
@@ -274,7 +267,8 @@ const Style = StyleSheet.create({
   imageStyle: {
     borderTopLeftRadius: 15,
     borderBottomLeftRadius: 15,
-    height: 120
+    height: 120,
+    width: 100
   }
 })
 

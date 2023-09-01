@@ -23,6 +23,7 @@ export const getUserByUserID = async (userID: any, token: any): Promise<any> => 
 
 
 export const uploadProfilePhoto = async (userID: any, token: any, image: any): Promise<any> => {
+    console.log("base64_image", image)
     return new Promise((resolve, reject) => {
         axios({
             method: 'post',
