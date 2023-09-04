@@ -245,7 +245,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                     {/* Display user's current location with a marker */}
 
                     <Marker
-                        image={require('../../assets/images/marker-current_location.png')}
+                        // image={require('../../assets/images/marker-current_location.png')}
                         coordinate={{
                             latitude: currentLocation.latitude,
                             longitude: currentLocation.longitude,
@@ -253,7 +253,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                         // pinColor="#05E3D5"
                         title="Your Location"
                     >
-                        {/* <Image source={require('../../assets/images/marker-current_location.png')} style={{ width: 20, height: 20 }} /> */}
+                        <Image resizeMode="contain" source={require('../../assets/images/marker-current_location.png')} style={{ width: 30, height: 30 }} />
                         {/* Callout to display location name */}
                         <Callout>
                             <View>
@@ -265,7 +265,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                     {nearbyLocationsgigs.map((location: any, index: number) => (
                         <Marker
                             key={index}
-                            image={require('../../assets/images/marker-nearby-gigs.png')}
+                            // image={require('../../assets/images/marker-nearby-gigs.png')}
                             coordinate={{
                                 latitude: location.latitude,
                                 longitude: location.longitude,
@@ -274,6 +274,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                             title={location.locationName}
                         >
                             {/* Callout to display location name */}
+                            <Image resizeMode="contain" source={require('../../assets/images/marker-nearby-gigs.png')} style={{ width: 30, height: 30 }} />
                             <Callout>
                                 <View>
                                     <Text>{location.locationName}</Text>
