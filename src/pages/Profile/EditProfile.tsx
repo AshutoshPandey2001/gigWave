@@ -133,8 +133,17 @@ const EditProfileScreen = () => {
 
                 uploadProfilePhoto(user.user_id, firstToken, selectedImage.base64)
                     .then((res) => {
-                        dispatch(setLoading(false))
                         console.log(res, 'uploaded image');
+                        getUserByUserID(user.user_id, firstToken).then((response) => {
+                            console.log('res', response);
+                            const dataURI = `data:image/jpeg;base64,${response.base64_img}`; // Assuming res is a base64 encoded image
+                            console.log('image data url', dataURI);
+
+                            setProfilePic(dataURI);
+                            dispatch(setLoading(false))
+                            dispatch(setUser(response))
+                        })
+                        dispatch(setLoading(false))
                         // You might want to perform additional actions here after successful upload
                     }).catch((err) => { dispatch(setLoading(false)); console.error(err) })
             }

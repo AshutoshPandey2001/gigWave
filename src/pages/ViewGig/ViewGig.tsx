@@ -74,7 +74,7 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                     </View>
                     <View style={{ marginTop: 10 }}>
                         <View style={{ display: 'flex', alignItems: 'center' }}>
-                            <Image source={{ uri: route.params.thumbnail_img_url }} style={{ position: 'absolute', zIndex: 999, top: 0 }} />
+                            <Image source={{ uri: route.params.thumbnail_img_url }} style={{ position: 'absolute', zIndex: 999, top: 0, width: "100%", height: 130 }} />
                             <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { marginTop: 90, paddingTop: 50, display: 'flex', justifyContent: 'center', alignItems: 'center' }]}>
                                 <Text style={[GlobalStyle.blackColor, { fontWeight: 'bold' }]}>{route.params.title ? route.params?.title : 'Part-time Childcare'}</Text>
                                 <Text>{route.params.address ? route.params?.address : 'San Francisco, CA'}</Text>
@@ -120,9 +120,7 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                                 {route.params.gig_type ? route.params?.gig_type : 'Paid'}
                             </Text>
                             <Text style={[GlobalStyle.blackColor]}>
-                                ${route.params.budget ? route.params?.budget : '100'}
-
-                                {/* $100 */}
+                                ${route.params.budget ? route.params?.budget : '0'}
                             </Text>
                         </View>
                     </View>

@@ -38,7 +38,7 @@ const LoginScreen = ({ navigation }: any) => {
         Toast.show({
           type: 'success',
           text1: 'Success',
-          text2: 'OTP sent successfully 👋',
+          text2: 'OTP sent successfully ',
         });
         await dispatch(setLoading(false))
         setOtpSend(true)

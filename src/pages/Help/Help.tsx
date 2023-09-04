@@ -54,6 +54,8 @@ const HelpScreen = ({ route, navigation }: any) => {
                 dispatch(setLoading(false));
             });
     };
+    console.log('route.params', route.params.thumbnail_img_url);
+
     return (
         <SafeAreaView>
             <ScrollView>
@@ -65,7 +67,7 @@ const HelpScreen = ({ route, navigation }: any) => {
 
                             <View style={[GlobalStyle.card, GlobalStyle.shadowProp, Style.localCardStyle]}>
                                 <View>
-                                    <Image resizeMode='contain' style={{ borderTopLeftRadius: 15, borderBottomLeftRadius: 15, height: 120 }} source={{ uri: route.params?.thumbnail_img_url }} />
+                                    <Image resizeMode='contain' style={Style.imageStyle} source={{ uri: route.params.thumbnail_img_url }} />
                                 </View>
                                 <View style={{ flex: 1, width: 100 }}>
                                     <Text style={[GlobalStyle.blackColor, Style.commanPaddingFontSize, { marginHorizontal: 10 }]}>
@@ -202,6 +204,12 @@ const Style = StyleSheet.create({
         paddingTop: 10,
         fontWeight: 'bold'
 
+    },
+    imageStyle: {
+        borderTopLeftRadius: 15,
+        borderBottomLeftRadius: 15,
+        height: 120,
+        width: 100
     }
 })
 

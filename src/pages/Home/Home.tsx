@@ -7,11 +7,15 @@ import { GlobalStyle } from '../../globalStyle';
 import { setLoading } from '../../redux/action/General/GeneralSlice';
 import { RootState } from '../../redux/store';
 import { getGigByUser } from '../../services/gigService/gigService';
-import { getMatchedGigbyuserid } from '../../services/proUserService/proUserService';
+import { createProUsers, getMatchedGigbyuserid, getProdetailsbyuserid, updateProUsersDetails } from '../../services/proUserService/proUserService';
+import { useIsFocused } from '@react-navigation/native';
+import Toast from 'react-native-toast-message';
 var heightY = Dimensions.get("window").height;
 
 const HomeScreen = ({ navigation }: any) => {
   const [selectedIndex, SetSelectedIndex] = useState(0);
+  const { isGigCreated } = useSelector((state: RootState) => state.isGigCreated)
+  const [alreadyProuser, setalreadyprouser] = useState(false)
 
   const [lists, setLists] = useState([])
   const [proLists, setProLists] = useState<any[]>([])
@@ -20,6 +24,9 @@ const HomeScreen = ({ navigation }: any) => {
   const user: any = useSelector((state: RootState) => state.user.user);
   const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
   const dispatch = useDispatch();
+  const focus = useIsFocused();  // useIsFocused as shown         
+
+  const [interestGigType, setInterestGigType] = useState('unpaid')
 
   useEffect(() => {
     if (userType === "CREATOR")
@@ -28,9 +35,72 @@ const HomeScreen = ({ navigation }: any) => {
       getProList()
   }, [userType, selectedIndex])
 
+
+  useEffect(() => {
+    if (focus) {
+      if (userType === "CREATOR")
+        getList();
+      else
+        getProDetails()
+      getProList()
+    }
+  }, [focus])
+  const getProDetails = () => {
+    getProdetailsbyuserid(user.user_id, firstToken).then((res) => {
+      setSkillValue(res.raw_skills_text)
+      setInterestGigType(res.interest_gig_type)
+      setalreadyprouser(true)
+      console.log(res, 'pro user details')
+      //   navigation.navigate('Home')
+      dispatch(setLoading(false));
+    }).catch((e) => {
+      console.log('error', JSON.stringify(e));
+      dispatch(setLoading(false))
+    })
+  }
+  const updateProprofile = () => {
+
+    return new Promise((resolve, reject) => {
+      let provalue = {
+        "user_id": user.user_id,
+        "raw_skills_text": skillValue,
+        "interest_gig_type": interestGigType,
+      }
+      dispatch(setLoading(true))
+      if (alreadyProuser) {
+        updateProUsersDetails(provalue, firstToken).then((res) => {
+          dispatch(setLoading(false));
+          resolve(true)
+        }).catch((e) => {
+          Toast.show({
+            type: 'error',
+            text1: 'Error',
+            text2: e,
+          });
+          console.log('error', JSON.stringify(e));
+          dispatch(setLoading(false))
+        })
+      } else {
+        createProUsers(provalue, firstToken).then((res) => {
+          //   navigation.navigate('Home')
+          dispatch(setLoading(false));
+          resolve(true)
+        }).catch((e) => {
+          Toast.show({
+            type: 'error',
+            text1: 'Error',
+            text2: e,
+          });
+          console.log('error', JSON.stringify(e));
+          dispatch(setLoading(false))
+        })
+      }
+
+    })
+  }
   const getList = () => {
     dispatch(setLoading(true))
-    console.log('user.user_id', user.user_id);
+    // console.log('user.user_id', user.user_id);
 
     getGigByUser(user.user_id, firstToken).then((res) => {
       if (selectedIndex === 0) {
@@ -106,7 +176,7 @@ const HomeScreen = ({ navigation }: any) => {
                           <View>
                             <Image resizeMode='contain' style={Style.imageStyle}
                               source={{ uri: item.thumbnail_img_url }}
-                              onError={(error) => console.error('Image loading error:', error)} />
+                            />
 
                           </View>
                           <View style={{ flex: 1, width: 100 }}>
@@ -212,7 +282,6 @@ const HomeScreen = ({ navigation }: any) => {
                         placeholder="Type here..."
                         placeholderTextColor="#fff"
                         value={skillValue ? skillValue : ''}
-                        editable={false}
                         onChangeText={(msg: string) => setSkillValue(msg)}
                         style={{ flex: 1, fontSize: 18, color: '#000' }}
                       />
@@ -223,7 +292,7 @@ const HomeScreen = ({ navigation }: any) => {
                     </View>
                   </View>
                   <View style={{ margin: 20 }}>
-                    <Pressable style={GlobalStyle.button} onPress={() => navigation.navigate('Create')}>
+                    <Pressable style={GlobalStyle.button} onPress={() => updateProprofile()}>
                       <Text style={GlobalStyle.btntext}>Add Skills</Text>
                     </Pressable>
                   </View>

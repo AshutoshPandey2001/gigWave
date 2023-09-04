@@ -19,8 +19,6 @@ const AuthNavigator = () => {
                 options={{
                     headerBackButtonMenuEnabled: true, headerTitle: '',
                     headerShadowVisible: false
-
-
                 }} name="Register" component={RegisterScreen} />
         </Stack.Navigator>
     )

@@ -4,13 +4,16 @@ import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE, persistReducer } fro
 import userReducer from './action/Auth/authAction';
 import uiReducer from './action/General/GeneralSlice';
 import userTypeReducer from './action/User/userTypeSlice';
+import gigReducer from './action/Gig/GigSlice';
+
 const rootReducer = combineReducers({
   firstToken: userReducer,
   user: userReducer,
   userType: userTypeReducer,
   isListView: userTypeReducer,
   isCreateButton: userTypeReducer,
-  isLoading: uiReducer  // Add other slice reducers here
+  isLoading: uiReducer,
+  isGigCreated: gigReducer// Add other slice reducers here
 });
 
 const persistConfig = {

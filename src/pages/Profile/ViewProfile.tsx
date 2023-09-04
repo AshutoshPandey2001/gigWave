@@ -41,10 +41,8 @@ const ViewProfileScreen = ({ navigation }: any) => {
 
         return new Promise((resolve, reject) => {
             let provalue = {
-                // "company": "string",
                 "user_id": user.user_id,
                 "raw_skills_text": skillValue,
-                // "payments": false,
                 "interest_gig_type": interestgigType,
             }
             dispatch(setLoading(true))

@@ -30,6 +30,12 @@ const SearchGigScreen = ({ navigation }: any) => {
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
     });
+    const [currentLocation, setcurrentLocation] = useState<Region>({
+        latitude: 0,
+        longitude: 0,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+    });
     const [searchValue, setSearchValue] = useState('')
     const [gigType, setGigType] = useState('')
     const { isListView }: any = useSelector((state: RootState) => state.isListView)
@@ -50,7 +56,20 @@ const SearchGigScreen = ({ navigation }: any) => {
     const onChangeLocation = (value: any) => {
         setLocation(value)
         debouncedSearch(searchValue, value, gigType)
-
+        geocodeLocationByName(value.description)
+            .then((res: any) => {
+                const { latitude, longitude } = res;
+                setInitialRegion((prevState) => ({
+                    ...prevState,
+                    latitude,
+                    longitude,
+                }));
+                return res;
+            })
+            .catch((error: any) => {
+                console.error(error);
+                return null; // Handle errors gracefully if needed
+            });
     }
     const separateAddressComponents = (addressJSON: any) => {
         const terms = addressJSON.terms.slice(-3); // Extract last three terms
@@ -95,12 +114,12 @@ const SearchGigScreen = ({ navigation }: any) => {
             const hasPermission = await PermissionsAndroid.check(permission);
             if (hasPermission) {
                 getCurrentLocation()
-                console.log('Permission already granted');
+                console.log('Permission already granted', hasPermission);
             } else {
                 const status = await PermissionsAndroid.request(permission);
                 if (status === PermissionsAndroid.RESULTS.GRANTED) {
                     getCurrentLocation()
-                    console.log('Permission granted');
+                    console.log('Permission granted', status);
                 } else {
                     console.log('Permission denied');
                 }
@@ -114,31 +133,34 @@ const SearchGigScreen = ({ navigation }: any) => {
             position => {
                 const { latitude, longitude } = position.coords;
                 console.log('latitude, longitude', latitude, longitude);
-
-                setInitialRegion({
+                setInitialRegion((prevState) => ({
+                    ...prevState,
                     latitude,
                     longitude,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
-                });
+                }));
+                setcurrentLocation((prevState) => ({
+                    ...prevState,
+                    latitude,
+                    longitude,
+                }))
             },
             error => {
-                console.error(error);
+                console.error('error on getting current location', error);
                 // Handle location permission error here
             },
-            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+            // { enableHighAccuracy: true, timeout: 10000, maximumAge: 10000 }
         );
     }
 
     const getProList = () => {
         let option = JSON.parse(JSON.stringify([
-            { thumbnail_img_url: require('../../assets/images/list1.png'), title: 'Help for Dad', summary: 'Experience working with elderly, Housecleaning, Cooking.', gig_type: 'Paid', isProList: true },
-            { thumbnail_img_url: require('../../assets/images/list2.png'), title: 'Move a couch', summary: 'Experience working with elderly, Housecleaning, Cooking.', gig_type: 'Unpaid', isProList: false },
-            { thumbnail_img_url: require('../../assets/images/piano.png'), title: 'Play Piano', summary: 'Seeking  piano player for two hour family reunion', gig_type: 'Paid', isProList: true },
-            { thumbnail_img_url: require('../../assets/images/list2.png'), title: 'Move a couch', summary: 'Experience working with elderly, Housecleaning, Cooking.', gig_type: 'Unpaid', isProList: false },
-            { thumbnail_img_url: require('../../assets/images/piano.png'), title: 'Play Piano', summary: 'Seeking  piano player for two hour family reunion', gig_type: 'Paid', isProList: true },
-            { thumbnail_img_url: require('../../assets/images/list2.png'), title: 'Move a couch', summary: 'Experience working with elderly, Housecleaning, Cooking.', gig_type: 'Unpaid', isProList: false },
-            { thumbnail_img_url: require('../../assets/images/piano.png'), title: 'Play Piano', summary: 'Seeking  piano player for two hour family reunion', gig_type: 'Paid', isProList: true }
+            { image: require('../../assets/images/list1.png'), title: 'Help for Dad', summary: 'Experience working with elderly, Housecleaning, Cooking.', gig_type: 'Paid', isProList: true },
+            { image: require('../../assets/images/list2.png'), title: 'Move a couch', summary: 'Experience working with elderly, Housecleaning, Cooking.', gig_type: 'Unpaid', isProList: false },
+            { image: require('../../assets/images/piano.png'), title: 'Play Piano', summary: 'Seeking  piano player for two hour family reunion', gig_type: 'Paid', isProList: true },
+            { image: require('../../assets/images/list2.png'), title: 'Move a couch', summary: 'Experience working with elderly, Housecleaning, Cooking.', gig_type: 'Unpaid', isProList: false },
+            { image: require('../../assets/images/piano.png'), title: 'Play Piano', summary: 'Seeking  piano player for two hour family reunion', gig_type: 'Paid', isProList: true },
+            { image: require('../../assets/images/list2.png'), title: 'Move a couch', summary: 'Experience working with elderly, Housecleaning, Cooking.', gig_type: 'Unpaid', isProList: false },
+            { image: require('../../assets/images/piano.png'), title: 'Play Piano', summary: 'Seeking  piano player for two hour family reunion', gig_type: 'Paid', isProList: true }
         ]))
         setProLists(option)
     }
@@ -157,7 +179,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                                         paddingHorizontal: 0
                                     }]} >
                                         <View>
-                                            <Image resizeMode='contain' style={{ borderTopLeftRadius: 15, borderBottomLeftRadius: 15, height: 120 }} source={item.thumbnail_img_url} />
+                                            <Image resizeMode='contain' style={styles.imageStyle} source={item.thumbnail_img_url ? { uri: item.thumbnail_img_url } : item.image} />
                                         </View>
                                         <View style={{ flex: 1, width: 100 }}>
                                             <Text style={[GlobalStyle.blackColor, { fontSize: 18, marginHorizontal: 10, paddingTop: 10, fontWeight: 'bold' }]}>
@@ -223,13 +245,15 @@ const SearchGigScreen = ({ navigation }: any) => {
                     {/* Display user's current location with a marker */}
 
                     <Marker
+                        image={require('../../assets/images/marker-current_location.png')}
                         coordinate={{
-                            latitude: initialRegion.latitude,
-                            longitude: initialRegion.longitude,
+                            latitude: currentLocation.latitude,
+                            longitude: currentLocation.longitude,
                         }}
-                        pinColor="#05E3D5"
+                        // pinColor="#05E3D5"
                         title="Your Location"
                     >
+                        {/* <Image source={require('../../assets/images/marker-current_location.png')} style={{ width: 20, height: 20 }} /> */}
                         {/* Callout to display location name */}
                         <Callout>
                             <View>
@@ -241,6 +265,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                     {nearbyLocationsgigs.map((location: any, index: number) => (
                         <Marker
                             key={index}
+                            image={require('../../assets/images/marker-nearby-gigs.png')}
                             coordinate={{
                                 latitude: location.latitude,
                                 longitude: location.longitude,
@@ -280,27 +305,53 @@ const SearchGigScreen = ({ navigation }: any) => {
         try {
             dispatch(setLoading(true));
             const matchedGigs = await searchGigbyParameter(gigParms, firstToken);
-            matchedGigs.map((item: any) => item.image = require('../../assets/images/list1.png'))
+            // matchedGigs.map((item: any) => item.image = require('../../assets/images/list1.png'))
 
             console.log('all gig Searched', matchedGigs);
             setProLists(matchedGigs);
             if (!isListView) {
-                let temp_data: any[] = []
-                matchedGigs.map((gig: any) => {
-                    geocodeLocationByName(gig.address).then((res: any) => {
-                        console.log('response', res);
+                // await matchedGigs.map((gig: any) => {
+                //     geocodeLocationByName(gig.address).then(async (res: any) => {
+                //         console.log('response', res);
 
-                        temp_data.push(res)
-                    }).catch((error: any) => {
-                        console.error(error);
+                //         await temp_data.push(res)
+                //     }).catch((error: any) => {
+                //         console.error(error);
 
+                //     })
+                // })
+                const geocodePromises = matchedGigs.map((gig: any) => {
+                    return geocodeLocationByName(gig.address)
+                        .then((res: any) => {
+                            return res;
+                        })
+                        .catch((error: any) => {
+                            console.error(error);
+                            return null;
+                        });
+                });
+
+                Promise.all(geocodePromises)
+                    .then((results) => {
+                        const temp_data = results.filter((result) => result !== null);
+                        setNearbyLocationsgigs(temp_data)
                     })
-                })
-                setNearbyLocationsgigs(temp_data)
+                    .catch((error) => {
+                        console.error('Error while geocoding:', error);
+                    });
+                // const { latitude, longitude } = temp_data[0];
+                // console.log('temp_data[0]', temp_data);
+
+                // setInitialRegion((prevState) => ({
+                //     ...prevState,
+                //     latitude,
+                //     longitude,
+                // }));
+                // setNearbyLocationsgigs(temp_data)
             }
             dispatch(setLoading(false));
         } catch (error) {
-            console.error(JSON.stringify(error));
+            console.error('errorr', JSON.stringify(error));
             dispatch(setLoading(false));
         }
 
@@ -365,6 +416,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                                 setModalVisible(false);
                                 console.log('location', location);
                                 onChangeLocation(location)
+
                                 // setLocation(location.description)
                                 // values.address = location.description
 
@@ -478,5 +530,10 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         flex: 1,
     },
-
+    imageStyle: {
+        borderTopLeftRadius: 15,
+        borderBottomLeftRadius: 15,
+        height: 120,
+        width: 100
+    }
 })

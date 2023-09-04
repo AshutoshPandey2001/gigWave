@@ -12,6 +12,7 @@ import { RootState } from '../../redux/store'
 import { createGig } from '../../services/gigService/gigService'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import { setGigCreated } from '../../redux/action/Gig/GigSlice'
 
 const CreategigScreen = ({ navigation }: any) => {
   const user: any = useSelector((state: RootState) => state.user.user);
@@ -36,20 +37,25 @@ const CreategigScreen = ({ navigation }: any) => {
       }
       dispatch(setLoading(true))
       createGig(gigValue, firstToken).then((res) => {
+        dispatch(setGigCreated())
+
         console.log(res, 'response creat gig')
         Toast.show({
           type: 'success',
           text1: 'Success',
           text2: 'Gig Created successfully',
-
-
         });
         // SuccessToast({
         //   text1: 'Gig Created Scuuessfully',
         // })
-        navigation.navigate('Home')
-        dispatch(setLoading(false));
-        resolve(true)
+        setTimeout(() => {
+          navigation.navigate('Home');
+          dispatch(setLoading(false));
+          resolve(true);
+        }, 2000);
+        // navigation.navigate('Home')
+        // dispatch(setLoading(false));
+        // resolve(true)
       }).catch((e) => {
         Toast.show({
           type: 'error',
