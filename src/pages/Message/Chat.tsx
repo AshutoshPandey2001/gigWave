@@ -1,4 +1,3 @@
-import Voice from '@react-native-voice/voice';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import {
@@ -34,15 +33,7 @@ const ChatScreen = ({ navigation }: any) => {
 
     useEffect(() => {
         //Setting callbacks for the process status
-        Voice.onSpeechStart = () => setIsRecording(true)
-        Voice.onSpeechEnd = () => setIsRecording(false)
-        Voice.onSpeechError = (err: any) => setError(err.error)
-        Voice.onSpeechResults = onSpeechResults;
-
-        return () => {
-            //destroy the process after switching the screen
-            Voice.destroy().then(Voice.removeAllListeners);
-        };
+       
     }, []);
 
     const onSend = () => {
@@ -60,20 +51,10 @@ const ChatScreen = ({ navigation }: any) => {
     };
 
     const startRecognizing = async () => {
-        try {
-            await Voice.start('en-US')
-        } catch (error: any) {
-            setError(error)
-        }
+        
     }
     const stopRecording = async () => {
-        try {
-            await Voice.stop();
-            // await Voice.destroy();
-        } catch (error: any) {
-            setError(error)
-            // await Voice.destroy()
-        }
+        
     }
 
     const RenderChats = () => {
