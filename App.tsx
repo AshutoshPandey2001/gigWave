@@ -13,7 +13,8 @@ import {
   ActivityIndicator,
   StyleSheet,
   View,
-  Platform
+  Platform,
+  PermissionsAndroid
 } from 'react-native';
 
 import AuthNavigator from './src/navigator/AuthNavigator';
@@ -27,6 +28,7 @@ import { getLoginToken } from './src/services/authServices/authServices';
 import { setFirstToken } from './src/redux/action/Auth/authAction';
 import { setLoading } from './src/redux/action/General/GeneralSlice';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import { checkPermission } from './src/services/audioServices/audioServices';
 
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 function App(): JSX.Element {
@@ -37,6 +39,7 @@ function App(): JSX.Element {
   const dispatch = useDispatch();
   useEffect(() => {
     if (user?.user) {
+
       // console.log('user info', user.user);
       setIsLogged(true)
     }
@@ -49,11 +52,14 @@ function App(): JSX.Element {
       }
     })
   }, [])
+  useEffect(() => {
+    checkPermission()
+  }, [])
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       {isLoading &&
-      
+
         <View style={[styles.container, styles.horizontal]}>
           <ActivityIndicator size={'large'} />
         </View>
@@ -97,7 +103,7 @@ const styles = StyleSheet.create({
     margin: 'auto',
     backgroundColor: "rgba(255,255,255,0.7)",
     elevation: Platform.OS === "android" ? 50 : 0,
-    shadowColor:"rgba(255,255,255,0.7)"
+    shadowColor: "rgba(255,255,255,0.7)"
   },
   horizontal: {
     flexDirection: 'row',

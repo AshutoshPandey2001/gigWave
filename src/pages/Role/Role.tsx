@@ -10,7 +10,6 @@ import { RootState } from '../../redux/store'
 const RoleScreen = ({ navigation }: any) => {
   const dispatch = useDispatch()
   const user: any = useSelector((state: RootState) => state.user.user);
-  console.log('user', user);
 
   return (
     <SafeAreaView>

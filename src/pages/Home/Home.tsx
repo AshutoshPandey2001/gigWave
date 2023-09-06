@@ -1,6 +1,6 @@
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import React, { useEffect, useState } from 'react';
-import { Dimensions, Image, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Dimensions, Image, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import MicIcon from '../../assets/icons/Mic1.svg';
 import { GlobalStyle } from '../../globalStyle';
@@ -10,13 +10,16 @@ import { getGigByUser } from '../../services/gigService/gigService';
 import { createProUsers, getMatchedGigbyuserid, getProdetailsbyuserid, updateProUsersDetails } from '../../services/proUserService/proUserService';
 import { useIsFocused } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
+import { audioToText, checkPermission, readAudioFile, startRecord, stopRecord } from '../../services/audioServices/audioServices';
+import { setGigCreated } from '../../redux/action/Gig/GigSlice';
 var heightY = Dimensions.get("window").height;
 
 const HomeScreen = ({ navigation }: any) => {
   const [selectedIndex, SetSelectedIndex] = useState(0);
   const { isGigCreated } = useSelector((state: RootState) => state.isGigCreated)
   const [alreadyProuser, setalreadyprouser] = useState(false)
-
+  const [isRecording, setIsRecording] = useState(false);
+  const [audioPath, setAudioPath] = useState<string>('');
   const [lists, setLists] = useState([])
   const [proLists, setProLists] = useState<any[]>([])
   const [skillValue, setSkillValue] = useState("I do clean the house, cook and other various household tasks.  I also play the piano and violin at weddings.")
@@ -45,6 +48,56 @@ const HomeScreen = ({ navigation }: any) => {
       getProList()
     }
   }, [focus])
+  useEffect(() => {
+    if (isGigCreated) {
+      setTimeout(() => {
+        getList();
+        dispatch(setGigCreated(false))
+      }, 5000);
+    }
+
+  }, [isGigCreated])
+  const startRecognizing = async () => {
+
+    const granted = await checkPermission();
+
+    if (!granted) {
+      // Permissions not granted, return early
+      console.log('Permissions not granted');
+      return;
+    }
+
+
+    startRecord(setAudioPath, setIsRecording);
+
+  }
+  const stopRecording = async () => {
+    stopRecord(setIsRecording);
+    console.log('audioPath', audioPath);
+    dispatch(setLoading(true))
+
+    readAudioFile(audioPath)
+      .then((base64Data) => {
+        if (base64Data) {
+          const audioDataToSend = {
+            audio_base64: base64Data,
+            audio_format: 'mp4', // Set the desired audio format
+          };
+          audioToText(audioDataToSend, firstToken).then((res) => {
+            console.log('Return audio to text', res);
+            setSkillValue(res.text)
+            dispatch(setLoading(false))
+          }).catch((error) => {
+            console.error('error', error);
+            dispatch(setLoading(false))
+          })
+        }
+      })
+      .catch((error) => {
+        dispatch(setLoading(false))
+        console.error('Error reading audio file:', error);
+      });
+  }
   const getProDetails = () => {
     getProdetailsbyuserid(user.user_id, firstToken).then((res) => {
       setSkillValue(res.raw_skills_text)
@@ -122,7 +175,6 @@ const HomeScreen = ({ navigation }: any) => {
   const getProList = async () => {
     try {
       dispatch(setLoading(true));
-
       const matchedGigs = await getMatchedGigbyuserid(user.user_id, firstToken);
       setProLists(matchedGigs);
       dispatch(setLoading(false));
@@ -241,7 +293,7 @@ const HomeScreen = ({ navigation }: any) => {
                         paddingHorizontal: 0
                       }]} >
                         <View>
-                          <Image resizeMode='contain' style={Style.imageStyle} source={{ uri: item.thumbnail_img_url }}
+                          <Image resizeMode='contain' style={Style.imageStyle} source={item.thumbnail_img_url ? { uri: item.thumbnail_img_url } : require('../../assets/images/piano.png')}
                             onError={(error) => console.error('Image loading error:', error)} />
 
                         </View>
@@ -286,8 +338,11 @@ const HomeScreen = ({ navigation }: any) => {
                         style={{ flex: 1, fontSize: 18, color: '#000' }}
                       />
                       <View style={{ alignItems: 'center' }}>
+
                         {/* <Image source={require('../../assets/icons/mic1.png')} /> */}
-                        <MicIcon height={50} width={50} />
+                        <TouchableOpacity onPress={isRecording ? stopRecording : startRecognizing} >
+                          {isRecording ? <Image resizeMode='contain' source={require('../../assets/images/stopRecording.png')} style={{ width: 50, height: 50 }} /> : <MicIcon height={50} width={50} />}
+                        </TouchableOpacity>
                       </View>
                     </View>
                   </View>

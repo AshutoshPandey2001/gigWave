@@ -12,14 +12,17 @@ import SendIcon from '../../assets/icons/send.svg';
 import OnlineIcon from '../../assets/icons/online.svg';
 import BackIcon from '../../assets/icons/Backbutton.svg';
 import { GlobalStyle } from '../../globalStyle';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
+import { audioToText, checkPermission, readAudioFile, startRecord, stopRecord } from '../../services/audioServices/audioServices';
+import { setLoading } from '../../redux/action/General/GeneralSlice';
 
 const ChatScreen = ({ navigation }: any) => {
     const [message, setMessage] = useState('');
     const [result, setResults] = useState([]);
     const [isRecording, setIsRecording] = useState(false);
-    const [error, setError] = useState('')
+    const [audioPath, setAudioPath] = useState<string>('');
+    const dispatch = useDispatch()
     const [chats, setChats] = useState([
         { id: 0, message: 'Hi There', time: new Date(), from: 'lala' },
         { id: 1, message: 'Lorem ipsum dolor sit amet consectetur. Leo faucibus integer mi sit morbi.', time: new Date(), from: 'Rev' },
@@ -27,13 +30,14 @@ const ChatScreen = ({ navigation }: any) => {
         { id: 0, message: 'Yes I am ready', time: new Date(), from: 'lala' },
         { id: 0, message: 'What is the work', time: new Date(), from: 'lala' },
     ])
+    const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
     const { userType }: any = useSelector((state: RootState) => state.userType)
 
 
 
     useEffect(() => {
         //Setting callbacks for the process status
-       
+        checkPermission()
     }, []);
 
     const onSend = () => {
@@ -51,10 +55,45 @@ const ChatScreen = ({ navigation }: any) => {
     };
 
     const startRecognizing = async () => {
-        
+
+        const granted = await checkPermission();
+
+        if (!granted) {
+            // Permissions not granted, return early
+            console.log('Permissions not granted');
+            return;
+        }
+
+
+        startRecord(setAudioPath, setIsRecording);
+
     }
     const stopRecording = async () => {
-        
+        stopRecord(setIsRecording);
+        console.log('audioPath', audioPath);
+        dispatch(setLoading(true))
+
+        readAudioFile(audioPath)
+            .then((base64Data) => {
+                if (base64Data) {
+                    const audioDataToSend = {
+                        audio_base64: base64Data,
+                        audio_format: 'mp4', // Set the desired audio format
+                    };
+                    audioToText(audioDataToSend, firstToken).then((res) => {
+                        console.log('Return audio to text', res);
+                        setMessage(res.text)
+                        dispatch(setLoading(false))
+                    }).catch((error) => {
+                        console.error('error', error);
+                        dispatch(setLoading(false))
+                    })
+                }
+            })
+            .catch((error) => {
+                dispatch(setLoading(false))
+                console.error('Error reading audio file:', error);
+            });
     }
 
     const RenderChats = () => {
@@ -108,7 +147,7 @@ const ChatScreen = ({ navigation }: any) => {
 
     return (
         <SafeAreaView style={{ height: '100%' }}>
-            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: 80,padding:20 }}>
+            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: 80, padding: 20 }}>
                 <Pressable onPress={() => navigation.goBack()}>
                     <BackIcon />
                 </Pressable>
@@ -197,8 +236,8 @@ const ChatScreen = ({ navigation }: any) => {
                         source={require('../../assets/icons/send.png')}
                     /> */}
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btnSend} onPress={startRecognizing} onLongPress={startRecognizing} onPressOut={stopRecording}>
-                    <MicIcon height={35} width={35} />
+                <TouchableOpacity style={styles.btnSend} onPress={isRecording ? stopRecording : startRecognizing} >
+                    {isRecording ? <Image resizeMode='contain' source={require('../../assets/images/stopRecording.png')} style={{ width: 35, height: 35 }} /> : <MicIcon height={35} width={35} />}
                 </TouchableOpacity>
             </View>
         </SafeAreaView >

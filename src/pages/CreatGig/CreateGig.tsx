@@ -1,7 +1,7 @@
-import { View, Text, SafeAreaView, ScrollView, StyleSheet, TextInput, Pressable, Image, Animated } from 'react-native'
+import { View, Text, SafeAreaView, ScrollView, StyleSheet, TextInput, Pressable, Image, Animated, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { GlobalStyle } from '../../globalStyle'
-import { Formik } from 'formik'
+import { Formik, useFormik } from 'formik'
 import SelectDropdown from 'react-native-select-dropdown'
 import MicIcon from '../../assets/icons/Mic1.svg'
 import * as Animatable from 'react-native-animatable';
@@ -13,11 +13,25 @@ import { createGig } from '../../services/gigService/gigService'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { setGigCreated } from '../../redux/action/Gig/GigSlice'
-
+import { audioToText, checkPermission, readAudioFile, startRecord, stopRecord } from '../../services/audioServices/audioServices'
+interface InitialFormValues {
+  description: string,
+  address: string,
+  amount: string,
+  status: string
+}
 const CreategigScreen = ({ navigation }: any) => {
   const user: any = useSelector((state: RootState) => state.user.user);
   const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
+  const [isRecording, setIsRecording] = useState(false);
+  const [audioPath, setAudioPath] = useState<string>('');
   const dispatch = useDispatch();
+  const [initialFormValues, setInitialFormValues] = useState<InitialFormValues>({
+    description: '',
+    address: '',
+    amount: '',
+    status: ''
+  });
   const gigSchema = yup.object().shape({
     description: yup.string().required('Description is required').min(10, 'Description must be at least 10 characters')
       .max(400, 'Description must not exceed 400 characters'),
@@ -37,7 +51,7 @@ const CreategigScreen = ({ navigation }: any) => {
       }
       dispatch(setLoading(true))
       createGig(gigValue, firstToken).then((res) => {
-        dispatch(setGigCreated())
+        dispatch(setGigCreated(true))
 
         console.log(res, 'response creat gig')
         Toast.show({
@@ -68,47 +82,72 @@ const CreategigScreen = ({ navigation }: any) => {
     })
   }
 
-  const [isRecording, setIsRecording] = useState(false)
   const [isModalVisible, setModalVisible] = useState(false);
 
-  useEffect(() => { dispatch(setLoading(false)) }, [])
+  useEffect(() => {
+    dispatch(setLoading(false))
+    checkPermission()
+  }, [])
+
+  const formik = useFormik<InitialFormValues>({
+    initialValues: initialFormValues,
+    validationSchema: gigSchema,
+    onSubmit: (async (values: any) => {
+      let res = await onCreate(values);
+      console.log('res', res);
+      resetForm();
+      return res
+    }),
+  });
+  const { handleChange, handleBlur, handleSubmit, values, errors, isValid, touched, setFieldValue, resetForm } = formik
   const closeModel = () => {
 
     setModalVisible(false)
   }
-  const handleMicIconPress = () => {
-    setIsRecording(true);
-    startLongPressAnimation();
-  };
 
-  const handleMicIconPressOut = () => {
-    setIsRecording(false);
-    // Start the press release animation
-    startPressReleaseAnimation();
-    // Add your logic for when the press is released
-  };
+  const startRecognizing = async () => {
 
-  // Define animated values for animations
-  const longPressScale = new Animated.Value(1);
-  const pressReleaseScale = new Animated.Value(1);
+    const granted = await checkPermission();
 
-  // Animation for long press
-  const startLongPressAnimation = () => {
-    Animated.timing(longPressScale, {
-      toValue: 1.1,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  };
+    if (!granted) {
+      // Permissions not granted, return early
+      console.log('Permissions not granted');
+      return;
+    }
 
-  // Animation for press release
-  const startPressReleaseAnimation = () => {
-    Animated.timing(pressReleaseScale, {
-      toValue: 1,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  };
+
+    startRecord(setAudioPath, setIsRecording);
+
+  }
+  const stopRecording = async () => {
+    stopRecord(setIsRecording);
+    console.log('audioPath', audioPath);
+    dispatch(setLoading(true))
+
+    readAudioFile(audioPath)
+      .then((base64Data) => {
+        if (base64Data) {
+          const audioDataToSend = {
+            audio_base64: base64Data,
+            audio_format: 'mp4', // Set the desired audio format
+          };
+          audioToText(audioDataToSend, firstToken).then((res) => {
+            console.log('Return audio to text', res);
+            setFieldValue('description', res.text)
+            // values.description = res.text
+            dispatch(setLoading(false))
+          }).catch((error) => {
+            console.error('error', error);
+            dispatch(setLoading(false))
+          })
+        }
+      })
+      .catch((error) => {
+        dispatch(setLoading(false))
+        console.error('Error reading audio file:', error);
+      });
+  }
+
   return (
     <SafeAreaView>
       <ScrollView keyboardShouldPersistTaps={'always'}>
@@ -123,87 +162,58 @@ const CreategigScreen = ({ navigation }: any) => {
           <View>
             <Text style={[GlobalStyle.blackColor, { fontSize: 22, fontWeight: 'bold' }]}>Gig Details</Text>
           </View>
-          <Formik
-            initialValues={{
-              description: '',
-              address: '',
-              amount: '',
-              status: ''
-            }}
-            validationSchema={gigSchema}
-            onSubmit={async (values, { resetForm }) => {
-              let res = await onCreate(values);
-              console.log('res', res);
-              resetForm();
-              return res
-            }}
-          >
-            {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, resetForm, setFieldValue, touched }) => (
-              <View>
-                <View style={{ marginTop: 10 }}>
-                  <View
-                    style={Style.inputField}>
-                    <Text style={Style.inputLabel}>Description</Text>
-                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                      <TextInput
-                        editable
-                        multiline
-                        numberOfLines={4}
-                        onChangeText={handleChange('description')}
-                        onBlur={() => { handleBlur('description') }}
-                        value={values.description}
-                        maxLength={400}
-                        style={{ width: '80%', fontSize: 16 }}
-                      />
-                      <View style={{ alignItems: 'center' }}>
-                        <Pressable
-                          onPress={handleMicIconPress}
-                          onPressOut={handleMicIconPressOut}
-                        >
-                          <Animated.View
-                            style={[
-                              { alignItems: 'center' },
-                              {
-                                transform: [
-                                  { scale: isRecording ? longPressScale : pressReleaseScale },
-                                ],
-                              },
-                            ]}
-                          >
-                            <MicIcon height={70} width={70} style={{ padding: 10 }} />
-                          </Animated.View>
-                        </Pressable>
-                        {/* <MicIcon height={70} width={70} style={{ padding: 10 }} /> */}
-                      </View>
-                    </View>
+
+          <View>
+            <View style={{ marginTop: 10 }}>
+              <View
+                style={Style.inputField}>
+                <Text style={Style.inputLabel}>Description</Text>
+                <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                  <TextInput
+                    editable
+                    multiline
+                    numberOfLines={4}
+                    onChangeText={handleChange('description')}
+                    onBlur={() => { handleBlur('description') }}
+                    value={values.description}
+                    maxLength={400}
+                    style={{ width: '80%', fontSize: 16 }}
+                  />
+                  <View style={{ alignItems: 'center' }}>
+                    <TouchableOpacity onPress={isRecording ? stopRecording : startRecognizing} >
+                      {isRecording ? <Image resizeMode='contain' source={require('../../assets/images/stopRecording.png')} style={{ width: 70, height: 70 }} /> : <MicIcon height={70} width={70} />}
+                    </TouchableOpacity>
+
                   </View>
-                  {errors.description && touched.description &&
-                    <Text style={GlobalStyle.errorMsg}>{errors.description}</Text>
-                  }
                 </View>
-                <View style={{ marginTop: 10 }}>
-                  <View>
-                    <View
-                      style={Style.inputField}>
-                      <Text style={Style.inputLabel}>Address</Text>
+              </View>
+              {errors.description && touched.description &&
+                <Text style={GlobalStyle.errorMsg}>{errors.description}</Text>
+              }
+            </View>
+            <View style={{ marginTop: 10 }}>
+              <View>
+                <View
+                  style={Style.inputField}>
+                  <Text style={Style.inputLabel}>Address</Text>
 
-                      <LocationSearch
-                        placeholder="Address"
-                        isModalVisible={isModalVisible}
-                        // notifyChange={handleLocationChange}
-                        notifyChange={location => {
-                          setModalVisible(false);
-                          setFieldValue('address', location.description)
-                            // values.address = location.description
-                            ;
-                        }}
-                        closeModel={closeModel}
-                      />
-                      <Text style={{
-                        width: '100%', height: 50, fontSize: 16, color: '#000'
-                      }} onPress={() => setModalVisible(true)}>{values.address ? values.address : ''}</Text>
+                  <LocationSearch
+                    placeholder="Address"
+                    isModalVisible={isModalVisible}
+                    // notifyChange={handleLocationChange}
+                    notifyChange={location => {
+                      setModalVisible(false);
+                      setFieldValue('address', location.description)
+                        // values.address = location.description
+                        ;
+                    }}
+                    closeModel={closeModel}
+                  />
+                  <Text style={{
+                    width: '100%', height: 50, fontSize: 16, color: '#000'
+                  }} onPress={() => setModalVisible(true)}>{values.address ? values.address : ''}</Text>
 
-                      {/* <TextInput
+                  {/* <TextInput
                         editable
                         multiline
                         numberOfLines={2}
@@ -212,67 +222,65 @@ const CreategigScreen = ({ navigation }: any) => {
                         value={values.address}
                         style={{ fontSize: 16 }}
                       /> */}
-                    </View>
-                    {errors.address && touched.address &&
-                      <Text style={GlobalStyle.errorMsg}>{errors.address}</Text>
-                    }
-                  </View>
                 </View>
+                {errors.address && touched.address &&
+                  <Text style={GlobalStyle.errorMsg}>{errors.address}</Text>
+                }
+              </View>
+            </View>
 
-                <View style={{ marginTop: 10, display: 'flex', flexDirection: 'row' }}>
+            <View style={{ marginTop: 10, display: 'flex', flexDirection: 'row' }}>
 
-                  <View
-                    style={[{ marginRight: 10, width: '40%' }]}>
-                    <View style={Style.inputField}>
-                      <Text style={Style.inputLabel}>Free or Paid</Text>
-                      <SelectDropdown
-                        data={['Free', 'Paid']}
-                        onSelect={(selectedItem) => {
-                          setFieldValue('status', selectedItem)
-                          if (selectedItem === 'Free') {
-                            setFieldValue('amount', '0');
-                          } else {
-                            setFieldValue('amount', '');
-                          }
-                        }}
-                        buttonStyle={{ backgroundColor: 'transparent' }}
-                        defaultButtonText='Select'
-                        buttonTextStyle={{ textAlign: 'left' }}
-                        dropdownStyle={{ width: '35%', borderRadius: 10 }}
-                        defaultValue={''}
-                      />
-                    </View>
-                    {errors.status && touched.status &&
-                      <Text style={GlobalStyle.errorMsg}>{errors.status}</Text>
-                    }
-                  </View>
-                  {values.status === 'Free' ? null
-                    :
-                    <View
-                      style={[{ flex: 1 }]}>
-                      <View style={Style.inputField}>
-                        <Text style={Style.inputLabel}>Amount</Text>
-                        <TextInput
-                          onChangeText={handleChange('amount')}
-                          onBlur={() => { handleBlur('amount') }}
-                          value={values.amount}
-                          keyboardType='numeric'
-                          style={{ fontSize: 16 }}
-                        />
-                      </View>
-                      {errors.amount && touched.amount &&
-                        <Text style={GlobalStyle.errorMsg}>{errors.amount}</Text>
+              <View
+                style={[{ marginRight: 10, width: '40%' }]}>
+                <View style={Style.inputField}>
+                  <Text style={Style.inputLabel}>Free or Paid</Text>
+                  <SelectDropdown
+                    data={['Free', 'Paid']}
+                    onSelect={(selectedItem) => {
+                      setFieldValue('status', selectedItem)
+                      if (selectedItem === 'Free') {
+                        setFieldValue('amount', '0');
+                      } else {
+                        setFieldValue('amount', '');
                       }
-                    </View>
+                    }}
+                    buttonStyle={{ backgroundColor: 'transparent' }}
+                    defaultButtonText='Select'
+                    buttonTextStyle={{ textAlign: 'left' }}
+                    dropdownStyle={{ width: '35%', borderRadius: 10 }}
+                    defaultValue={''}
+                  />
+                </View>
+                {errors.status && touched.status &&
+                  <Text style={GlobalStyle.errorMsg}>{errors.status}</Text>
+                }
+              </View>
+              {values.status === 'Free' ? null
+                :
+                <View
+                  style={[{ flex: 1 }]}>
+                  <View style={Style.inputField}>
+                    <Text style={Style.inputLabel}>Amount</Text>
+                    <TextInput
+                      onChangeText={handleChange('amount')}
+                      onBlur={() => { handleBlur('amount') }}
+                      value={values.amount}
+                      keyboardType='numeric'
+                      style={{ fontSize: 16 }}
+                    />
+                  </View>
+                  {errors.amount && touched.amount &&
+                    <Text style={GlobalStyle.errorMsg}>{errors.amount}</Text>
                   }
                 </View>
-                <Pressable style={GlobalStyle.button} onPress={() => handleSubmit()}
-                >
-                  <Text style={GlobalStyle.btntext}>Create Gig</Text>
-                </Pressable>
-              </View>
-            )}
-          </Formik>
+              }
+            </View>
+            <Pressable style={GlobalStyle.button} onPress={() => handleSubmit()}
+            >
+              <Text style={GlobalStyle.btntext}>Create Gig</Text>
+            </Pressable>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>

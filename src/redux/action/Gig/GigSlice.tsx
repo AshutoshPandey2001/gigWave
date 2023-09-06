@@ -7,8 +7,8 @@ const gigSlice = createSlice({
     name: 'SET_GIG_CREATED',
     initialState,
     reducers: {
-        setGigCreated: (state: any) => {
-            state.isGigCreated = !state.isGigCreated
+        setGigCreated: (state: any, action) => {
+            state.isGigCreated = action.payload
         }
 
     }

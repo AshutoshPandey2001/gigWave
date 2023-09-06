@@ -67,7 +67,30 @@ def enableProguardInReleaseBuilds = false
  * this variant is about 6MiB larger per architecture than default.
  */
 def jscFlavor = 'org.webkit:android-jsc:+'
+buildscript {
+    // ext {
+    //     gradleVersion = '4.1.0'
+    //     kotlinVersion = '1.6.0'
+    // }
+ ext {
+          gradleVersion = '4.1.0'
+      buildToolsVersion = "29.0.3"
+     minSdkVersion = 24
+      compileSdkVersion = 29
+      targetSdkVersion = 29
+    kotlinVersion = '1.6.10'
+      ndkVersion = "20.1.5948944"
+  }
+    repositories {
+        google()
+        mavenCentral()
+    }
 
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.2.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+    }
+}
 android {
     ndkVersion rootProject.ext.ndkVersion
 

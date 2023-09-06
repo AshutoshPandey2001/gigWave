@@ -1,4 +1,4 @@
-import { Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { GlobalStyle } from '../../globalStyle'
 import MicIcon from '../../assets/icons/Mic1.svg'
@@ -7,6 +7,7 @@ import { RootState } from '../../redux/store'
 import { backGroundCheck_pro, createProUsers, getProdetailsbyuserid, updateProUsersDetails } from '../../services/proUserService/proUserService'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
+import { audioToText, checkPermission, readAudioFile, startRecord, stopRecord } from '../../services/audioServices/audioServices'
 
 
 const ViewProfileScreen = ({ navigation }: any) => {
@@ -18,7 +19,8 @@ const ViewProfileScreen = ({ navigation }: any) => {
     const [alreadyProuser, setalreadyprouser] = useState(false)
     const user: any = useSelector((state: RootState) => state.user.user);
     const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
-
+    const [isRecording, setIsRecording] = useState(false);
+    const [audioPath, setAudioPath] = useState<string>('');
     useEffect(() => {
         dispatch(setLoading(true));
         getProdetailsbyuserid(user.user_id, firstToken).then((res) => {
@@ -94,6 +96,47 @@ const ViewProfileScreen = ({ navigation }: any) => {
 
         })
     }
+    const startRecognizing = async () => {
+
+        const granted = await checkPermission();
+
+        if (!granted) {
+            // Permissions not granted, return early
+            console.log('Permissions not granted');
+            return;
+        }
+
+
+        startRecord(setAudioPath, setIsRecording);
+
+    }
+    const stopRecording = async () => {
+        stopRecord(setIsRecording);
+        console.log('audioPath', audioPath);
+        dispatch(setLoading(true))
+
+        readAudioFile(audioPath)
+            .then((base64Data) => {
+                if (base64Data) {
+                    const audioDataToSend = {
+                        audio_base64: base64Data,
+                        audio_format: 'mp4', // Set the desired audio format
+                    };
+                    audioToText(audioDataToSend, firstToken).then((res) => {
+                        console.log('Return audio to text', res);
+                        setSkillValue(res.text)
+                        dispatch(setLoading(false))
+                    }).catch((error) => {
+                        console.error('error', error);
+                        dispatch(setLoading(false))
+                    })
+                }
+            })
+            .catch((error) => {
+                dispatch(setLoading(false))
+                console.error('Error reading audio file:', error);
+            });
+    }
     return (
         <SafeAreaView>
             <ScrollView>
@@ -123,8 +166,11 @@ const ViewProfileScreen = ({ navigation }: any) => {
                                     style={{ flex: 1, fontSize: 16, color: '#000' }}
                                 />
                                 <View style={{ alignItems: 'center' }}>
+                                    <TouchableOpacity onPress={isRecording ? stopRecording : startRecognizing} >
+                                        {isRecording ? <Image resizeMode='contain' source={require('../../assets/images/stopRecording.png')} style={{ width: 50, height: 50 }} /> : <MicIcon height={50} width={50} />}
+                                    </TouchableOpacity>
                                     {/* <Image source={require('../../assets/icons/mic1.png')} /> */}
-                                    <MicIcon height={50} width={50} />
+                                    {/* <MicIcon height={50} width={50} /> */}
                                 </View>
                             </View>
                         </View>

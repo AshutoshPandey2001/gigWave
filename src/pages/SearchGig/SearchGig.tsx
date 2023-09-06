@@ -11,7 +11,7 @@ import MapMarkerIcon from '../../assets/icons/map-marker.svg'
 import DatePicker from 'react-native-date-picker'
 import MapView, { Callout, Marker, Region } from 'react-native-maps'
 import LocationSearch from '../../components/LocationSearch'
-import { searchGigbyParameter } from '../../services/proUserService/proUserService'
+import { getMatchedGigbyuserid, searchGigbyParameter } from '../../services/proUserService/proUserService'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
 import debounce from 'lodash.debounce';
@@ -20,9 +20,12 @@ import Geolocation from '@react-native-community/geolocation';
 import { PERMISSIONS, request } from 'react-native-permissions';
 import { Platform } from 'react-native';
 import { geocodeLocationByName } from '../../services/googleMapServices'
+import { audioToText, checkPermission, readAudioFile, startRecord, stopRecord } from '../../services/audioServices/audioServices'
 
 const SearchGigScreen = ({ navigation }: any) => {
     const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
+    const [isRecording, setIsRecording] = useState(false);
+    const [audioPath, setAudioPath] = useState<string>('');
     const dispatch = useDispatch()
     const [initialRegion, setInitialRegion] = useState<Region>({
         latitude: 0,
@@ -45,6 +48,7 @@ const SearchGigScreen = ({ navigation }: any) => {
     const [isModalVisible, setModalVisible] = useState(false);
     const [location, setLocation] = useState<any>();
     const [nearbyLocationsgigs, setNearbyLocationsgigs] = useState<any>([]);
+    const user: any = useSelector((state: RootState) => state.user.user);
 
     const closeModel = () => {
         setModalVisible(false)
@@ -104,10 +108,11 @@ const SearchGigScreen = ({ navigation }: any) => {
     };
     useEffect(() => {
         getProList();
-        checkPermission();
+        checkPermission()
+        checkPermissionGooglemap();
     }, [])
 
-    const checkPermission = async () => {
+    const checkPermissionGooglemap = async () => {
         const permission = PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
 
         try {
@@ -151,18 +156,57 @@ const SearchGigScreen = ({ navigation }: any) => {
             // { enableHighAccuracy: true, timeout: 10000, maximumAge: 10000 }
         );
     }
+    const startRecognizing = async () => {
 
-    const getProList = () => {
-        let option = JSON.parse(JSON.stringify([
-            { image: require('../../assets/images/list1.png'), title: 'Help for Dad', summary: 'Experience working with elderly, Housecleaning, Cooking.', gig_type: 'Paid', isProList: true },
-            { image: require('../../assets/images/list2.png'), title: 'Move a couch', summary: 'Experience working with elderly, Housecleaning, Cooking.', gig_type: 'Unpaid', isProList: false },
-            { image: require('../../assets/images/piano.png'), title: 'Play Piano', summary: 'Seeking  piano player for two hour family reunion', gig_type: 'Paid', isProList: true },
-            { image: require('../../assets/images/list2.png'), title: 'Move a couch', summary: 'Experience working with elderly, Housecleaning, Cooking.', gig_type: 'Unpaid', isProList: false },
-            { image: require('../../assets/images/piano.png'), title: 'Play Piano', summary: 'Seeking  piano player for two hour family reunion', gig_type: 'Paid', isProList: true },
-            { image: require('../../assets/images/list2.png'), title: 'Move a couch', summary: 'Experience working with elderly, Housecleaning, Cooking.', gig_type: 'Unpaid', isProList: false },
-            { image: require('../../assets/images/piano.png'), title: 'Play Piano', summary: 'Seeking  piano player for two hour family reunion', gig_type: 'Paid', isProList: true }
-        ]))
-        setProLists(option)
+        const granted = await checkPermission();
+
+        if (!granted) {
+            // Permissions not granted, return early
+            console.log('Permissions not granted');
+            return;
+        }
+
+
+        startRecord(setAudioPath, setIsRecording);
+
+    }
+    const stopRecording = async () => {
+        stopRecord(setIsRecording);
+        console.log('audioPath', audioPath);
+        dispatch(setLoading(true))
+
+        readAudioFile(audioPath)
+            .then((base64Data) => {
+                if (base64Data) {
+                    const audioDataToSend = {
+                        audio_base64: base64Data,
+                        audio_format: 'mp4', // Set the desired audio format
+                    };
+                    audioToText(audioDataToSend, firstToken).then((res) => {
+                        console.log('Return audio to text', res);
+                        onChangeSearch(res.text)
+                        dispatch(setLoading(false))
+                    }).catch((error) => {
+                        console.error('error', error);
+                        dispatch(setLoading(false))
+                    })
+                }
+            })
+            .catch((error) => {
+                dispatch(setLoading(false))
+                console.error('Error reading audio file:', error);
+            });
+    }
+    const getProList = async () => {
+        try {
+            dispatch(setLoading(true));
+            const matchedGigs = await getMatchedGigbyuserid(user.user_id, firstToken);
+            setProLists(matchedGigs);
+            dispatch(setLoading(false));
+        } catch (error) {
+            console.error(JSON.stringify(error));
+            dispatch(setLoading(false));
+        }
     }
     const ListView = (props: any) => {
         return (
@@ -201,35 +245,36 @@ const SearchGigScreen = ({ navigation }: any) => {
                         </>
                         :
                         <>
-                            <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                <Text style={[GlobalStyle.blackColor, { fontSize: 22 }]}>
-                                    No gigs in your area match your skills.  Expand your search area or add these skills to your profile.
-                                </Text>
-                            </View>
+                            <ScrollView>
+                                <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 22 }]}>
+                                        No gigs in your area match your skills.  Expand your search area or add these skills to your profile.
+                                    </Text>
+                                </View>
 
-                            <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                <Text style={[GlobalStyle.blackColor, { fontSize: 20, fontStyle: 'italic' }]}>
-                                    Popular skills:
-                                </Text>
-                                <Text style={[GlobalStyle.blackColor, { fontSize: 20, fontWeight: 'bold' }]}>
-                                    lawn care
-                                </Text>
-                                <Text style={[GlobalStyle.blackColor, { fontSize: 20, fontWeight: 'bold' }]}>
-                                    heavy lifting
-                                </Text>
-                                <Text style={[GlobalStyle.blackColor, { fontSize: 20, fontWeight: 'bold' }]}>
-                                    meal prep
-                                </Text>
-                                <Text style={[GlobalStyle.blackColor, { fontSize: 20, fontWeight: 'bold' }]}>
-                                    house cleaning
-
-                                </Text>
-                            </View>
-                            <View style={{ margin: 20 }}>
-                                <Pressable style={GlobalStyle.button} onPress={() => navigation.navigate('View-Profile')}>
-                                    <Text style={GlobalStyle.btntext}>Edit Profile</Text>
-                                </Pressable>
-                            </View>
+                                <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 20, fontStyle: 'italic' }]}>
+                                        Popular skills:
+                                    </Text>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 20, fontWeight: 'bold' }]}>
+                                        lawn care
+                                    </Text>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 20, fontWeight: 'bold' }]}>
+                                        heavy lifting
+                                    </Text>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 20, fontWeight: 'bold' }]}>
+                                        meal prep
+                                    </Text>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 20, fontWeight: 'bold' }]}>
+                                        house cleaning
+                                    </Text>
+                                </View>
+                                <View style={{ margin: 20 }}>
+                                    <Pressable style={GlobalStyle.button} onPress={() => navigation.navigate('View-Profile')}>
+                                        <Text style={GlobalStyle.btntext}>Edit Profile</Text>
+                                    </Pressable>
+                                </View>
+                            </ScrollView>
                         </>
                 }
             </View>
@@ -241,20 +286,18 @@ const SearchGigScreen = ({ navigation }: any) => {
                 <MapView
                     style={{ flex: 1 }}
                     initialRegion={initialRegion}
+
                 >
                     {/* Display user's current location with a marker */}
 
                     <Marker
-                        // image={require('../../assets/images/marker-current_location.png')}
                         coordinate={{
                             latitude: currentLocation.latitude,
                             longitude: currentLocation.longitude,
                         }}
-                        // pinColor="#05E3D5"
                         title="Your Location"
                     >
                         <Image resizeMode="contain" source={require('../../assets/images/marker-current_location.png')} style={{ width: 30, height: 30 }} />
-                        {/* Callout to display location name */}
                         <Callout>
                             <View>
                                 <Text>{'Your Location'}</Text>
@@ -262,22 +305,22 @@ const SearchGigScreen = ({ navigation }: any) => {
                         </Callout>
                     </Marker>
 
-                    {nearbyLocationsgigs.map((location: any, index: number) => (
+                    {proLists.map((location: any, index: number) => (
                         <Marker
                             key={index}
                             // image={require('../../assets/images/marker-nearby-gigs.png')}
                             coordinate={{
-                                latitude: location.latitude,
-                                longitude: location.longitude,
+                                latitude: location.lat,
+                                longitude: location.lon,
                             }}
                             pinColor="red"
-                            title={location.locationName}
+                            title={location.address}
                         >
                             {/* Callout to display location name */}
                             <Image resizeMode="contain" source={require('../../assets/images/marker-nearby-gigs.png')} style={{ width: 30, height: 30 }} />
                             <Callout>
                                 <View>
-                                    <Text>{location.locationName}</Text>
+                                    <Text>{location.address}</Text>
                                 </View>
                             </Callout>
                         </Marker>
@@ -306,50 +349,8 @@ const SearchGigScreen = ({ navigation }: any) => {
         try {
             dispatch(setLoading(true));
             const matchedGigs = await searchGigbyParameter(gigParms, firstToken);
-            // matchedGigs.map((item: any) => item.image = require('../../assets/images/list1.png'))
 
-            console.log('all gig Searched', matchedGigs);
             setProLists(matchedGigs);
-            if (!isListView) {
-                // await matchedGigs.map((gig: any) => {
-                //     geocodeLocationByName(gig.address).then(async (res: any) => {
-                //         console.log('response', res);
-
-                //         await temp_data.push(res)
-                //     }).catch((error: any) => {
-                //         console.error(error);
-
-                //     })
-                // })
-                const geocodePromises = matchedGigs.map((gig: any) => {
-                    return geocodeLocationByName(gig.address)
-                        .then((res: any) => {
-                            return res;
-                        })
-                        .catch((error: any) => {
-                            console.error(error);
-                            return null;
-                        });
-                });
-
-                Promise.all(geocodePromises)
-                    .then((results) => {
-                        const temp_data = results.filter((result) => result !== null);
-                        setNearbyLocationsgigs(temp_data)
-                    })
-                    .catch((error) => {
-                        console.error('Error while geocoding:', error);
-                    });
-                // const { latitude, longitude } = temp_data[0];
-                // console.log('temp_data[0]', temp_data);
-
-                // setInitialRegion((prevState) => ({
-                //     ...prevState,
-                //     latitude,
-                //     longitude,
-                // }));
-                // setNearbyLocationsgigs(temp_data)
-            }
             dispatch(setLoading(false));
         } catch (error) {
             console.error('errorr', JSON.stringify(error));
@@ -383,7 +384,9 @@ const SearchGigScreen = ({ navigation }: any) => {
                         placeholder='Search here'
                         style={{ padding: 5, flex: 1, fontSize: 16 }}
                     />
-                    <MicIcon height={50} width={50} />
+                    <TouchableOpacity onPress={isRecording ? stopRecording : startRecognizing} >
+                        {isRecording ? <Image resizeMode='contain' source={require('../../assets/images/stopRecording.png')} style={{ width: 50, height: 50 }} /> : <MicIcon height={50} width={50} />}
+                    </TouchableOpacity>
                 </View>
                 <View style={{
                     display: 'flex',
