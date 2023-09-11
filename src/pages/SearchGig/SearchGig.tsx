@@ -223,33 +223,37 @@ const SearchGigScreen = ({ navigation }: any) => {
                 {
                     proLists?.length > 0 ?
                         <>
-                            {proLists.map((item: any, index) => (
-                                <View key={index}>
-                                    <Pressable onPress={() => navigation.navigate('View-gig', item)} style={[GlobalStyle.card, GlobalStyle.shadowProp,
-                                    {
-                                        display: 'flex', flexDirection: 'row', paddingVertical: 0,
-                                        paddingHorizontal: 0
-                                    }]} >
-                                        <View>
-                                            <Image resizeMode='contain' style={styles.imageStyle} source={item.thumbnail_img_url ? { uri: item.thumbnail_img_url } : item.image} />
-                                        </View>
-                                        <View style={{ flex: 1, width: 100 }}>
-                                            <Text style={[GlobalStyle.blackColor, { fontSize: 18, marginHorizontal: 10, paddingTop: 10, fontWeight: 'bold' }]}>
-                                                {item.title}
-                                            </Text>
-                                            <Text style={[GlobalStyle.blackColor, { fontSize: 16, margin: 10, }]}>
-                                                {item.summary}
-                                            </Text>
-                                        </View>
-                                        <View style={{ padding: 10 }}>
-                                            <Pressable style={{ backgroundColor: item.gig_type === 'Paid' ? '#21AF2F' : '#989898', borderRadius: 5, paddingHorizontal: 10, width: 'auto' }}>
-                                                <Text style={{ color: '#fff' }}>{item.gig_type}</Text>
-                                            </Pressable>
-                                        </View>
-                                    </Pressable>
-                                </View>
-                            ))
-                            }
+                            <ScrollView>
+
+                                {proLists.map((item: any, index) => (
+                                    <View key={index}>
+                                        <Pressable onPress={() => navigation.navigate('View-gig', item)} style={[GlobalStyle.card, GlobalStyle.shadowProp,
+                                        {
+                                            display: 'flex', flexDirection: 'row', paddingVertical: 0,
+                                            paddingHorizontal: 0
+                                        }]} >
+                                            <View>
+                                                <Image resizeMode='contain' style={styles.imageStyle} source={item.thumbnail_img_url ? { uri: item.thumbnail_img_url } : item.image} />
+                                            </View>
+                                            <View style={{ flex: 1, width: 100 }}>
+                                                <Text style={[GlobalStyle.blackColor, { fontSize: 18, marginHorizontal: 10, paddingTop: 10, fontWeight: 'bold' }]}>
+                                                    {item.title}
+                                                </Text>
+                                                <Text style={[GlobalStyle.blackColor, { fontSize: 16, margin: 10, }]}>
+                                                    {item.summary}
+                                                </Text>
+                                            </View>
+                                            <View style={{ padding: 10 }}>
+                                                <Pressable style={{ backgroundColor: item.gig_type === 'Paid' ? '#21AF2F' : '#989898', borderRadius: 5, paddingHorizontal: 10, width: 'auto' }}>
+                                                    <Text style={{ color: '#fff' }}>{item.gig_type}</Text>
+                                                </Pressable>
+                                            </View>
+                                        </Pressable>
+                                    </View>
+                                ))
+                                }
+                            </ScrollView>
+
                         </>
                         :
                         <>
@@ -520,11 +524,13 @@ const SearchGigScreen = ({ navigation }: any) => {
 
                 </View>
                 <ScrollView>
+                    <View>
+                        {
+                            isListView &&
+                            <ListView />
+                        }
+                    </View>
 
-                    {
-                        isListView &&
-                        <ListView />
-                    }
                 </ScrollView>
             </View>
             {
