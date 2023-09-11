@@ -192,6 +192,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                         audio_format: 'mp4', // Set the desired audio format
                     };
                     audioToText(audioDataToSend, firstToken).then((res: any) => {
+                        setSearchValue(res.text)
                         dispatch(setLoading(false))
                     }).catch((error) => {
                         console.error('error', error);
