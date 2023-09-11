@@ -4,8 +4,8 @@ import { GlobalStyle } from '../../globalStyle'
 import SelectDropdown from 'react-native-select-dropdown'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
-import SearchIcon from '../../assets/icons/gig Search bar.svg'
-import MicIcon from '../../assets/icons/Mic.svg'
+// import SearchIcon from '../../assets/icons/gig Search bar.svg'
+import MicIcon from '../../assets/icons/SearchMic.svg'
 import MarkerIcon from '../../assets/icons/marker.svg'
 import MapMarkerIcon from '../../assets/icons/map-marker.svg'
 import DatePicker from 'react-native-date-picker'
@@ -21,6 +21,7 @@ import { PERMISSIONS, request } from 'react-native-permissions';
 import { Platform } from 'react-native';
 import { geocodeLocationByName } from '../../services/googleMapServices'
 import { audioToText, checkPermission, readAudioFile, startRecord, stopRecord } from '../../services/audioServices/audioServices'
+import SearchIcon from '../../assets/icons/Search.svg'
 
 const SearchGigScreen = ({ navigation }: any) => {
     const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
@@ -53,13 +54,21 @@ const SearchGigScreen = ({ navigation }: any) => {
     const closeModel = () => {
         setModalVisible(false)
     }
-    const onChangeSearch = (value: any) => {
-        setSearchValue(value)
-        debouncedSearch(value, location, gigType)
+    const onChangeSearch = () => {
+        if (!searchValue || !location || !gigType) {
+            Toast.show({
+                type: 'error',
+                text1: 'Error',
+                text2: "Address / Payment type is required",
+            });
+            return;
+        }
+        searchGigs(searchValue, location, gigType)
     }
     const onChangeLocation = (value: any) => {
         setLocation(value)
-        debouncedSearch(searchValue, value, gigType)
+
+        // searchGigs(searchValue, value, gigType)
         geocodeLocationByName(value.description)
             .then((res: any) => {
                 const { latitude, longitude } = res;
@@ -91,7 +100,7 @@ const SearchGigScreen = ({ navigation }: any) => {
             interestgig = "paid"
             setGigType('paid')
         }
-        debouncedSearch(searchValue, location, interestgig)
+        // searchGigs(searchValue, location, interestgig)
 
     }
     const openDatePicker = () => {
@@ -182,9 +191,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                         audio_base64: base64Data,
                         audio_format: 'mp4', // Set the desired audio format
                     };
-                    audioToText(audioDataToSend, firstToken).then((res) => {
-                        console.log('Return audio to text', res);
-                        onChangeSearch(res.text)
+                    audioToText(audioDataToSend, firstToken).then((res: any) => {
                         dispatch(setLoading(false))
                     }).catch((error) => {
                         console.error('error', error);
@@ -343,7 +350,8 @@ const SearchGigScreen = ({ navigation }: any) => {
             "country": country,
             "state": state,
             "search_query": searchValue,
-            "interest_gig_type": gigType
+            "interest_gig_type": gigType,
+            "user_id": user.user_id
         }
 
         try {
@@ -358,10 +366,7 @@ const SearchGigScreen = ({ navigation }: any) => {
         }
 
     }
-    // const debouncedSearch = debounce(searchGigs, 5000);
-    const debouncedSearch = debounce((search: string, location: string, gigType: string) => {
-        searchGigs(search, location, gigType);
-    }, 3000);
+
     return (
         <SafeAreaView>
             <View style={{ marginHorizontal: 10, marginTop: 0 }}>
@@ -377,16 +382,25 @@ const SearchGigScreen = ({ navigation }: any) => {
                         alignItems: 'center',
                         padding: 5
                     }}>
-                    <SearchIcon height={25} width={25} style={{ marginLeft: 5 }} />
+                    {/* <SearchIcon height={25} width={25} style={{ marginLeft: 5 }} /> */}
                     <TextInput
-                        onChangeText={text => onChangeSearch(text)}
+                        onChangeText={text => setSearchValue(text)}
                         value={searchValue}
                         placeholder='Search here'
                         style={{ padding: 5, flex: 1, fontSize: 16 }}
                     />
-                    <TouchableOpacity onPress={isRecording ? stopRecording : startRecognizing} >
+                    {searchValue ?
+                        <TouchableOpacity onPress={() => onChangeSearch()} >
+                            <SearchIcon height={30} width={30} />
+                        </TouchableOpacity> :
+                        <TouchableOpacity onPress={isRecording ? stopRecording : startRecognizing} >
+                            {isRecording ? <Image resizeMode='contain' source={require('../../assets/images/SearchStopRecord.png')} style={{ width: 30, height: 30 }} /> : <MicIcon height={30} width={30} />}
+                        </TouchableOpacity>
+
+                    }
+                    {/* <TouchableOpacity onPress={isRecording ? stopRecording : startRecognizing} >
                         {isRecording ? <Image resizeMode='contain' source={require('../../assets/images/stopRecording.png')} style={{ width: 50, height: 50 }} /> : <MicIcon height={50} width={50} />}
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
                 <View style={{
                     display: 'flex',
@@ -428,7 +442,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                             closeModel={closeModel}
                         />
 
-                        <Text numberOfLines={1} style={{ width: '100%', fontSize: 16, color: '#000', paddingLeft: 10 }} onPress={() => setModalVisible(true)}>{location ? location.description : 'San Francisco'}</Text>
+                        <Text numberOfLines={1} style={{ width: '100%', fontSize: 16, color: '#000', paddingLeft: 10 }} onPress={() => setModalVisible(true)}>{location ? location.description : 'Address'}</Text>
                         {/* <TextInput
                             onChangeText={text => console.log(text)}
                             value={'San Francisco'}

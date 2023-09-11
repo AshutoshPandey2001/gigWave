@@ -19,6 +19,7 @@ const HomeScreen = ({ navigation }: any) => {
   const { isGigCreated } = useSelector((state: RootState) => state.isGigCreated)
   const [alreadyProuser, setalreadyprouser] = useState(false)
   const [isRecording, setIsRecording] = useState(false);
+  const [isError, setIsError] = useState(false);
   const [audioPath, setAudioPath] = useState<string>('');
   const [lists, setLists] = useState([])
   const [proLists, setProLists] = useState<any[]>([])
@@ -53,7 +54,7 @@ const HomeScreen = ({ navigation }: any) => {
       setTimeout(() => {
         getList();
         dispatch(setGigCreated(false))
-      }, 5000);
+      }, 10000);
     }
 
   }, [isGigCreated])
@@ -293,8 +294,8 @@ const HomeScreen = ({ navigation }: any) => {
                         paddingHorizontal: 0
                       }]} >
                         <View>
-                          <Image resizeMode='contain' style={Style.imageStyle} source={item.thumbnail_img_url ? { uri: item.thumbnail_img_url } : require('../../assets/images/piano.png')}
-                            onError={(error) => console.error('Image loading error:', error)} />
+                          <Image resizeMode='contain' style={Style.imageStyle} source={!isError ? { uri: item.thumbnail_img_url } : require('../../assets/images/image.png')}
+                            onError={(error) => setIsError(true)} />
 
                         </View>
                         <View style={{ flex: 1, width: 100 }}>
