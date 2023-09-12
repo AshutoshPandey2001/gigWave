@@ -50,6 +50,7 @@ const SearchGigScreen = ({ navigation }: any) => {
     const [location, setLocation] = useState<any>();
     const [nearbyLocationsgigs, setNearbyLocationsgigs] = useState<any>([]);
     const user: any = useSelector((state: RootState) => state.user.user);
+    const [selectedMarker, setSelectedMarker] = useState<any>();
 
     const closeModel = () => {
         setModalVisible(false)
@@ -67,8 +68,6 @@ const SearchGigScreen = ({ navigation }: any) => {
     }
     const onChangeLocation = (value: any) => {
         setLocation(value)
-
-        // searchGigs(searchValue, value, gigType)
         geocodeLocationByName(value.description)
             .then((res: any) => {
                 const { latitude, longitude } = res;
@@ -117,9 +116,34 @@ const SearchGigScreen = ({ navigation }: any) => {
     };
     useEffect(() => {
         getProList();
+        getDefaultAddress()
         checkPermission()
-        checkPermissionGooglemap();
+        // checkPermissionGooglemap();
     }, [])
+
+    const getDefaultAddress = () => {
+        console.log('user.address,user.address', user.address);
+
+        setLocation({ description: user.address })
+        geocodeLocationByName(user.address)
+            .then((res: any) => {
+                const { latitude, longitude } = res;
+                setInitialRegion((prevState) => ({
+                    ...prevState,
+                    latitude,
+                    longitude,
+                }));
+                setcurrentLocation((prevState) => ({
+                    ...prevState,
+                    latitude,
+                    longitude,
+                }))
+            })
+            .catch((error: any) => {
+                console.error(error);
+                return null; // Handle errors gracefully if needed
+            });
+    }
 
     const checkPermissionGooglemap = async () => {
         const permission = PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
@@ -205,6 +229,11 @@ const SearchGigScreen = ({ navigation }: any) => {
                 console.error('Error reading audio file:', error);
             });
     }
+
+    const handleMarkerPress = (markerData: any) => {
+        // Set the selectedMarker state to the clicked marker's data
+        setSelectedMarker(markerData);
+    };
     const getProList = async () => {
         try {
             dispatch(setLoading(true));
@@ -294,7 +323,7 @@ const SearchGigScreen = ({ navigation }: any) => {
     }
     const MyMapView = (props: any) => {
         return (
-            <View style={{ height: '75%', width: '100%' }}>
+            <View style={{ height: '80%', width: '100%' }}>
                 <MapView
                     style={{ flex: 1 }}
                     initialRegion={initialRegion}
@@ -307,7 +336,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                             latitude: currentLocation.latitude,
                             longitude: currentLocation.longitude,
                         }}
-                        title="Your Location"
+                    // title="Your Location"
                     >
                         <Image resizeMode="contain" source={require('../../assets/images/marker-current_location.png')} style={{ width: 30, height: 30 }} />
                         <Callout>
@@ -326,7 +355,8 @@ const SearchGigScreen = ({ navigation }: any) => {
                                 longitude: location.lon,
                             }}
                             pinColor="red"
-                            title={location.address}
+                            // title={location.address}
+                            onPress={() => handleMarkerPress(location)}
                         >
                             {/* Callout to display location name */}
                             <Image resizeMode="contain" source={require('../../assets/images/marker-nearby-gigs.png')} style={{ width: 30, height: 30 }} />
@@ -337,8 +367,44 @@ const SearchGigScreen = ({ navigation }: any) => {
                             </Callout>
                         </Marker>
                     ))}
+
                 </MapView>
-                {/* <Image resizeMode='contain' style={{ height: '100%', width: '100%' }} source={require('../../assets/images/mapImage.png')} /> */}
+                <View style={{
+                    position: 'absolute',
+                    bottom: 10,
+                    left: 10,
+                    right: 10,
+                    padding: 10,
+                    borderRadius: 10,
+                    elevation: 15,
+                }}>
+                    {selectedMarker && (
+                        <View>
+                            <Pressable onPress={() => navigation.navigate('View-gig', selectedMarker)} style={[GlobalStyle.card, GlobalStyle.shadowProp,
+                            {
+                                display: 'flex', flexDirection: 'row', paddingVertical: 0,
+                                paddingHorizontal: 0
+                            }]} >
+                                <View>
+                                    <Image resizeMode='contain' style={styles.imageStyle} source={selectedMarker.thumbnail_img_url ? { uri: selectedMarker.thumbnail_img_url } : selectedMarker.image} />
+                                </View>
+                                <View style={{ flex: 1, width: 100 }}>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 18, marginHorizontal: 10, paddingTop: 10, fontWeight: 'bold' }]}>
+                                        {selectedMarker.title}
+                                    </Text>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16, margin: 10, }]}>
+                                        {selectedMarker.summary}
+                                    </Text>
+                                </View>
+                                <View style={{ padding: 10 }}>
+                                    <Pressable style={{ backgroundColor: selectedMarker.gig_type === 'Paid' ? '#21AF2F' : '#989898', borderRadius: 5, paddingHorizontal: 10, width: 'auto' }}>
+                                        <Text style={{ color: '#fff' }}>{selectedMarker.gig_type}</Text>
+                                    </Pressable>
+                                </View>
+                            </Pressable>
+                        </View>
+                    )}
+                </View>
             </View>
         )
     }
@@ -403,9 +469,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                         </TouchableOpacity>
 
                     }
-                    {/* <TouchableOpacity onPress={isRecording ? stopRecording : startRecognizing} >
-                        {isRecording ? <Image resizeMode='contain' source={require('../../assets/images/stopRecording.png')} style={{ width: 50, height: 50 }} /> : <MicIcon height={50} width={50} />}
-                    </TouchableOpacity> */}
+
                 </View>
                 <View style={{
                     display: 'flex',
@@ -448,14 +512,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                         />
 
                         <Text numberOfLines={1} style={{ width: '100%', fontSize: 16, color: '#000', paddingLeft: 10 }} onPress={() => setModalVisible(true)}>{location ? location.description : 'Address'}</Text>
-                        {/* <TextInput
-                            onChangeText={text => console.log(text)}
-                            value={'San Francisco'}
-                            placeholder='City'
-                            placeholderTextColor={'#1E1E1E'}
-                            // keyboardType='number-pad'
-                            style={{ fontSize: 16 }}
-                        /> */}
+
                     </View>
                     <View>
                         <View
@@ -471,23 +528,13 @@ const SearchGigScreen = ({ navigation }: any) => {
                             }}
                         >
                             <Text style={{ width: '100%', fontSize: 16, color: '#000' }} onPress={openDatePicker}>{selectedDate ? formatDate(selectedDate) : 'Posted On'}</Text>
-                            {/* <TextInput
-                                onPressIn={openDatePicker}
-                                value={selectedDate ? formatDate(selectedDate) : ''} // Display the selected date in the TextInput
-                                placeholder='Posted On'
-                                placeholderTextColor={'#1E1E1E'}
-                                editable={true}
-                                aria-disabled
-                                style={{ fontSize: 16, color: '#000' }} // Adjust text color if needed
-                            /> */}
+
                         </View>
-                        {/* {datePickerVisible && ( */}
                         <DatePicker
                             modal
                             open={datePickerVisible}
                             date={selectedDate || new Date()}
                             mode='date'
-                            // onDateChange={handleDateChange}
                             onConfirm={(date) => {
                                 handleDateChange(date)
                                 setDatePickerVisible(false)
@@ -496,7 +543,6 @@ const SearchGigScreen = ({ navigation }: any) => {
                                 setDatePickerVisible(false)
                             }}
                         />
-                        {/* )} */}
                     </View>
                     <View
                         style={[{

@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, ScrollView, StyleSheet, TextInput, Pressable, Image, Animated, TouchableOpacity } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { GlobalStyle } from '../../globalStyle'
 import { Formik, useFormik } from 'formik'
 import SelectDropdown from 'react-native-select-dropdown'
@@ -25,6 +25,7 @@ const CreategigScreen = ({ navigation }: any) => {
   const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
   const [isRecording, setIsRecording] = useState(false);
   const [audioPath, setAudioPath] = useState<string>('');
+
   const dispatch = useDispatch();
   const [initialFormValues, setInitialFormValues] = useState<InitialFormValues>({
     description: '',
@@ -67,9 +68,7 @@ const CreategigScreen = ({ navigation }: any) => {
           dispatch(setLoading(false));
           resolve(true);
         }, 2000);
-        // navigation.navigate('Home')
-        // dispatch(setLoading(false));
-        // resolve(true)
+
       }).catch((e) => {
         Toast.show({
           type: 'error',
@@ -195,7 +194,7 @@ const CreategigScreen = ({ navigation }: any) => {
               <View>
                 <View
                   style={Style.inputField}>
-                  <Text style={Style.inputLabel}>Address</Text>
+                  <Text style={Style.inputLabel} >Address</Text>
 
                   <LocationSearch
                     placeholder="Address"
@@ -203,9 +202,7 @@ const CreategigScreen = ({ navigation }: any) => {
                     // notifyChange={handleLocationChange}
                     notifyChange={location => {
                       setModalVisible(false);
-                      setFieldValue('address', location.description)
-                        // values.address = location.description
-                        ;
+                      setFieldValue('address', location.description);
                     }}
                     closeModel={closeModel}
                   />
@@ -213,15 +210,6 @@ const CreategigScreen = ({ navigation }: any) => {
                     width: '100%', height: 50, fontSize: 16, color: '#000'
                   }} onPress={() => setModalVisible(true)}>{values.address ? values.address : ''}</Text>
 
-                  {/* <TextInput
-                        editable
-                        multiline
-                        numberOfLines={2}
-                        onChangeText={handleChange('address')}
-                        onBlur={() => { handleBlur('address') }}
-                        value={values.address}
-                        style={{ fontSize: 16 }}
-                      /> */}
                 </View>
                 {errors.address && touched.address &&
                   <Text style={GlobalStyle.errorMsg}>{errors.address}</Text>
