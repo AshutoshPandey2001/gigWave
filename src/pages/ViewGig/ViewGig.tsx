@@ -72,7 +72,21 @@ const ViewGigScreen = ({ route, navigation }: any) => {
         }, firstToken).then((res) => {
             console.log('Interest gig response', res);
             dispatch(setLoading(false));
-
+            if (res?.compatibility == "1") {
+                Toast.show({
+                    type: 'success',
+                    text1: 'Success',
+                    text2: res.evaluation_comment,
+                });
+            } else {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Error',
+                    text2: res?.compatibility === "0"
+                        ? `${res.evaluation_comment}\n${res.missing_required_skills.toString()}`
+                        : res.evaluation_comment,
+                });
+            }
         }).catch((error) => {
             Toast.show({
                 type: 'error',
@@ -135,40 +149,44 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                                     </Text>
                                 </View>
                             </View>
-                            {
-                                gigDetails.gig_requirement?.length > 0 ?
-                                    <View style={{ marginTop: 10 }}>
-                                        <Text style={[GlobalStyle.blackColor, style.headFont]}>Gig requirement</Text>
-                                        <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                            {gigDetails.gig_requirement.map((item: any) => {
-                                                return (
-                                                    <Text style={[GlobalStyle.blackColor]}>
-                                                        {item}
-                                                    </Text>
-                                                )
+                            {userType === "PRO" ?
+                                <>
+                                    {
+                                        gigDetails.gig_requirement?.length > 0 ?
+                                            <View style={{ marginTop: 10 }}>
+                                                <Text style={[GlobalStyle.blackColor, style.headFont]}>Gig requirement</Text>
+                                                <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
+                                                    {gigDetails.gig_requirement.map((item: any) => {
+                                                        return (
+                                                            <Text style={[GlobalStyle.blackColor]}>
+                                                                {item}
+                                                            </Text>
+                                                        )
 
-                                            })}
+                                                    })}
 
 
-                                        </View>
-                                    </View> : null
+                                                </View>
+                                            </View> : null
+                                    }
+
+                                    {
+                                        gigDetails.good_to_have_skills?.length > 0 ?
+                                            <View style={{ marginTop: 10 }}>
+                                                <Text style={[GlobalStyle.blackColor, style.headFont]}>Good to have skills</Text>
+                                                <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
+                                                    {gigDetails.good_to_have_skills.map((item: any) => {
+                                                        return (
+                                                            <Text style={[GlobalStyle.blackColor]}>
+                                                                {item}
+                                                            </Text>
+                                                        )
+                                                    })}
+                                                </View>
+                                            </View> : null
+                                    }</> : null
                             }
 
-                            {
-                                gigDetails.good_to_have_skills?.length > 0 ?
-                                    <View style={{ marginTop: 10 }}>
-                                        <Text style={[GlobalStyle.blackColor, style.headFont]}>Good to have skills</Text>
-                                        <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                            {gigDetails.good_to_have_skills.map((item: any) => {
-                                                return (
-                                                    <Text style={[GlobalStyle.blackColor]}>
-                                                        {item}
-                                                    </Text>
-                                                )
-                                            })}
-                                        </View>
-                                    </View> : null
-                            }
 
                             <View>
                                 <View style={style.space}>
