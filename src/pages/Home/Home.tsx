@@ -23,7 +23,7 @@ const HomeScreen = ({ navigation }: any) => {
   const [audioPath, setAudioPath] = useState<string>('');
   const [lists, setLists] = useState([])
   const [proLists, setProLists] = useState<any[]>([])
-  const [skillValue, setSkillValue] = useState<any>("I do clean the house, cook and other various household tasks.  I also play the piano and violin at weddings.")
+  const [skillValue, setSkillValue] = useState<any>("")
   const { userType }: any = useSelector((state: RootState) => state.userType)
   const user: any = useSelector((state: RootState) => state.user.user);
   const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
@@ -34,7 +34,7 @@ const HomeScreen = ({ navigation }: any) => {
   const [interestGigType, setInterestGigType] = useState('unpaid')
   const [error, setError] = useState('');
   const isRequired = (value: any) => value.trim() !== '';
-  const isWithinRange = (value: any, min: any, max: any) => value.length >= min && value.length <= max;
+  const isWithinRange = (value: any, min: any) => value.length >= min;
   useEffect(() => {
     if (userType === "CREATOR")
       getList();
@@ -288,8 +288,8 @@ const HomeScreen = ({ navigation }: any) => {
     setError('');
     if (!isRequired(msg)) {
       setError('This field is required');
-    } else if (!isWithinRange(msg, 10, 100)) { // Adjust min and max length as needed
-      setError('Skills must be between 10 and 100 characters');
+    } else if (!isWithinRange(msg, 10)) { // Adjust min and max length as needed
+      setError('Skills must have atleast 10 characters');
     }
   }
   useEffect(() => {
@@ -300,93 +300,11 @@ const HomeScreen = ({ navigation }: any) => {
 
 
 
-  const ProHome = () => {
-    return (
-      <ScrollView keyboardShouldPersistTaps="always">
-        <View style={[GlobalStyle.homecontainer]}>
-          <View style={Style.cardContainer}>
-            <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Suggested Gigs</Text>
-            {
-              proLists?.length > 0 ?
-                <>
-                  {proLists.map((item: any, index) => (
-                    <View key={index}>
-                      <Pressable onPress={() => navigation.navigate('View-gig', item)} style={[GlobalStyle.card, GlobalStyle.shadowProp,
-                      {
-                        display: 'flex', flexDirection: 'row', paddingVertical: 0,
-                        paddingHorizontal: 0
-                      }]} >
-                        <View>
-                          <Image resizeMode='contain' style={Style.imageStyle} source={!isError ? { uri: item.thumbnail_img_url } : require('../../assets/images/image.png')}
-                            onError={(error) => setIsError(true)} />
-
-                        </View>
-                        <View style={{ flex: 1, width: 100 }}>
-                          <Text style={[GlobalStyle.blackColor, Style.title]}>
-                            {item.title}
-                          </Text>
-                          <Text style={[GlobalStyle.blackColor, Style.message]}>
-                            {item.summary}
-                          </Text>
-                        </View>
-                        <View style={{ padding: 10 }}>
-                          <Pressable style={{ backgroundColor: item.gig_type === 'paid' ? '#21AF2F' : '#989898', borderRadius: 5, paddingHorizontal: 10, width: 'auto' }}>
-                            <Text style={{ color: '#fff' }}>{item.gig_type}</Text>
-                          </Pressable>
-                        </View>
-                      </Pressable>
-                    </View>
-                  ))
-                  }
-
-                </>
-                :
-                <>
-                  <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                    <Text style={[GlobalStyle.blackColor, { fontSize: 20 }]}>
-                      To receive Gig suggestions, please add your skills and/or types of work you would like to do  below.                      </Text>
-                  </View>
-
-                  <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-
-                    <Text style={[GlobalStyle.blackColor, { fontSize: 20, fontWeight: 'bold' }]}>
-                      My Skills or How I Can Help Others</Text>
-                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                      <TextInput
-                        autoFocus={true}
-                        multiline
-                        ref={skillInputRef}
-                        keyboardType="default"
-                        returnKeyType="done"
-                        numberOfLines={5}
-                        placeholder="Type here..."
-                        placeholderTextColor="#fff"
-                        value={skillValue ? skillValue : ''}
-                        editable={true}
-                        onChangeText={(msg: string) => handleInputChange(msg)}
-                        style={{ flex: 1, fontSize: 18, color: '#000' }}
-                      />
-                      <View style={{ alignItems: 'center' }}>
-                        <TouchableOpacity onPress={isRecording ? stopRecording : startRecognizing} >
-                          {isRecording ? <Image resizeMode='contain' source={require('../../assets/images/stopRecording.png')} style={{ width: 50, height: 50 }} /> : <MicIcon height={50} width={50} />}
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                    {error !== '' && <Text style={{ color: 'red' }}>{error}</Text>}
-                  </View>
-
-                  <View style={{ margin: 20 }}>
-                    <Pressable style={GlobalStyle.button} onPress={() => updateProprofile()}>
-                      <Text style={GlobalStyle.btntext}>Add Skills</Text>
-                    </Pressable>
-                  </View>
-                </>
-            }
-          </View>
-        </View>
-      </ScrollView>
-    )
-  }
+  // const ProHome = () => {
+  //   return (
+     
+  //   )
+  // }
 
   return (
     <SafeAreaView>
@@ -396,7 +314,89 @@ const HomeScreen = ({ navigation }: any) => {
           barStyle="dark-content" // Here is where you change the font-color
         />
         {
-          userType === "CREATOR" ? <CreatorHome /> : <ProHome />
+          userType === "CREATOR" ? <CreatorHome /> :  <ScrollView keyboardShouldPersistTaps="always">
+          <View style={[GlobalStyle.homecontainer]}>
+            <View style={Style.cardContainer}>
+              <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Suggested Gigs</Text>
+              {
+                proLists?.length > 0 ?
+                  <>
+                    {proLists.map((item: any, index) => (
+                      <View key={index}>
+                        <Pressable onPress={() => navigation.navigate('View-gig', item)} style={[GlobalStyle.card, GlobalStyle.shadowProp,
+                        {
+                          display: 'flex', flexDirection: 'row', paddingVertical: 0,
+                          paddingHorizontal: 0
+                        }]} >
+                          <View>
+                            <Image resizeMode='contain' style={Style.imageStyle} source={!isError ? { uri: item.thumbnail_img_url } : require('../../assets/images/image.png')}
+                              onError={(error) => setIsError(true)} />
+  
+                          </View>
+                          <View style={{ flex: 1, width: 100 }}>
+                            <Text style={[GlobalStyle.blackColor, Style.title]}>
+                              {item.title}
+                            </Text>
+                            <Text style={[GlobalStyle.blackColor, Style.message]}>
+                              {item.summary}
+                            </Text>
+                          </View>
+                          <View style={{ padding: 10 }}>
+                            <Pressable style={{ backgroundColor: item.gig_type === 'paid' ? '#21AF2F' : '#989898', borderRadius: 5, paddingHorizontal: 10, width: 'auto' }}>
+                              <Text style={{ color: '#fff' }}>{item.gig_type}</Text>
+                            </Pressable>
+                          </View>
+                        </Pressable>
+                      </View>
+                    ))
+                    }
+  
+                  </>
+                  :
+                  <>
+                    <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
+                      <Text style={[GlobalStyle.blackColor, { fontSize: 20 }]}>
+                        To receive Gig suggestions, please add your skills and/or types of work you would like to do  below.                      </Text>
+                    </View>
+  
+                    <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
+  
+                      <Text style={[GlobalStyle.blackColor, { fontSize: 20, fontWeight: 'bold' }]}>
+                        My Skills or How I Can Help Others</Text>
+                      <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                        <TextInput
+                          autoFocus={true}
+                          multiline
+                          ref={skillInputRef}
+                          keyboardType="default"
+                          returnKeyType="done"
+                          numberOfLines={5}
+                          placeholder="Type here..."
+                          placeholderTextColor="#000"
+                          value={skillValue ? skillValue : ''}
+                          editable={true}
+                          onChangeText={(msg: string) => handleInputChange(msg)}
+                          style={{ flex: 1, fontSize: 18, color: '#000' }}
+                        />
+                        <View style={{ alignItems: 'center' }}>
+                          <TouchableOpacity onPress={isRecording ? stopRecording : startRecognizing} >
+                            {isRecording ? <Image resizeMode='contain' source={require('../../assets/images/stopRecording.png')} style={{ width: 50, height: 50 }} /> : <MicIcon height={50} width={50} />}
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                      {error !== '' && <Text style={{ color: 'red' }}>{error}</Text>}
+                    </View>
+  
+                    <View style={{ margin: 20 }}>
+                      <Pressable style={GlobalStyle.button} onPress={() => updateProprofile()}>
+                        <Text style={GlobalStyle.btntext}>Add Skills</Text>
+                      </Pressable>
+                    </View>
+                  </>
+              }
+            </View>
+          </View>
+        </ScrollView>
         }
       </ScrollView>
     </SafeAreaView>

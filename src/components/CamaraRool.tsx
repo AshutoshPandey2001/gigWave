@@ -1,22 +1,27 @@
 import React, { useState } from 'react';
-import { Image, Modal, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Modal, Text, TouchableOpacity, View, PermissionsAndroid, StyleSheet, Dimensions } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import fs from 'react-native-fs';
-import { ImageLibraryOptions, launchImageLibrary } from 'react-native-image-picker';
-import { useSelector } from 'react-redux';
-import BackButtonIcon from '../assets/icons/Backbutton.svg';
+import { CameraOptions, ImageLibraryOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { useDispatch, useSelector } from 'react-redux';
 import { GlobalStyle } from '../globalStyle';
 import { RootState } from '../redux/store';
-import { uploadProfilePhoto } from '../services/userService/userServices';
+import { getUserByUserID, uploadProfilePhoto } from '../services/userService/userServices';
+import { setLoading } from '../redux/action/General/GeneralSlice';
+import { setUser } from '../redux/action/Auth/authAction';
+import CamaraIcon from '../assets/icons/camera1.svg'
+import GalleryIcon from '../assets/icons/image1.svg'
+import CloseIcon from '../assets/icons/close.svg'
 
 // import Modal from 'react-native-modal';
 
 interface UploadPhotosProps {
     isVisible: boolean;
     onClose: () => void;
+    setProfilePic:any;
 }
 
-const UploadPhotosScreen = ({ isVisible, onClose }: UploadPhotosProps) => {
+const UploadPhotosScreen = ({ isVisible, onClose,setProfilePic }: UploadPhotosProps) => {
     const cameraRef = React.useRef<RNCamera | null>(null);
     const [isCameraReady, setIsCameraReady] = useState(false);
     const [showCamera, setShowCamera] = useState(false); // New state to control camera visibility
@@ -25,176 +30,135 @@ const UploadPhotosScreen = ({ isVisible, onClose }: UploadPhotosProps) => {
 
     const user: any = useSelector((state: RootState) => state.user.user);
     const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
-    const takePicture = async () => {
-        if (cameraRef.current) {
-            const options = { quality: 0.5, base64: true };
-            const data = await cameraRef.current.takePictureAsync(options);
-            console.log('clickedd photo', data.uri);
-            // fs.readFile(data.uri, 'base64') // Read the image file as base64
-            //     .then((base64Image: any) => {
-            //         // Call a function to upload the base64Image to the server
-            //         uploadProfilePhoto(user.user_id, firstToken, base64Image).then((res) => {
-            //             console.log(res, 'uploaded image')
-
-            //         }).catch((e) => {
-            //             console.log('error', JSON.stringify(e));
-            //         });
-            //     })
-            //     .catch((error: any) => {
-            //         console.log('Error reading image:', error);
-            //     });
-            // setCapturedImage(data.uri); // Store the captured image URI
-            // setShowCamera(false);
-        }
-    };
-    const retakePhoto = () => {
-        setCapturedImage(null); // Reset the captured image URI to retake
-        setShowCamera(true);
-    };
-
-    const uploadPhoto = () => {
-        if (capturedImage) {
-            fs.readFile(capturedImage, 'base64')
-                .then(async (base64Image: any) => {
-                    // console.log('base64Image', base64Image);
-                    // const binaryImageData = Buffer.from(base64Image, 'base64'); // Convert base64 to binary
-                    const base64Response = await fetch(`data:image/jpeg;base64,${base64Image}`);
-                    console.log('binaryImageData', base64Response);
+    const dispatch = useDispatch();
+    const windowHeight = Dimensions.get('window').height;
 
 
-                    // uploadProfilePhoto(user.user_id, firstToken, base64Image)
-                    //     .then((res) => {
-                    //         console.log(res, 'uploaded image');
-                    //         onClose()
-                    //         // You might want to perform additional actions here after successful upload
-                    //     })
-                    //     .catch((e) => {
-                    //         console.log('error', JSON.stringify(e));
-                    //     });
-                })
-                .catch((error: any) => {
-                    console.log('Error reading image:', error);
+    const requestCameraPermission = async () => {
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.CAMERA,
+                {
+                    title: 'Camera Permission',
+                    message: 'App needs access to your camera ',
+                    buttonNeutral: 'Ask Me Later',
+                    buttonNegative: 'Cancel',
+                    buttonPositive: 'OK',
+                },
+            );
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                console.log('You can use the camera');
+                const cameraOption: CameraOptions = {
+                    mediaType: 'photo',
+                    saveToPhotos: true,
+                    cameraType: 'front',
+                    presentationStyle: 'fullScreen',
+                    maxHeight: 250,
+                    maxWidth: 250,
+                    quality: 1,
+
+                }
+                launchCamera(cameraOption, async (res: any) => {
+                    if (res.didCancel) {
+                        console.log('User cancelled image picker');
+                    } else if (res.error) {
+                        console.log('ImagePicker Error: ', res.error);
+                    } else if (res.customButton) {
+                        console.log('User tapped custom button: ', res.customButton);
+                        // alert(res.customButton);
+                    } else {
+                        // dispatch(setLoading(true))
+                        onClose()
+                        console.log(res, 'original ROtation--------------------')
+                        const selectedImage = res.assets[0];
+                        fs.readFile(selectedImage.uri, "base64").then((imgRes) => {
+                            // console.log('imgRes-----------------',imgRes);
+                            setProfilePic(`data:image/jpeg;base64,${imgRes}`)
+                            // uploadProfilePhoto(user.user_id, firstToken, imgRes)
+                            //     .then((res) => {
+                            //         console.log(res, 'uploaded image');
+                            //         getUserByUserID(user.user_id, firstToken).then((response) => {
+                            //             console.log('res--------', response.base64_img);
+                            //             const dataURI = `data:image/jpeg;base64,${response.base64_img}`; // Assuming res is a base64 encoded image
+                            //             console.log('image data url', dataURI);
+
+                            //             // setProfilePic(dataURI);
+                            //             dispatch(setLoading(false))
+                            //             dispatch(setUser(response))
+                            //         })
+                            //         dispatch(setLoading(false))
+                            //         // You might want to perform additional actions here after successful upload
+                            //     }).catch((err) => { dispatch(setLoading(false)); console.error(err) })
+                        })
+                    }
                 });
+            } else {
+                console.log('Camera permission denied');
+            }
+        } catch (err) {
+            console.warn(err);
         }
     };
     const selectImage = () => {
         console.log('i am on select photo from galary');
 
         const options: ImageLibraryOptions = {
-            // title: 'Select Image',
-            mediaType: 'photo', // Add this 
-            // storageOptions: {
-            //     skipBackup: true,
-            //     path: 'images',
-            // },
+            mediaType: 'photo',
+            quality: 0.2,
+            includeBase64: true,
+
         };
-
         launchImageLibrary(options, async (response: any) => {
-            console.log('image response', response);
-
             if (response.didCancel) {
                 console.log('User cancelled image picker');
             } else if (response.error) {
                 console.log('ImagePicker Error: ', response.error);
             } else if (response.assets && response.assets.length > 0) {
+                onClose()
+                dispatch(setLoading(true))
                 const selectedImage = response.assets[0];
-
-                if (selectedImage) {
-
-
-                    // const response = await fetch(selectedImage.uri);
-                    // const blob = await response.blob();
-                    // console.log('blob-----------------',selectedImage);
-                    uploadProfilePhoto(user.user_id, firstToken, selectedImage)
-                        .then((res) => {
-                            console.log(res, 'uploaded image');
-                            onClose()
-                            // You might want to perform additional actions here after successful upload
+                uploadProfilePhoto(user.user_id, firstToken, selectedImage.base64)
+                    .then((res) => {
+                        console.log(res, 'uploaded image');
+                        getUserByUserID(user.user_id, firstToken).then((response) => {
+                            console.log('res', response);
+                            const dataURI = `data:image/jpeg;base64,${response.base64_img}`; // Assuming res is a base64 encoded image
+                            console.log('image data url', dataURI);
+                            // setProfilePic(dataURI);
+                            dispatch(setLoading(false))
+                            dispatch(setUser(response))
                         })
-                        .catch((e) => {
-                            console.log('error', JSON.stringify(e));
-                        });
-                    // fs.readFile(selectedImage.uri, 'base64')
-                    //     .then(async(base64Image: any) => {
-                    //         console.log('base64Image', base64Image);
-                    //         const base64Response = await fetch(`data:image/jpeg;base64,${base64Image}`);
-                    //         console.log('binaryImageData', base64Response);
-                    //      
-                    //     })
-                    //     .catch((error: any) => {
-                    //         console.log('Error reading image:', error);
-                    //     });
-                    // You can use the selectedImage.uri as needed
-                } else {
-                    console.log('No photo selected');
-                }
+                        dispatch(setLoading(false))
+                        // You might want to perform additional actions here after successful upload
+                    }).catch((err) => { dispatch(setLoading(false)); console.error(err) })
             }
-        });
-    };
-    const toggleCameraType = () => {
-        setCameraType((prevCameraType: any) => (
-            prevCameraType === RNCamera.Constants.Type.back
-                ? RNCamera.Constants.Type.front
-                : RNCamera.Constants.Type.back
-        ));
+        })
     };
     return (
-        <Modal visible={isVisible}>
-            <View style={{ flex: 1 }}>
-                {showCamera ? (
-                    <View style={{ flex: 1 }}>
-                        <RNCamera
-                            ref={cameraRef}
-                            style={{ flex: 1 }}
-                            type={cameraType}
-                            onCameraReady={() => setIsCameraReady(true)}
-                        />
-                        <TouchableOpacity onPress={takePicture} style={{ position: 'absolute', bottom: 20, alignSelf: 'center' }}>
-                            <Text style={{ fontSize: 20, color: 'white' }}>Capture Photo</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setShowCamera(false)} style={{ position: 'absolute', top: 20, left: 20 }}>
-                            {/* <BackButtonIcon fill="white" /> */}
-
-                            <Text style={{ fontSize: 18, color: 'white' }}>Back</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={toggleCameraType} style={{ position: 'absolute', top: 20, right: 20 }}>
-                            <Text style={{ fontSize: 18, color: 'white' }}>Toggle Camera</Text>
-                        </TouchableOpacity>
-                    </View>
-                ) : (
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        {capturedImage ? (
-                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                <Image source={{ uri: capturedImage }} style={{ width: 400, height: '100%' }} />
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', position: 'absolute', bottom: 20, width: '100%' }}>
-                                    <TouchableOpacity onPress={retakePhoto}>
-                                        <Text style={{ fontSize: 18, marginLeft: 20, color: 'white' }}>Retake</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity onPress={uploadPhoto}>
-                                        <Text style={{ fontSize: 18, marginRight: 20, color: 'white' }}>Upload</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        ) : (
-                            <View style={{ flex: 1 }}>
-                                <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: 40, paddingHorizontal: 15, marginLeft: -80 }}>
-                                    <BackButtonIcon onPress={onClose} />
-                                    <Text style={{ fontWeight: 'bold', fontSize: 18, flex: 1, paddingLeft: 20, color: '#000' }}> Upload Photo</Text>
-                                </View>
-                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                    <TouchableOpacity onPress={() => setShowCamera(true)} style={GlobalStyle.button}>
-                                        <Text style={GlobalStyle.btntext}>Open Camera</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity onPress={selectImage} style={GlobalStyle.button}>
-                                        <Text style={GlobalStyle.btntext}>Select from Gallery</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-
-
-                        )}
-                    </View>
-                )}
+        <Modal visible={isVisible} animationType="slide"
+            transparent={true} onRequestClose={onClose} onPointerDown={onClose}>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }} onTouchEnd={onClose}>
+                <View style={{
+                    height: "22%",
+                    width: "100%",
+                    marginTop: 'auto',
+                    backgroundColor: 'white',
+                    elevation: 5,
+                    borderTopLeftRadius: 15,
+                    borderTopRightRadius: 15
+                }}>
+                    <TouchableOpacity onPress={() => requestCameraPermission()} style={[styles.btn, { borderRadius: 15 }]}>
+                        <CamaraIcon height={30} width={30} />
+                        <Text style={[GlobalStyle.btntext, { color: 'black', marginLeft: 10 }]}>Open Camera</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={selectImage} style={styles.btn}>
+                        <GalleryIcon height={30} width={30} />
+                        <Text style={[GlobalStyle.btntext, { color: 'black', marginLeft: 10 }]}>Select from Gallery</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={onClose} style={styles.btn}>
+                        <CloseIcon height={30} width={30} /><Text style={[GlobalStyle.btntext, { color: 'black', marginLeft: 10 }]}>Cancel</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </Modal>
 
@@ -202,3 +166,15 @@ const UploadPhotosScreen = ({ isVisible, onClose }: UploadPhotosProps) => {
 };
 
 export default UploadPhotosScreen;
+
+const styles = StyleSheet.create({
+    btn: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        backgroundColor: '#fff',
+        paddingVertical: 15,
+        paddingHorizontal: 10
+    }
+})

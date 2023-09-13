@@ -1,7 +1,7 @@
 import { useFormik } from 'formik'
 import React, { useEffect, useState } from 'react'
-import { Alert, Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
-import { ImageLibraryOptions, launchImageLibrary } from 'react-native-image-picker'
+import { Alert, Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View, PermissionsAndroid, Button } from 'react-native'
+import { CameraOptions, ImageLibraryOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
 import { useDispatch, useSelector } from 'react-redux'
 import * as yup from "yup"
@@ -14,6 +14,8 @@ import { updateUsersDetails } from '../../services/authServices/authServices'
 import { getProdetailsbyuserid, updateProUsersDetails } from '../../services/proUserService/proUserService'
 import { getProfilePhoto, getUserByUserID, uploadProfilePhoto } from '../../services/userService/userServices'
 import fs from 'react-native-fs';
+import { Modal } from 'react-native-paper'
+import UploadPhotosScreen from '../../components/CamaraRool'
 
 
 interface InitialFormValues {
@@ -76,8 +78,7 @@ const EditProfileScreen = () => {
             // const dataURI = await `data:image/jpeg;base64,${res}`; // Assuming res is a base64 encoded image
             // console.log('image data url', dataURI);
 
-            // setProfilePic(dataURI);
-        }).catch((e) => {
+       }).catch((e) => {
             console.error(e, 'error when getting profile image');
 
         })
@@ -101,7 +102,6 @@ const EditProfileScreen = () => {
             const dataURI = `data:image/jpeg;base64,${response.base64_img}`; // Assuming res is a base64 encoded image
             console.log('image data url', dataURI);
 
-            setProfilePic(dataURI);
             dispatch(setLoading(false))
             dispatch(setUser(response))
         })
@@ -112,43 +112,10 @@ const EditProfileScreen = () => {
     const closecamaraModel = () => {
         setIscamaraModalVisible(false)
     }
-    const selectImage = () => {
-        console.log('i am on select photo from galary');
+    // Launch Camera
 
-        const options: ImageLibraryOptions = {
-            mediaType: 'photo',
-            quality: 0.2,
-            includeBase64: true
-        };
 
-        launchImageLibrary(options, async (response: any) => {
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-            } else if (response.assets && response.assets.length > 0) {
-                dispatch(setLoading(true))
-
-                const selectedImage = response.assets[0];
-
-                uploadProfilePhoto(user.user_id, firstToken, selectedImage.base64)
-                    .then((res) => {
-                        console.log(res, 'uploaded image');
-                        getUserByUserID(user.user_id, firstToken).then((response) => {
-                            console.log('res', response);
-                            const dataURI = `data:image/jpeg;base64,${response.base64_img}`; // Assuming res is a base64 encoded image
-                            console.log('image data url', dataURI);
-
-                            setProfilePic(dataURI);
-                            dispatch(setLoading(false))
-                            dispatch(setUser(response))
-                        })
-                        dispatch(setLoading(false))
-                        // You might want to perform additional actions here after successful upload
-                    }).catch((err) => { dispatch(setLoading(false)); console.error(err) })
-            }
-        })
-    };
+console.log(profilePic,'profilePic----------------')
 
     const updateProfile = async (values: any) => {
         // await dispatch(setLoading(true));
@@ -203,14 +170,15 @@ const EditProfileScreen = () => {
                     <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                         <View style={[styles.profileImg, { marginRight: 10 }]}>
                             {/* <Image resizeMode='contain' style={styles.profileImg} source={require('../../assets/images/avatar_profile.png')} /> */}
-                            <Image resizeMode='contain' style={[styles.profileImg]} source={user.base64_img ? { uri: `data:image/jpeg;base64,${user.base64_img}` } : require('../../assets/images/avatar_profile.png')} />
+                            <Image resizeMode='contain' style={styles.profileImg} source={{uri:profilePic}} />
+                            {/* <Image resizeMode='contain' style={[styles.profileImg]} source={user.base64_img ? { uri: `data:image/jpeg;base64,${user.base64_img}` } : require('../../assets/images/avatar_profile.png')} /> */}
                         </View>
-                        <Pressable onPress={() => selectImage()}>
+                        <Pressable onPress={() =>setIscamaraModalVisible(true)}>
                             <Text style={styles.editText}>Upload Photo </Text>
                         </Pressable>
-                        {/* {
-                            iscamaraModalVisible && <UploadPhotosScreen isVisible={iscamaraModalVisible} onClose={closecamaraModel} />
-                        } */}
+                        {
+                            iscamaraModalVisible && <UploadPhotosScreen isVisible={iscamaraModalVisible} onClose={closecamaraModel} setProfilePic={setProfilePic}/>
+                        }
                     </View>
                     {/* <Formik
                         initialValues={initialFormValues}
@@ -329,7 +297,6 @@ const EditProfileScreen = () => {
                     {/* )}
                      </Formik> */}
                 </View>
-
             </ScrollView>
         </SafeAreaView>
     )
