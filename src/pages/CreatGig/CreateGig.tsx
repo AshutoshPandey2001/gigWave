@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, ScrollView, StyleSheet, TextInput, Pressable, Image, Animated, TouchableOpacity } from 'react-native'
+import { View, Text, SafeAreaView, ScrollView, StyleSheet, TextInput, Pressable, Image, Animated, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { GlobalStyle } from '../../globalStyle'
 import { Formik, useFormik } from 'formik'
@@ -25,7 +25,8 @@ const CreategigScreen = ({ navigation }: any) => {
   const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
   const [isRecording, setIsRecording] = useState(false);
   const [audioPath, setAudioPath] = useState<string>('');
-
+  const dropdownRef = useRef<any>(null);
+  const [keyboardPersist, setkeyboardPersist] = useState(false)
   const dispatch = useDispatch();
   const [initialFormValues, setInitialFormValues] = useState<InitialFormValues>({
     description: '',
@@ -34,7 +35,7 @@ const CreategigScreen = ({ navigation }: any) => {
     status: ''
   });
   const gigSchema = yup.object().shape({
-    description: yup.string().required('Description is required').min(10, 'Description must be at least 10 characters')
+    description: yup.string().required('Description is required').min(100, 'Description must be at least 10 characters')
       .max(400, 'Description must not exceed 400 characters'),
     address: yup.string().required('Address is required'),
     amount: yup.string().required('Amount is required'),
@@ -149,127 +150,135 @@ const CreategigScreen = ({ navigation }: any) => {
 
   return (
     <SafeAreaView>
-      <ScrollView keyboardShouldPersistTaps={'always'}>
-        <View style={[GlobalStyle.container]}>
-          <View style={Style.cardContainer}>
-            <Text style={[GlobalStyle.blackColor, { fontSize: 22, fontWeight: 'bold' }]}>How It Works</Text>
-            <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-              <Text style={[GlobalStyle.blackColor, { fontSize: 18 }]}>
-                Tap the mic and speak what you need help with (or tap the box below to type).  Gigwave helps match you with local Pros to help with your Gig.  In the app, you can message Pros, evaluate Pros, and even pay the Pro.              </Text>
-            </View>
-          </View>
-          <View>
-            <Text style={[GlobalStyle.blackColor, { fontSize: 22, fontWeight: 'bold' }]}>Gig Details</Text>
-          </View>
 
-          <View>
-            <View style={{ marginTop: 10 }}>
-              <View
-                style={Style.inputField}>
-                <Text style={Style.inputLabel}>Description</Text>
-                <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                  <TextInput
-                    editable
-                    multiline
-                    numberOfLines={4}
-                    onChangeText={handleChange('description')}
-                    onBlur={() => { handleBlur('description') }}
-                    value={values.description}
-                    maxLength={400}
-                    style={{ width: '80%', fontSize: 16 }}
-                  />
-                  <View style={{ alignItems: 'center' }}>
-                    <TouchableOpacity onPress={isRecording ? stopRecording : startRecognizing} >
-                      {isRecording ? <Image resizeMode='contain' source={require('../../assets/images/stopRecording.png')} style={{ width: 70, height: 70 }} /> : <MicIcon height={70} width={70} />}
+      <ScrollView keyboardShouldPersistTaps={keyboardPersist ? 'always' : 'never'}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={true}>
+
+          <View style={[GlobalStyle.container]}>
+            <View style={Style.cardContainer}>
+              <Text style={[GlobalStyle.blackColor, { fontSize: 22, fontWeight: 'bold' }]}>How It Works</Text>
+              <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
+                <Text style={[GlobalStyle.blackColor, { fontSize: 18 }]}>
+                  Tap the mic and speak what you need help with (or tap the box below to type).  Gigwave helps match you with local Pros to help with your Gig.  In the app, you can message Pros, evaluate Pros, and even pay the Pro.              </Text>
+              </View>
+            </View>
+            <View>
+              <Text style={[GlobalStyle.blackColor, { fontSize: 22, fontWeight: 'bold' }]}>Gig Details</Text>
+            </View>
+
+            <View >
+              <View style={{ marginTop: 10 }}>
+                <View
+                  style={Style.inputField}>
+                  <Text style={Style.inputLabel}>Description</Text>
+                  <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                    <TextInput
+                      editable
+                      multiline
+                      numberOfLines={4}
+                      onChangeText={handleChange('description')}
+                      onBlur={() => { handleBlur('description') }}
+                      value={values.description}
+                      maxLength={400}
+                      style={{ width: '80%', fontSize: 16 }}
+                    />
+                    <View style={{ alignItems: 'center' }}>
+                      <TouchableOpacity onPress={isRecording ? stopRecording : startRecognizing} >
+                        {isRecording ? <Image resizeMode='contain' source={require('../../assets/images/stopRecording.png')} style={{ width: 70, height: 70 }} /> : <MicIcon height={70} width={70} />}
+                      </TouchableOpacity>
+
+                    </View>
+                  </View>
+                </View>
+                {errors.description && touched.description &&
+                  <Text style={GlobalStyle.errorMsg}>{errors.description}</Text>
+                }
+              </View>
+              <View style={{ marginTop: 10 }}>
+                <View ref={dropdownRef}>
+                  <View
+                    style={Style.inputField}>
+                    <Text style={Style.inputLabel} >Address</Text>
+
+                    <LocationSearch
+                      placeholder="Address"
+                      isModalVisible={isModalVisible}
+                      notifyChange={location => {
+                        setModalVisible(false);
+                        setFieldValue('address', location.description);
+                        setkeyboardPersist(false)
+                        dropdownRef.current.focus();
+                      }}
+                      closeModel={closeModel}
+                    />
+                    <TouchableOpacity onPress={() => { setModalVisible(true); setkeyboardPersist(true) }}>
+
+                      <Text style={{
+                        width: '100%', height: 50, fontSize: 16, color: '#000'
+                      }} >{values.address ? values.address : ''}</Text>
                     </TouchableOpacity>
 
                   </View>
-                </View>
-              </View>
-              {errors.description && touched.description &&
-                <Text style={GlobalStyle.errorMsg}>{errors.description}</Text>
-              }
-            </View>
-            <View style={{ marginTop: 10 }}>
-              <View>
-                <View
-                  style={Style.inputField}>
-                  <Text style={Style.inputLabel} >Address</Text>
-
-                  <LocationSearch
-                    placeholder="Address"
-                    isModalVisible={isModalVisible}
-                    // notifyChange={handleLocationChange}
-                    notifyChange={location => {
-                      setModalVisible(false);
-                      setFieldValue('address', location.description);
-                    }}
-                    closeModel={closeModel}
-                  />
-                  <Text style={{
-                    width: '100%', height: 50, fontSize: 16, color: '#000'
-                  }} onPress={() => setModalVisible(true)}>{values.address ? values.address : ''}</Text>
-
-                </View>
-                {errors.address && touched.address &&
-                  <Text style={GlobalStyle.errorMsg}>{errors.address}</Text>
-                }
-              </View>
-            </View>
-
-            <View style={{ marginTop: 10, display: 'flex', flexDirection: 'row' }}>
-
-              <View
-                style={[{ marginRight: 10, width: '40%' }]}>
-                <View style={Style.inputField}>
-                  <Text style={Style.inputLabel}>Free or Paid</Text>
-                  <SelectDropdown
-                    data={['Free', 'Paid']}
-                    onSelect={(selectedItem) => {
-                      setFieldValue('status', selectedItem)
-                      if (selectedItem === 'Free') {
-                        setFieldValue('amount', '0');
-                      } else {
-                        setFieldValue('amount', '');
-                      }
-                    }}
-                    buttonStyle={{ backgroundColor: 'transparent' }}
-                    defaultButtonText='Select'
-                    buttonTextStyle={{ textAlign: 'left' }}
-                    dropdownStyle={{ width: '35%', borderRadius: 10 }}
-                    defaultValue={''}
-                  />
-                </View>
-                {errors.status && touched.status &&
-                  <Text style={GlobalStyle.errorMsg}>{errors.status}</Text>
-                }
-              </View>
-              {values.status === 'Free' ? null
-                :
-                <View
-                  style={[{ flex: 1 }]}>
-                  <View style={Style.inputField}>
-                    <Text style={Style.inputLabel}>Amount</Text>
-                    <TextInput
-                      onChangeText={handleChange('amount')}
-                      onBlur={() => { handleBlur('amount') }}
-                      value={values.amount}
-                      keyboardType='numeric'
-                      style={{ fontSize: 16 }}
-                    />
-                  </View>
-                  {errors.amount && touched.amount &&
-                    <Text style={GlobalStyle.errorMsg}>{errors.amount}</Text>
+                  {errors.address && touched.address &&
+                    <Text style={GlobalStyle.errorMsg}>{errors.address}</Text>
                   }
                 </View>
-              }
+              </View>
+
+              <View style={{ marginTop: 10, display: 'flex', flexDirection: 'row' }}>
+
+                <View
+                  style={[{ marginRight: 10, width: '40%' }]}>
+                  <View style={Style.inputField}>
+                    <Text style={Style.inputLabel}>Free or Paid</Text>
+                    <SelectDropdown
+                      data={['Free', 'Paid']}
+                      onSelect={(selectedItem) => {
+                        setFieldValue('status', selectedItem)
+                        if (selectedItem === 'Free') {
+                          setFieldValue('amount', '0');
+                        } else {
+                          setFieldValue('amount', '');
+                        }
+                      }}
+                      buttonStyle={{ backgroundColor: 'transparent' }}
+                      defaultButtonText='Select'
+                      buttonTextStyle={{ textAlign: 'left' }}
+                      dropdownStyle={{ width: '35%', borderRadius: 10 }}
+                      defaultValue={''}
+                    />
+                  </View>
+                  {errors.status && touched.status &&
+                    <Text style={GlobalStyle.errorMsg}>{errors.status}</Text>
+                  }
+                </View>
+                {values.status === 'Free' ? null
+                  :
+                  <View
+                    style={[{ flex: 1 }]}>
+                    <View style={Style.inputField}>
+                      <Text style={Style.inputLabel}>Amount</Text>
+                      <TextInput
+                        onChangeText={handleChange('amount')}
+                        onBlur={() => { handleBlur('amount') }}
+                        value={values.amount}
+                        keyboardType='numeric'
+                        style={{ fontSize: 16 }}
+                      />
+                    </View>
+                    {errors.amount && touched.amount &&
+                      <Text style={GlobalStyle.errorMsg}>{errors.amount}</Text>
+                    }
+                  </View>
+                }
+              </View>
+              <Pressable style={GlobalStyle.button} onPress={() => handleSubmit()}
+              >
+                <Text style={GlobalStyle.btntext}>Create Gig</Text>
+              </Pressable>
             </View>
-            <Pressable style={GlobalStyle.button} onPress={() => handleSubmit()}
-            >
-              <Text style={GlobalStyle.btntext}>Create Gig</Text>
-            </Pressable>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </ScrollView>
     </SafeAreaView>
   )

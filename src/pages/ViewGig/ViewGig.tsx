@@ -135,6 +135,41 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                                     </Text>
                                 </View>
                             </View>
+                            {
+                                gigDetails.gig_requirement?.length > 0 ?
+                                    <View style={{ marginTop: 10 }}>
+                                        <Text style={[GlobalStyle.blackColor, style.headFont]}>Gig requirement</Text>
+                                        <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
+                                            {gigDetails.gig_requirement.map((item: any) => {
+                                                return (
+                                                    <Text style={[GlobalStyle.blackColor]}>
+                                                        {item}
+                                                    </Text>
+                                                )
+
+                                            })}
+
+
+                                        </View>
+                                    </View> : null
+                            }
+
+                            {
+                                gigDetails.good_to_have_skills?.length > 0 ?
+                                    <View style={{ marginTop: 10 }}>
+                                        <Text style={[GlobalStyle.blackColor, style.headFont]}>Good to have skills</Text>
+                                        <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
+                                            {gigDetails.good_to_have_skills.map((item: any) => {
+                                                return (
+                                                    <Text style={[GlobalStyle.blackColor]}>
+                                                        {item}
+                                                    </Text>
+                                                )
+                                            })}
+                                        </View>
+                                    </View> : null
+                            }
+
                             <View>
                                 <View style={style.space}>
                                     <Text style={[GlobalStyle.blackColor, style.headFont]}>Job Type</Text>
@@ -199,7 +234,6 @@ const style = StyleSheet.create({
         },
         shadowOpacity: 0.1,
         shadowRadius: 4,
-        elevation: 2, // Android shadow
     },
 })
 

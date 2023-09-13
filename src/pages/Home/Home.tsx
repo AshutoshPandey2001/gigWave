@@ -1,5 +1,5 @@
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Dimensions, Image, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import MicIcon from '../../assets/icons/Mic1.svg';
@@ -23,20 +23,23 @@ const HomeScreen = ({ navigation }: any) => {
   const [audioPath, setAudioPath] = useState<string>('');
   const [lists, setLists] = useState([])
   const [proLists, setProLists] = useState<any[]>([])
-  const [skillValue, setSkillValue] = useState("I do clean the house, cook and other various household tasks.  I also play the piano and violin at weddings.")
+  const [skillValue, setSkillValue] = useState<any>("I do clean the house, cook and other various household tasks.  I also play the piano and violin at weddings.")
   const { userType }: any = useSelector((state: RootState) => state.userType)
   const user: any = useSelector((state: RootState) => state.user.user);
   const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
   const dispatch = useDispatch();
   const focus = useIsFocused();  // useIsFocused as shown         
+  const skillInputRef = useRef<any>(null);
 
   const [interestGigType, setInterestGigType] = useState('unpaid')
-
+  const [error, setError] = useState('');
+  const isRequired = (value: any) => value.trim() !== '';
+  const isWithinRange = (value: any, min: any, max: any) => value.length >= min && value.length <= max;
   useEffect(() => {
     if (userType === "CREATOR")
       getList();
-    else
-      getProList()
+    // else
+    //   getProList()
   }, [userType, selectedIndex])
 
 
@@ -46,7 +49,7 @@ const HomeScreen = ({ navigation }: any) => {
         getList();
       else
         getProDetails()
-      getProList()
+      // getProList()
     }
   }, [focus])
   useEffect(() => {
@@ -86,7 +89,9 @@ const HomeScreen = ({ navigation }: any) => {
           };
           audioToText(audioDataToSend, firstToken).then((res) => {
             console.log('Return audio to text', res);
-            setSkillValue(res.text)
+            handleInputChange(res.text)
+
+            // setSkillValue(res.text)
             dispatch(setLoading(false))
           }).catch((error) => {
             console.error('error', error);
@@ -113,7 +118,9 @@ const HomeScreen = ({ navigation }: any) => {
     })
   }
   const updateProprofile = () => {
-
+    if (error !== '') {
+      return
+    }
     return new Promise((resolve, reject) => {
       let provalue = {
         "user_id": user.user_id,
@@ -276,10 +283,26 @@ const HomeScreen = ({ navigation }: any) => {
       </>
     )
   }
+  const handleInputChange = (msg: any) => {
+    setSkillValue(msg);
+    setError('');
+    if (!isRequired(msg)) {
+      setError('This field is required');
+    } else if (!isWithinRange(msg, 10, 100)) { // Adjust min and max length as needed
+      setError('Skills must be between 10 and 100 characters');
+    }
+  }
+  useEffect(() => {
+    if (skillInputRef.current) {
+      skillInputRef.current.focus();
+    }
+  }, []);
+
+
 
   const ProHome = () => {
     return (
-      <ScrollView>
+      <ScrollView keyboardShouldPersistTaps="always">
         <View style={[GlobalStyle.homecontainer]}>
           <View style={Style.cardContainer}>
             <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Suggested Gigs</Text>
@@ -330,23 +353,28 @@ const HomeScreen = ({ navigation }: any) => {
                       My Skills or How I Can Help Others</Text>
                     <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                       <TextInput
+                        autoFocus={true}
                         multiline
+                        ref={skillInputRef}
+                        keyboardType="default"
+                        returnKeyType="done"
                         numberOfLines={5}
                         placeholder="Type here..."
                         placeholderTextColor="#fff"
                         value={skillValue ? skillValue : ''}
-                        onChangeText={(msg: string) => setSkillValue(msg)}
+                        editable={true}
+                        onChangeText={(msg: string) => handleInputChange(msg)}
                         style={{ flex: 1, fontSize: 18, color: '#000' }}
                       />
                       <View style={{ alignItems: 'center' }}>
-
-                        {/* <Image source={require('../../assets/icons/mic1.png')} /> */}
                         <TouchableOpacity onPress={isRecording ? stopRecording : startRecognizing} >
                           {isRecording ? <Image resizeMode='contain' source={require('../../assets/images/stopRecording.png')} style={{ width: 50, height: 50 }} /> : <MicIcon height={50} width={50} />}
                         </TouchableOpacity>
                       </View>
                     </View>
+                    {error !== '' && <Text style={{ color: 'red' }}>{error}</Text>}
                   </View>
+
                   <View style={{ margin: 20 }}>
                     <Pressable style={GlobalStyle.button} onPress={() => updateProprofile()}>
                       <Text style={GlobalStyle.btntext}>Add Skills</Text>
@@ -362,14 +390,15 @@ const HomeScreen = ({ navigation }: any) => {
 
   return (
     <SafeAreaView>
-      <StatusBar
-        backgroundColor="#fff"
-        barStyle="dark-content" // Here is where you change the font-color
-      />
-      {
-        userType === "CREATOR" ? <CreatorHome /> : <ProHome />
-      }
-
+      <ScrollView keyboardShouldPersistTaps="never">
+        <StatusBar
+          backgroundColor="#fff"
+          barStyle="dark-content" // Here is where you change the font-color
+        />
+        {
+          userType === "CREATOR" ? <CreatorHome /> : <ProHome />
+        }
+      </ScrollView>
     </SafeAreaView>
   )
 }

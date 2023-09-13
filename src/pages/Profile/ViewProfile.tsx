@@ -21,6 +21,9 @@ const ViewProfileScreen = ({ navigation }: any) => {
     const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
     const [isRecording, setIsRecording] = useState(false);
     const [audioPath, setAudioPath] = useState<string>('');
+    const [error, setError] = useState('');
+    const isRequired = (value: any) => value.trim() !== '';
+    const isWithinRange = (value: any, min: any, max: any) => value.length >= min && value.length <= max;
     useEffect(() => {
         dispatch(setLoading(true));
         getProdetailsbyuserid(user.user_id, firstToken).then((res) => {
@@ -39,6 +42,9 @@ const ViewProfileScreen = ({ navigation }: any) => {
 
     const updateProprofile = (interestgigType: any) => {
         setInterestGigType(interestgigType)
+        if (error !== '') {
+            return
+        }
         console.log('calling', interestGigType);
 
         return new Promise((resolve, reject) => {
@@ -96,6 +102,16 @@ const ViewProfileScreen = ({ navigation }: any) => {
 
         })
     }
+
+    const handleInputChange = (msg: any) => {
+        setSkillValue(msg);
+        setError('');
+        if (!isRequired(msg)) {
+            setError('This field is required');
+        } else if (!isWithinRange(msg, 10, 100)) { // Adjust min and max length as needed
+            setError('Skills must be between 10 and 100 characters');
+        }
+    }
     const startRecognizing = async () => {
 
         const granted = await checkPermission();
@@ -124,7 +140,8 @@ const ViewProfileScreen = ({ navigation }: any) => {
                     };
                     audioToText(audioDataToSend, firstToken).then((res) => {
                         console.log('Return audio to text', res);
-                        setSkillValue(res.text)
+                        handleInputChange(res.text)
+                        // setSkillValue(res.text)
                         dispatch(setLoading(false))
                     }).catch((error) => {
                         console.error('error', error);
@@ -162,7 +179,7 @@ const ViewProfileScreen = ({ navigation }: any) => {
                                     placeholderTextColor="#fff"
                                     value={skillValue ? skillValue : ''}
                                     editable={true}
-                                    onChangeText={(msg: string) => setSkillValue(msg)}
+                                    onChangeText={(msg: string) => handleInputChange(msg)}
                                     style={{ flex: 1, fontSize: 16, color: '#000' }}
                                 />
                                 <View style={{ alignItems: 'center' }}>
@@ -174,6 +191,7 @@ const ViewProfileScreen = ({ navigation }: any) => {
                                 </View>
                             </View>
                         </View>
+                        {error !== '' && <Text style={{ color: 'red' }}>{error}</Text>}
                         <View style={styles.btnMargin}>
                             <Pressable style={[GlobalStyle.button, { backgroundColor: '#000' }]} onPress={() => updateProprofile(interestGigType)}>
                                 <Text style={GlobalStyle.btntext}>Update Skills</Text>
