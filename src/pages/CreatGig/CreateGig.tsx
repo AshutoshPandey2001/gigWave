@@ -35,7 +35,7 @@ const CreategigScreen = ({ navigation }: any) => {
     status: ''
   });
   const gigSchema = yup.object().shape({
-    description: yup.string().required('Description is required').min(100, 'Description must be at least 10 characters')
+    description: yup.string().required('Description is required').min(10, 'Description must be at least 10 characters')
       .max(400, 'Description must not exceed 400 characters'),
     address: yup.string().required('Address is required'),
     amount: yup.string().required('Amount is required'),

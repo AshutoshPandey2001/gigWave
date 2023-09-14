@@ -78,7 +78,7 @@ const EditProfileScreen = () => {
             // const dataURI = await `data:image/jpeg;base64,${res}`; // Assuming res is a base64 encoded image
             // console.log('image data url', dataURI);
 
-       }).catch((e) => {
+        }).catch((e) => {
             console.error(e, 'error when getting profile image');
 
         })
@@ -101,7 +101,7 @@ const EditProfileScreen = () => {
             console.log('res', response);
             const dataURI = `data:image/jpeg;base64,${response.base64_img}`; // Assuming res is a base64 encoded image
             console.log('image data url', dataURI);
-
+            setProfilePic(dataURI);
             dispatch(setLoading(false))
             dispatch(setUser(response))
         })
@@ -115,7 +115,6 @@ const EditProfileScreen = () => {
     // Launch Camera
 
 
-console.log(profilePic,'profilePic----------------')
 
     const updateProfile = async (values: any) => {
         // await dispatch(setLoading(true));
@@ -170,14 +169,14 @@ console.log(profilePic,'profilePic----------------')
                     <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                         <View style={[styles.profileImg, { marginRight: 10 }]}>
                             {/* <Image resizeMode='contain' style={styles.profileImg} source={require('../../assets/images/avatar_profile.png')} /> */}
-                            <Image resizeMode='contain' style={styles.profileImg} source={{uri:profilePic}} />
+                            <Image resizeMode='contain' style={styles.profileImg} source={profilePic ? { uri: profilePic } : require('../../assets/images/avatar_profile.png')} />
                             {/* <Image resizeMode='contain' style={[styles.profileImg]} source={user.base64_img ? { uri: `data:image/jpeg;base64,${user.base64_img}` } : require('../../assets/images/avatar_profile.png')} /> */}
                         </View>
-                        <Pressable onPress={() =>setIscamaraModalVisible(true)}>
+                        <Pressable onPress={() => setIscamaraModalVisible(true)}>
                             <Text style={styles.editText}>Upload Photo </Text>
                         </Pressable>
                         {
-                            iscamaraModalVisible && <UploadPhotosScreen isVisible={iscamaraModalVisible} onClose={closecamaraModel} setProfilePic={setProfilePic}/>
+                            iscamaraModalVisible && <UploadPhotosScreen isVisible={iscamaraModalVisible} onClose={closecamaraModel} setProfilePic={setProfilePic} />
                         }
                     </View>
                     {/* <Formik

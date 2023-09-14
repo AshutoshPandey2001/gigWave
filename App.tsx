@@ -30,7 +30,7 @@ import { setLoading } from './src/redux/action/General/GeneralSlice';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { checkPermission } from './src/services/audioServices/audioServices';
 
-LogBox.ignoreLogs(['new NativeEventEmitter']);
+LogBox.ignoreLogs(['new NativeEventEmitter','ViewPropTypes']);
 function App(): JSX.Element {
   const Stack = createNativeStackNavigator();
   const user = useSelector((state: RootState) => state.user)

@@ -1,27 +1,22 @@
-import { Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View, TouchableOpacity, PermissionsAndroid } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { GlobalStyle } from '../../globalStyle'
+import { Image, PermissionsAndroid, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import SelectDropdown from 'react-native-select-dropdown'
 import { useDispatch, useSelector } from 'react-redux'
+import { GlobalStyle } from '../../globalStyle'
 import { RootState } from '../../redux/store'
 // import SearchIcon from '../../assets/icons/gig Search bar.svg'
-import MicIcon from '../../assets/icons/SearchMic.svg'
-import MarkerIcon from '../../assets/icons/marker.svg'
-import MapMarkerIcon from '../../assets/icons/map-marker.svg'
+import Geolocation from '@react-native-community/geolocation'
 import DatePicker from 'react-native-date-picker'
 import MapView, { Callout, Marker, Region } from 'react-native-maps'
-import LocationSearch from '../../components/LocationSearch'
-import { getMatchedGigbyuserid, searchGigbyParameter } from '../../services/proUserService/proUserService'
-import { setLoading } from '../../redux/action/General/GeneralSlice'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
-import debounce from 'lodash.debounce';
-import { getGigByGig_id } from '../../services/gigService/gigService'
-import Geolocation from '@react-native-community/geolocation';
-import { PERMISSIONS, request } from 'react-native-permissions';
-import { Platform } from 'react-native';
-import { geocodeLocationByName } from '../../services/googleMapServices'
-import { audioToText, checkPermission, readAudioFile, startRecord, stopRecord } from '../../services/audioServices/audioServices'
 import SearchIcon from '../../assets/icons/Search.svg'
+import MicIcon from '../../assets/icons/SearchMic.svg'
+import MarkerIcon from '../../assets/icons/marker.svg'
+import LocationSearch from '../../components/LocationSearch'
+import { setLoading } from '../../redux/action/General/GeneralSlice'
+import { audioToText, checkPermission, readAudioFile, startRecord, stopRecord } from '../../services/audioServices/audioServices'
+import { geocodeLocationByName } from '../../services/googleMapServices'
+import { getMatchedGigbyuserid, searchGigbyParameter } from '../../services/proUserService/proUserService'
 
 const SearchGigScreen = ({ navigation }: any) => {
     const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
@@ -64,6 +59,7 @@ const SearchGigScreen = ({ navigation }: any) => {
             });
             return;
         }
+        console.log(searchValue, location, gigType);
         searchGigs(searchValue, location, gigType)
     }
     const onChangeLocation = (value: any) => {
@@ -84,11 +80,50 @@ const SearchGigScreen = ({ navigation }: any) => {
             });
     }
     const separateAddressComponents = (addressJSON: any) => {
-        const terms = addressJSON.terms.slice(-3); // Extract last three terms
-        const city = terms[0].value;
-        const state = terms[1].value;
-        const country = terms[2].value;
-        return { city, state, country };
+        console.log(addressJSON)
+        if (addressJSON.terms && addressJSON.terms?.length) {
+            const terms = addressJSON.terms.slice(-3) // Extract last three terms
+            console.log(terms, 'terms-------------', addressJSON.terms)
+            if (terms.length === 1) {
+                const city = "";
+                const state = "";
+                const country = terms[0]?.value.trim();
+                return { city, state, country };
+            }
+            else if (terms.length === 2) {
+                const city = terms[0]?.value.trim();
+                const state = "";
+                const country = terms[1]?.value.trim();
+                return { city, state, country };
+
+            } else {
+                const city = terms[0]?.value.trim();
+                const state = terms[1].value.trim();
+                const country = terms[2]?.value.trim();
+                return { city, state, country };
+            }
+        } else {
+            const terms = addressJSON.description.split(",")
+            if (terms.length === 1) {
+                const city = "";
+                const state = "";
+                const country = terms[0].trim();
+                return { city, state, country };
+            }
+            else if (terms.length === 2) {
+                const city = terms[0].trim();
+                const state = "";
+                const country = terms[1].trim();
+                return { city, state, country };
+
+            } else {
+                const city = terms[0].trim();
+                const state = terms[1].trim();
+                const country = terms[2].trim();
+                return { city, state, country };
+            }
+        }
+
     }
     const onChangegigType = (value: any) => {
         let interestgig = undefined
@@ -118,12 +153,15 @@ const SearchGigScreen = ({ navigation }: any) => {
         getProList();
         getDefaultAddress()
         checkPermission()
-        // checkPermissionGooglemap();
+        checkPermissionGooglemap();
+        return () => {
+            setLocation("");
+            setSelectedMarker(null);
+        };
     }, [])
 
     const getDefaultAddress = () => {
         console.log('user.address,user.address', user.address);
-
         setLocation({ description: user.address })
         geocodeLocationByName(user.address)
             .then((res: any) => {
@@ -147,7 +185,6 @@ const SearchGigScreen = ({ navigation }: any) => {
 
     const checkPermissionGooglemap = async () => {
         const permission = PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-
         try {
             const hasPermission = await PermissionsAndroid.check(permission);
             if (hasPermission) {
@@ -171,6 +208,7 @@ const SearchGigScreen = ({ navigation }: any) => {
             position => {
                 const { latitude, longitude } = position.coords;
                 console.log('latitude, longitude', latitude, longitude);
+                console.log(position, 'position')
                 setInitialRegion((prevState) => ({
                     ...prevState,
                     latitude,
@@ -339,11 +377,11 @@ const SearchGigScreen = ({ navigation }: any) => {
                     // title="Your Location"
                     >
                         <Image resizeMode="contain" source={require('../../assets/images/marker-current_location.png')} style={{ width: 30, height: 30 }} />
-                        <Callout>
+                        {/* <Callout>
                             <View>
                                 <Text>{'Your Location'}</Text>
                             </View>
-                        </Callout>
+                        </Callout> */}
                     </Marker>
 
                     {proLists.map((location: any, index: number) => (
@@ -360,11 +398,11 @@ const SearchGigScreen = ({ navigation }: any) => {
                         >
                             {/* Callout to display location name */}
                             <Image resizeMode="contain" source={require('../../assets/images/marker-nearby-gigs.png')} style={{ width: 30, height: 30 }} />
-                            <Callout>
+                            {/* <Callout>
                                 <View>
                                     <Text>{location.address}</Text>
                                 </View>
-                            </Callout>
+                            </Callout> */}
                         </Marker>
                     ))}
 
@@ -428,6 +466,7 @@ const SearchGigScreen = ({ navigation }: any) => {
         try {
             dispatch(setLoading(true));
             const matchedGigs = await searchGigbyParameter(gigParms, firstToken);
+            setSelectedMarker(null);
 
             setProLists(matchedGigs);
             dispatch(setLoading(false));
@@ -602,9 +641,9 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     imageStyle: {
-        borderTopLeftRadius: 15,
-        borderBottomLeftRadius: 15,
-        height: 120,
+        borderTopLeftRadius: 10,
+        borderBottomLeftRadius: 10,
+        height: 140,
         width: 100
     }
 })

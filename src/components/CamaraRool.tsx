@@ -1,27 +1,27 @@
 import React, { useState } from 'react';
-import { Image, Modal, Text, TouchableOpacity, View, PermissionsAndroid, StyleSheet, Dimensions } from 'react-native';
+import { Dimensions, Modal, PermissionsAndroid, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import fs from 'react-native-fs';
 import { CameraOptions, ImageLibraryOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { useDispatch, useSelector } from 'react-redux';
+import CamaraIcon from '../assets/icons/camera1.svg';
+import CloseIcon from '../assets/icons/close.svg';
+import GalleryIcon from '../assets/icons/image1.svg';
 import { GlobalStyle } from '../globalStyle';
+import { setUser } from '../redux/action/Auth/authAction';
+import { setLoading } from '../redux/action/General/GeneralSlice';
 import { RootState } from '../redux/store';
 import { getUserByUserID, uploadProfilePhoto } from '../services/userService/userServices';
-import { setLoading } from '../redux/action/General/GeneralSlice';
-import { setUser } from '../redux/action/Auth/authAction';
-import CamaraIcon from '../assets/icons/camera1.svg'
-import GalleryIcon from '../assets/icons/image1.svg'
-import CloseIcon from '../assets/icons/close.svg'
 
 // import Modal from 'react-native-modal';
 
 interface UploadPhotosProps {
     isVisible: boolean;
     onClose: () => void;
-    setProfilePic:any;
+    setProfilePic: any;
 }
 
-const UploadPhotosScreen = ({ isVisible, onClose,setProfilePic }: UploadPhotosProps) => {
+const UploadPhotosScreen = ({ isVisible, onClose, setProfilePic }: UploadPhotosProps) => {
     const cameraRef = React.useRef<RNCamera | null>(null);
     const [isCameraReady, setIsCameraReady] = useState(false);
     const [showCamera, setShowCamera] = useState(false); // New state to control camera visibility
@@ -65,30 +65,25 @@ const UploadPhotosScreen = ({ isVisible, onClose,setProfilePic }: UploadPhotosPr
                         console.log('ImagePicker Error: ', res.error);
                     } else if (res.customButton) {
                         console.log('User tapped custom button: ', res.customButton);
-                        // alert(res.customButton);
                     } else {
-                        // dispatch(setLoading(true))
                         onClose()
                         console.log(res, 'original ROtation--------------------')
                         const selectedImage = res.assets[0];
                         fs.readFile(selectedImage.uri, "base64").then((imgRes) => {
-                            // console.log('imgRes-----------------',imgRes);
                             setProfilePic(`data:image/jpeg;base64,${imgRes}`)
-                            // uploadProfilePhoto(user.user_id, firstToken, imgRes)
-                            //     .then((res) => {
-                            //         console.log(res, 'uploaded image');
-                            //         getUserByUserID(user.user_id, firstToken).then((response) => {
-                            //             console.log('res--------', response.base64_img);
-                            //             const dataURI = `data:image/jpeg;base64,${response.base64_img}`; // Assuming res is a base64 encoded image
-                            //             console.log('image data url', dataURI);
-
-                            //             // setProfilePic(dataURI);
-                            //             dispatch(setLoading(false))
-                            //             dispatch(setUser(response))
-                            //         })
-                            //         dispatch(setLoading(false))
-                            //         // You might want to perform additional actions here after successful upload
-                            //     }).catch((err) => { dispatch(setLoading(false)); console.error(err) })
+                            uploadProfilePhoto(user.user_id, firstToken, imgRes)
+                                .then((res) => {
+                                    console.log(res, 'uploaded image');
+                                    getUserByUserID(user.user_id, firstToken).then((response) => {
+                                        // console.log('res--------', response.base64_img);
+                                        const dataURI = `data:image/jpeg;base64,${response.base64_img}`; // Assuming res is a base64 encoded image
+                                        setProfilePic(dataURI);
+                                        dispatch(setLoading(false))
+                                        dispatch(setUser(response))
+                                    })
+                                    dispatch(setLoading(false))
+                                    // You might want to perform additional actions here after successful upload
+                                }).catch((err) => { dispatch(setLoading(false)); console.error(err) })
                         })
                     }
                 });
@@ -105,7 +100,7 @@ const UploadPhotosScreen = ({ isVisible, onClose,setProfilePic }: UploadPhotosPr
         const options: ImageLibraryOptions = {
             mediaType: 'photo',
             quality: 0.2,
-            includeBase64: true,
+            includeBase64: false,
 
         };
         launchImageLibrary(options, async (response: any) => {
@@ -117,20 +112,22 @@ const UploadPhotosScreen = ({ isVisible, onClose,setProfilePic }: UploadPhotosPr
                 onClose()
                 dispatch(setLoading(true))
                 const selectedImage = response.assets[0];
-                uploadProfilePhoto(user.user_id, firstToken, selectedImage.base64)
-                    .then((res) => {
-                        console.log(res, 'uploaded image');
-                        getUserByUserID(user.user_id, firstToken).then((response) => {
-                            console.log('res', response);
-                            const dataURI = `data:image/jpeg;base64,${response.base64_img}`; // Assuming res is a base64 encoded image
-                            console.log('image data url', dataURI);
-                            // setProfilePic(dataURI);
+                fs.readFile(selectedImage.uri, "base64").then((imgRes) => {
+                    setProfilePic(`data:image/jpeg;base64,${imgRes}`)
+                    uploadProfilePhoto(user.user_id, firstToken, imgRes)
+                        .then((res) => {
+                            console.log(res, 'uploaded image');
+                            getUserByUserID(user.user_id, firstToken).then((response) => {
+                                // console.log('res--------', response.base64_img);
+                                const dataURI = `data:image/jpeg;base64,${response.base64_img}`; // Assuming res is a base64 encoded image
+                                setProfilePic(dataURI);
+                                dispatch(setLoading(false))
+                                dispatch(setUser(response))
+                            })
                             dispatch(setLoading(false))
-                            dispatch(setUser(response))
-                        })
-                        dispatch(setLoading(false))
-                        // You might want to perform additional actions here after successful upload
-                    }).catch((err) => { dispatch(setLoading(false)); console.error(err) })
+                            // You might want to perform additional actions here after successful upload
+                        }).catch((err) => { dispatch(setLoading(false)); console.error(err) })
+                })
             }
         })
     };
