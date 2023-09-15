@@ -126,13 +126,12 @@ const SearchGigScreen = ({ navigation }: any) => {
 
     }
     const onChangegigType = (value: any) => {
-        let interestgig = undefined
         if (value === "Free") {
-            interestgig = "unpaid"
             setGigType('unpaid')
-        } else {
-            interestgig = "paid"
+        } else if (value === "Paid") {
             setGigType('paid')
+        } else if (value === "Both") {
+            setGigType('all')
         }
         // searchGigs(searchValue, location, interestgig)
 
@@ -153,7 +152,7 @@ const SearchGigScreen = ({ navigation }: any) => {
         getProList();
         getDefaultAddress()
         checkPermission()
-        checkPermissionGooglemap();
+        // checkPermissionGooglemap();
         return () => {
             setLocation("");
             setSelectedMarker(null);
@@ -162,7 +161,7 @@ const SearchGigScreen = ({ navigation }: any) => {
 
     const getDefaultAddress = () => {
         console.log('user.address,user.address', user.address);
-        setLocation({ description: user.address })
+        setLocation({ description: user.address, terms: [{ "offset": 0, "value": user.city }, { "offset": 10, "value": user.state }, { "offset": 14, "value": user.country }] })
         geocodeLocationByName(user.address)
             .then((res: any) => {
                 const { latitude, longitude } = res;
@@ -183,26 +182,26 @@ const SearchGigScreen = ({ navigation }: any) => {
             });
     }
 
-    const checkPermissionGooglemap = async () => {
-        const permission = PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-        try {
-            const hasPermission = await PermissionsAndroid.check(permission);
-            if (hasPermission) {
-                getCurrentLocation()
-                console.log('Permission already granted', hasPermission);
-            } else {
-                const status = await PermissionsAndroid.request(permission);
-                if (status === PermissionsAndroid.RESULTS.GRANTED) {
-                    getCurrentLocation()
-                    console.log('Permission granted', status);
-                } else {
-                    console.log('Permission denied');
-                }
-            }
-        } catch (error) {
-            console.error('Error checking or requesting permission:', error);
-        }
-    };
+    // const checkPermissionGooglemap = async () => {
+    //     const permission = PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+    //     try {
+    //         const hasPermission = await PermissionsAndroid.check(permission);
+    //         if (hasPermission) {
+    //             getCurrentLocation()
+    //             console.log('Permission already granted', hasPermission);
+    //         } else {
+    //             const status = await PermissionsAndroid.request(permission);
+    //             if (status === PermissionsAndroid.RESULTS.GRANTED) {
+    //                 getCurrentLocation()
+    //                 console.log('Permission granted', status);
+    //             } else {
+    //                 console.log('Permission denied');
+    //             }
+    //         }
+    //     } catch (error) {
+    //         console.error('Error checking or requesting permission:', error);
+    //     }
+    // };
     const getCurrentLocation = () => {
         Geolocation.getCurrentPosition(
             position => {
@@ -467,7 +466,6 @@ const SearchGigScreen = ({ navigation }: any) => {
             dispatch(setLoading(true));
             const matchedGigs = await searchGigbyParameter(gigParms, firstToken);
             setSelectedMarker(null);
-
             setProLists(matchedGigs);
             dispatch(setLoading(false));
         } catch (error) {
@@ -593,7 +591,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                             width: 110
                         }]}>
                         <SelectDropdown
-                            data={['Free', 'Paid']}
+                            data={['Free', 'Paid', 'Both']}
                             onSelect={(selectedItem) => {
                                 onChangegigType(selectedItem)
                                 // setFieldValue('status', selectedItem)

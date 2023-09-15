@@ -7,14 +7,14 @@ import { RootState } from '../../redux/store'
 import { getGigByGig_id, updateGig } from '../../services/gigService/gigService'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
-import { proInterestgig } from '../../services/proUserService/proUserService'
+import { checkProItrestedGig, proInterestgig } from '../../services/proUserService/proUserService'
 import { useIsFocused } from '@react-navigation/native'
 
 const ViewGigScreen = ({ route, navigation }: any) => {
     const { userType }: any = useSelector((state: RootState) => state.userType)
     const user: any = useSelector((state: RootState) => state.user.user);
     const [gigDetails, setGigDetails] = useState<any>()
-    // console.log('routes parms', route.params);
+    const [alreadyIntrest, setAlreadyIntrest] = useState(false)
     const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
     const dispatch = useDispatch()
     const focus = useIsFocused();
@@ -30,7 +30,19 @@ const ViewGigScreen = ({ route, navigation }: any) => {
         getGigByGig_id(route.params.gig_id, firstToken).then((res: any) => {
             console.log(res, 'gig details response');
             setGigDetails(res)
-            dispatch(setLoading(false));
+
+            checkProItrestedGig({
+                "gig_id": res.gig_id,
+                "pro_id": user.user_id
+            }, firstToken).then((rese1: any) => {
+                console.log('rese1 already intrested', rese1);
+                setAlreadyIntrest(rese1.status)
+                dispatch(setLoading(false));
+
+            }).catch(error => {
+
+                dispatch(setLoading(false));
+            })
 
         }).catch((error) => {
             dispatch(setLoading(false));
@@ -73,6 +85,7 @@ const ViewGigScreen = ({ route, navigation }: any) => {
             console.log('Interest gig response', res);
             dispatch(setLoading(false));
             if (res?.compatibility == "1") {
+                setAlreadyIntrest(true)
                 Toast.show({
                     type: 'success',
                     text1: 'Success',
@@ -120,7 +133,7 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                                     </View>
                                 </View>
                                 {userType === "PRO" ? <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: -15 }}>
-                                    {gigDetails && gigDetails?.isProList ?
+                                    {alreadyIntrest ?
                                         <>
                                             <Pressable style={[GlobalStyle.button, { flex: 1, backgroundColor: '#000', margin: 5, paddingHorizontal: 15 }]}>
                                                 <Text style={[GlobalStyle.btntext, { fontWeight: 'bold', fontSize: 16 }]}>Not Interested</Text>
@@ -173,7 +186,7 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                                     {
                                         gigDetails.good_to_have_skills?.length > 0 ?
                                             <View style={{ marginTop: 10 }}>
-                                                <Text style={[GlobalStyle.blackColor, style.headFont]}>Good to have skills</Text>
+                                                <Text style={[GlobalStyle.blackColor, style.headFont]}>Recommended skills</Text>
                                                 <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
                                                     {gigDetails.good_to_have_skills.map((item: any) => {
                                                         return (

@@ -15,7 +15,7 @@ import { getProdetailsbyuserid, updateProUsersDetails } from '../../services/pro
 import { getProfilePhoto, getUserByUserID, uploadProfilePhoto } from '../../services/userService/userServices'
 import fs from 'react-native-fs';
 import { Modal } from 'react-native-paper'
-import UploadPhotosScreen from '../../components/CamaraRool'
+import UploadPhotosScreen from '../../components/CamaraRoll'
 
 
 interface InitialFormValues {
