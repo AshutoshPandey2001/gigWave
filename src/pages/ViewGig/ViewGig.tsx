@@ -121,15 +121,15 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                             {/* <View style={[GlobalStyle.headerLeft, { margin: 0 }]}>
                         <HeaderProfile />
                     </View> */}
-                            <View style={{ marginTop: 10, width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            {/* <View style={{ marginTop: 10, width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                 <Text style={[GlobalStyle.blackColor, { fontSize: 22, fontWeight: 'bold' }]}>Gig</Text>
-                            </View>
+                            </View> */}
                             <View style={{ marginTop: 10 }}>
                                 <View style={{ display: 'flex', alignItems: 'center' }}>
-                                    <Image source={{ uri: gigDetails.thumbnail_img_url }} style={{ position: 'absolute', zIndex: 999, top: 0, width: "100%", height: 130 }} />
-                                    <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { marginTop: 90, paddingTop: 50, display: 'flex', justifyContent: 'center', alignItems: 'center' }]}>
-                                        <Text style={[GlobalStyle.blackColor, { fontWeight: 'bold' }]}>{gigDetails.title ? gigDetails?.title : 'Part-time Childcare'}</Text>
-                                        <Text>{gigDetails.address ? gigDetails?.address : 'San Francisco, CA'}</Text>
+                                    <Image resizeMode='cover' source={{ uri: gigDetails.thumbnail_img_url }} style={{ position: 'absolute', zIndex: 999, top: 0, width: "100%", height: 250 }} />
+                                    <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { marginTop: 210, paddingTop: 50, display: 'flex', justifyContent: 'center', alignItems: 'center' }]}>
+                                        <Text style={[GlobalStyle.blackColor, { fontWeight: 'bold', fontSize: 20 }]}>{gigDetails.title ? gigDetails?.title : ''}</Text>
+                                        <Text>{gigDetails.address ? gigDetails?.address : ''}</Text>
                                     </View>
                                 </View>
                                 {userType === "PRO" ? <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: -15 }}>
@@ -231,13 +231,12 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                                         <Image resizeMode='contain' style={style.profileImg} source={{ uri: `data:image/jpeg;base64,${gigDetails.creator_base64_img}` }} />
                                     </View>
                                     <Text style={[GlobalStyle.blackColor, { fontSize: 20, margin: 10 }]}>
-                                        {gigDetails.creator_fname + gigDetails.creator_lname}
+                                        {gigDetails.creator_fname + ' ' + gigDetails.creator_lname}
                                     </Text>
                                 </View>
                             </View>
                         </View> : null
                 }
-
             </ScrollView>
         </SafeAreaView>
     )

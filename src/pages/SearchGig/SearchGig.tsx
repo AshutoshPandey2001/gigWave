@@ -102,7 +102,8 @@ const SearchGigScreen = ({ navigation }: any) => {
                 const country = terms[2]?.value.trim();
                 return { city, state, country };
             }
-        } else {
+        } 
+        else {
             const terms = addressJSON.description.split(",")
             if (terms.length === 1) {
                 const city = "";

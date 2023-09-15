@@ -1,19 +1,20 @@
-import { View, Text, SafeAreaView, ScrollView, StyleSheet, TextInput, Pressable, Image, Animated, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { useFormik } from 'formik'
 import React, { useEffect, useRef, useState } from 'react'
-import { GlobalStyle } from '../../globalStyle'
-import { Formik, useFormik } from 'formik'
+import { Image, Keyboard, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import SelectDropdown from 'react-native-select-dropdown'
-import MicIcon from '../../assets/icons/Mic1.svg'
-import * as Animatable from 'react-native-animatable';
-import * as yup from "yup"
-import LocationSearch from '../../components/LocationSearch'
+import { Toast } from 'react-native-toast-message/lib/src/Toast'
 import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '../../redux/store'
-import { createGig } from '../../services/gigService/gigService'
+import * as yup from "yup"
+import MicIcon from '../../assets/icons/Mic1.svg'
+import LocationSearch from '../../components/LocationSearch'
+import { GlobalStyle } from '../../globalStyle'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
-import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { setGigCreated } from '../../redux/action/Gig/GigSlice'
+import { RootState } from '../../redux/store'
 import { audioToText, checkPermission, readAudioFile, startRecord, stopRecord } from '../../services/audioServices/audioServices'
+import { createGig } from '../../services/gigService/gigService'
+import { useIsFocused } from "@react-navigation/native";
+
 interface InitialFormValues {
   description: string,
   address: string,
@@ -26,6 +27,8 @@ const CreategigScreen = ({ navigation }: any) => {
   const [isRecording, setIsRecording] = useState(false);
   const [audioPath, setAudioPath] = useState<string>('');
   const dropdownRef = useRef<any>(null);
+  const selectRef = useRef<SelectDropdown>(null);
+
   const [keyboardPersist, setkeyboardPersist] = useState(false)
   const dispatch = useDispatch();
   const [initialFormValues, setInitialFormValues] = useState<InitialFormValues>({
@@ -34,6 +37,7 @@ const CreategigScreen = ({ navigation }: any) => {
     amount: '',
     status: ''
   });
+  const isFocused = useIsFocused();
   const gigSchema = yup.object().shape({
     description: yup.string().required('Description is required').min(10, 'Description must be at least 10 characters')
       .max(400, 'Description must not exceed 400 characters'),
@@ -60,6 +64,7 @@ const CreategigScreen = ({ navigation }: any) => {
           type: 'success',
           text1: 'Success',
           text2: 'Gig Created successfully',
+
         });
         // SuccessToast({
         //   text1: 'Gig Created Scuuessfully',
@@ -88,6 +93,14 @@ const CreategigScreen = ({ navigation }: any) => {
     dispatch(setLoading(false))
     checkPermission()
   }, [])
+
+  useEffect(() => {
+    if (isFocused) {
+      resetForm();
+      setFieldValue("status", "")
+      selectRef.current?.reset();
+    }
+  }, [isFocused]);
 
   const formik = useFormik<InitialFormValues>({
     initialValues: initialFormValues,
@@ -232,6 +245,7 @@ const CreategigScreen = ({ navigation }: any) => {
                   <View style={Style.inputField}>
                     <Text style={Style.inputLabel}>Free or Paid</Text>
                     <SelectDropdown
+                      ref={selectRef}
                       data={['Free', 'Paid']}
                       onSelect={(selectedItem) => {
                         setFieldValue('status', selectedItem)
