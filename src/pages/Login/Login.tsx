@@ -12,11 +12,15 @@ import { RootState } from '../../redux/store'
 import { setUser } from '../../redux/action/Auth/authAction'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
+import { useToast } from "react-native-toast-notifications";
+import CommanAlertBox from '../../components/CommanAlertBox'
 
 const LoginScreen = ({ navigation }: any) => {
   const dispatch = useDispatch();
   const [isOtpsent, setOtpSend] = useState(false);
   const [mobile, setMobile] = useState("");
+  const toast = useToast();
+
   const loginPhoneSchema = yup.object().shape({
     phone: yup.string().required('Phone number is required')
       .min(10, 'Phone number must be 10 digit number')
@@ -35,6 +39,19 @@ const LoginScreen = ({ navigation }: any) => {
       const response = await getOtp(values.phone, firsToken);
       console.log('Response:', response);
       if (response) {
+        // toast.show("OTP sent successfully ", {
+        //   type: "success",
+        // });
+        // toast.show(
+        //   "OTP sent successfully",
+        //   {
+        //     type: "success_toast",
+        //     animationDuration: 100,
+        //     data: {
+        //       title: "Customized toast",
+        //     },
+        //   }
+        // )
         Toast.show({
           type: 'success',
           text1: 'Success',
@@ -44,13 +61,14 @@ const LoginScreen = ({ navigation }: any) => {
         setOtpSend(true)
       }
     } catch (error: any) {
-      Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: error.message,
-      });
+
+      // Toast.show({
+      //   type: 'error',
+      //   text1: 'Error',
+      //   text2: error.message,
+      // });
       await dispatch(setLoading(false))
-      console.error('Error:', error);
+      // console.error('Error:', error);
     }
     setMobile(values.phone)
   }
@@ -69,19 +87,18 @@ const LoginScreen = ({ navigation }: any) => {
         dispatch(setUser(response.user))
       } else {
         setOtpSend(false)
-        Toast.show({
-          type: 'error',
-          text1: 'Error',
-          text2: 'You Mobile number is Register',
+        CommanAlertBox({
+          title: 'Error',
+          message: 'You Mobile number is Register',
         });
-        // navigation.navigate('Register', { mobileNumber: mobile })
+
       }
     } catch (error: any) {
-      Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: error.message,
+      CommanAlertBox({
+        title: 'Error',
+        message: error.message,
       });
+
       await dispatch(setLoading(false))
       // navigation.navigate('Register', { mobileNumber: mobile })
       console.error('Error:', error);

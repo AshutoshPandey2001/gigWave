@@ -14,6 +14,7 @@ import { setUser } from '../../redux/action/Auth/authAction'
 import { RootState } from '../../redux/store'
 import { checkUser, createUser } from '../../services/authServices/authServices'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
+import CommanAlertBox from '../../components/CommanAlertBox'
 
 const RegisterScreen = ({ navigation }: any) => {
     const dispatch = useDispatch();
@@ -49,11 +50,11 @@ const RegisterScreen = ({ navigation }: any) => {
                     dispatch(setUser(response))
                     console.log('Create user data Response:', response);
                 }).catch((error) => {
-                    Toast.show({
-                        type: 'error',
-                        text1: 'Error',
-                        text2: error.message,
+                    CommanAlertBox({
+                        title: 'Error',
+                        message: error.message,
                     });
+
                     console.error("registeration error", JSON.stringify(error))
                 })
             }

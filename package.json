@@ -42,6 +42,7 @@
     "react-native-svg": "^13.10.0",
     "react-native-svg-transformer": "^1.1.0",
     "react-native-toast-message": "^2.1.6",
+    "react-native-toast-notifications": "^3.4.0",
     "react-native-vector-icons": "^10.0.0",
     "react-redux": "^8.1.2",
     "redux": "^4.2.1",

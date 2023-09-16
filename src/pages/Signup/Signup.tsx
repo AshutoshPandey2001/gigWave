@@ -10,6 +10,7 @@ import { getOtp, verifyOtp } from '../../services/authServices/authServices'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
 import { setUser } from '../../redux/action/Auth/authAction'
+import CommanAlertBox from '../../components/CommanAlertBox'
 const SignupScreen = ({ navigation }: any) => {
     const dispatch = useDispatch();
     const [isOtpsent, setOtpSend] = useState(false)
@@ -38,8 +39,12 @@ const SignupScreen = ({ navigation }: any) => {
             if (response) {
                 setOtpSend(true)
             }
-        } catch (error) {
-            console.error('Error:', error);
+        } catch (error: any) {
+            CommanAlertBox({
+                title: 'Error',
+                message: error.message,
+            });
+            // console.error('Error:', error);
         }
         setMobile(values.phone)
     }
@@ -58,8 +63,11 @@ const SignupScreen = ({ navigation }: any) => {
                 setOtpSend(false)
                 navigation.navigate('Register', { mobileNumber: mobile })
             }
-        } catch (error) {
-            console.error('Error:', error);
+        } catch (error: any) {
+            CommanAlertBox({
+                title: 'Error',
+                message: error.message,
+            });
         }
     }
     return (

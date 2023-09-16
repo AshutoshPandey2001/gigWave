@@ -9,6 +9,7 @@ import { setLoading } from '../../redux/action/General/GeneralSlice'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
 import { checkProItrestedGig, proInterestgig } from '../../services/proUserService/proUserService'
 import { useIsFocused } from '@react-navigation/native'
+import CommanAlertBox from '../../components/CommanAlertBox'
 
 const ViewGigScreen = ({ route, navigation }: any) => {
     const { userType }: any = useSelector((state: RootState) => state.userType)
@@ -30,7 +31,6 @@ const ViewGigScreen = ({ route, navigation }: any) => {
         getGigByGig_id(route.params.gig_id, firstToken).then((res: any) => {
             console.log(res, 'gig details response');
             setGigDetails(res)
-
             checkProItrestedGig({
                 "gig_id": res.gig_id,
                 "pro_id": user.user_id
@@ -40,13 +40,15 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                 dispatch(setLoading(false));
 
             }).catch(error => {
-
+                CommanAlertBox({
+                    title: 'Error',
+                    message: error.message,
+                });
                 dispatch(setLoading(false));
             })
 
         }).catch((error) => {
             dispatch(setLoading(false));
-
             console.log(error)
         })
     }
@@ -66,12 +68,10 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                 dispatch(setLoading(false));
             })
             .catch((e) => {
-                Toast.show({
-                    type: 'error',
-                    text1: 'Error',
-                    text2: e.message,
+                CommanAlertBox({
+                    title: 'Error',
+                    message: e.message,
                 });
-                console.log('error', JSON.stringify(e));
                 dispatch(setLoading(false));
             });
     };
@@ -92,20 +92,20 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                     text2: res.evaluation_comment,
                 });
             } else {
-                Toast.show({
-                    type: 'error',
-                    text1: 'Error',
-                    text2: res?.compatibility === "0"
+                CommanAlertBox({
+                    title: 'Error',
+                    message: res?.compatibility === "0"
                         ? `${res.evaluation_comment}\n${res.missing_required_skills.toString()}`
                         : res.evaluation_comment,
                 });
+
             }
         }).catch((error) => {
-            Toast.show({
-                type: 'error',
-                text1: 'Error',
-                text2: error.message,
+            CommanAlertBox({
+                title: 'Error',
+                message: error.message,
             });
+
             dispatch(setLoading(false));
 
             console.log(error, 'error');

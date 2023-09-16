@@ -8,6 +8,7 @@ import { RootState } from '../../redux/store'
 import { matchProuserwithgig_id, updateGig } from '../../services/gigService/gigService'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
+import CommanAlertBox from '../../components/CommanAlertBox'
 
 const HelpScreen = ({ route, navigation }: any) => {
     const [matchedprouserList, setmatchedprouserList] = useState([])
@@ -21,12 +22,11 @@ const HelpScreen = ({ route, navigation }: any) => {
 
             dispatch(setLoading(false))
         }).catch((error) => {
-            Toast.show({
-                type: 'error',
-                text1: 'Error',
-                text2: error.message,
+            CommanAlertBox({
+                title: 'Error',
+                message: error.message,
             });
-            console.error(JSON.stringify(error));
+
             dispatch(setLoading(false))
         })
     }, [])
@@ -45,16 +45,13 @@ const HelpScreen = ({ route, navigation }: any) => {
                 dispatch(setLoading(false));
             })
             .catch((e) => {
-                Toast.show({
-                    type: 'error',
-                    text1: 'Error',
-                    text2: e.message,
+                CommanAlertBox({
+                    title: 'Error',
+                    message: e.message,
                 });
-                console.log('error', JSON.stringify(e));
                 dispatch(setLoading(false));
             });
     };
-    console.log('route.params', route.params.thumbnail_img_url);
 
     return (
         <SafeAreaView>
@@ -89,7 +86,7 @@ const HelpScreen = ({ route, navigation }: any) => {
                         <Text style={[GlobalStyle.blackColor, Style.commanmargin]}>Review Pro List</Text>
                         {matchedprouserList?.length > 0 ?
                             matchedprouserList?.map((item: any, i) =>
-                                <Pressable onPress={() => navigation.navigate('Single-pro')} key={i}>
+                                <Pressable onPress={() => navigation.navigate('Single-pro', item)} key={i}>
                                     <View style={[GlobalStyle.card, GlobalStyle.shadowProp, Style.localCardStyle]}>
                                         <View style={{ padding: 10 }}>
                                             <Image resizeMode='contain' source={require('../../assets/images/avatar-1.png')} />

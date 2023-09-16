@@ -17,6 +17,7 @@ import { setLoading } from '../../redux/action/General/GeneralSlice'
 import { audioToText, checkPermission, readAudioFile, startRecord, stopRecord } from '../../services/audioServices/audioServices'
 import { geocodeLocationByName } from '../../services/googleMapServices'
 import { getMatchedGigbyuserid, searchGigbyParameter } from '../../services/proUserService/proUserService'
+import CommanAlertBox from '../../components/CommanAlertBox'
 
 const SearchGigScreen = ({ navigation }: any) => {
     const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
@@ -102,7 +103,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                 const country = terms[2]?.value.trim();
                 return { city, state, country };
             }
-        } 
+        }
         else {
             const terms = addressJSON.description.split(",")
             if (terms.length === 1) {
@@ -178,6 +179,10 @@ const SearchGigScreen = ({ navigation }: any) => {
                 }))
             })
             .catch((error: any) => {
+                CommanAlertBox({
+                    title: 'Error',
+                    message: error.message,
+                });
                 console.error(error);
                 return null; // Handle errors gracefully if needed
             });
@@ -257,14 +262,20 @@ const SearchGigScreen = ({ navigation }: any) => {
                         setSearchValue(res.text)
                         dispatch(setLoading(false))
                     }).catch((error) => {
-                        console.error('error', error);
+                        CommanAlertBox({
+                            title: 'Error',
+                            message: error.message,
+                        });
                         dispatch(setLoading(false))
                     })
                 }
             })
             .catch((error) => {
                 dispatch(setLoading(false))
-                console.error('Error reading audio file:', error);
+                CommanAlertBox({
+                    title: 'Error',
+                    message: error.message,
+                });
             });
     }
 
@@ -469,8 +480,11 @@ const SearchGigScreen = ({ navigation }: any) => {
             setSelectedMarker(null);
             setProLists(matchedGigs);
             dispatch(setLoading(false));
-        } catch (error) {
-            console.error('errorr', JSON.stringify(error));
+        } catch (error: any) {
+            CommanAlertBox({
+                title: 'Error',
+                message: error.message,
+            });
             dispatch(setLoading(false));
         }
 
@@ -605,7 +619,6 @@ const SearchGigScreen = ({ navigation }: any) => {
                             defaultValue={''}
                         />
                     </View>
-
                 </View>
                 <ScrollView>
                     <View>

@@ -12,6 +12,7 @@ import { useIsFocused } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import { audioToText, checkPermission, readAudioFile, startRecord, stopRecord } from '../../services/audioServices/audioServices';
 import { setGigCreated } from '../../redux/action/Gig/GigSlice';
+import CommanAlertBox from '../../components/CommanAlertBox';
 var heightY = Dimensions.get("window").height;
 
 const HomeScreen = ({ navigation }: any) => {
@@ -97,6 +98,10 @@ const HomeScreen = ({ navigation }: any) => {
             // setSkillValue(res.text)
             dispatch(setLoading(false))
           }).catch((error) => {
+            CommanAlertBox({
+              title: 'Error',
+              message: error.message,
+            });
             console.error('error', error);
             dispatch(setLoading(false))
           })
@@ -118,6 +123,10 @@ const HomeScreen = ({ navigation }: any) => {
 
       dispatch(setLoading(false));
     }).catch((e) => {
+      CommanAlertBox({
+        title: 'Error',
+        message: e.message,
+      });
       console.log('error', JSON.stringify(e));
       setRefreshing(false);
 
@@ -140,12 +149,10 @@ const HomeScreen = ({ navigation }: any) => {
           dispatch(setLoading(false));
           resolve(true)
         }).catch((e) => {
-          Toast.show({
-            type: 'error',
-            text1: 'Error',
-            text2: e,
+          CommanAlertBox({
+            title: 'Error',
+            message: e.message,
           });
-          console.log('error', JSON.stringify(e));
           dispatch(setLoading(false))
         })
       } else {
@@ -154,12 +161,10 @@ const HomeScreen = ({ navigation }: any) => {
           dispatch(setLoading(false));
           resolve(true)
         }).catch((e) => {
-          Toast.show({
-            type: 'error',
-            text1: 'Error',
-            text2: e,
+          CommanAlertBox({
+            title: 'Error',
+            message: e.message,
           });
-          console.log('error', JSON.stringify(e));
           dispatch(setLoading(false))
         })
       }
@@ -183,6 +188,10 @@ const HomeScreen = ({ navigation }: any) => {
       setRefreshing(false);
       dispatch(setLoading(false))
     }).catch((error) => {
+      CommanAlertBox({
+        title: 'Error',
+        message: error.message,
+      });
       console.error(JSON.stringify(error));
       setRefreshing(false);
 
@@ -195,7 +204,11 @@ const HomeScreen = ({ navigation }: any) => {
       const matchedGigs = await getMatchedGigbyuserid(user.user_id, firstToken);
       setProLists(matchedGigs);
       dispatch(setLoading(false));
-    } catch (error) {
+    } catch (error: any) {
+      CommanAlertBox({
+        title: 'Error',
+        message: error.message,
+      });
       console.error(JSON.stringify(error));
       dispatch(setLoading(false));
     }
@@ -395,7 +408,7 @@ const HomeScreen = ({ navigation }: any) => {
                               placeholder="Type here..."
                               placeholderTextColor="#000"
                               value={skillValue ? skillValue : ''}
-                              editable={true}
+                              editable={!skillValue ? true : false}
                               onChangeText={(msg: string) => handleInputChange(msg)}
                               style={{ flex: 1, fontSize: 18, color: '#000' }}
                             />
@@ -408,7 +421,7 @@ const HomeScreen = ({ navigation }: any) => {
                           {error !== '' && <Text style={{ color: 'red' }}>{error}</Text>}
                         </View>
 
-                        <View style={{ margin: 20 }}>
+                        <View style={{ margin: 20, display: skillValue ? 'none' : 'flex' }}>
                           <Pressable style={GlobalStyle.button} onPress={() => updateProprofile()}>
                             <Text style={GlobalStyle.btntext}>Add Skills</Text>
                           </Pressable>

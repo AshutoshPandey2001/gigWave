@@ -14,7 +14,8 @@ import {
   StyleSheet,
   View,
   Platform,
-  PermissionsAndroid
+  PermissionsAndroid,
+  Text
 } from 'react-native';
 
 import AuthNavigator from './src/navigator/AuthNavigator';
@@ -29,8 +30,10 @@ import { setFirstToken } from './src/redux/action/Auth/authAction';
 import { setLoading } from './src/redux/action/General/GeneralSlice';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { checkPermission } from './src/services/audioServices/audioServices';
+import { ToastProvider } from 'react-native-toast-notifications'
+import { BaseToast, ErrorToast, SuccessToast } from 'react-native-toast-message';
 
-LogBox.ignoreLogs(['new NativeEventEmitter','ViewPropTypes']);
+LogBox.ignoreLogs(['new NativeEventEmitter', 'ViewPropTypes']);
 function App(): JSX.Element {
   const Stack = createNativeStackNavigator();
   const user = useSelector((state: RootState) => state.user)
@@ -56,14 +59,119 @@ function App(): JSX.Element {
     checkPermission()
   }, [])
 
+  const toastConfig = {
+    /*
+      Overwrite 'success' type,
+      by modifying the existing `BaseToast` component
+    */
+    success: (props: any) => (
+      <SuccessToast
+        {...props}
+        text1Style={{
+          fontSize: 16,
+          fontWeight: '400'
+        }}
+        text2Style={{
+          fontSize: 16
+        }}
+      />
+    ),
+    /*
+      Overwrite 'error' type,
+      by modifying the existing `ErrorToast` component
+    */
+    error: (props: any) => (
+      <ErrorToast
+        {...props}
+        text1Style={{
+          fontSize: 16,
+          fontWeight: '400'
+
+        }}
+        text2Style={{
+          fontSize: 16
+        }}
+      />
+    ),
+
+
+    /*
+      Or create a completely new type - `tomatoToast`,
+      building the layout from scratch.
+  
+      I can consume any custom `props` I want.
+      They will be passed when calling the `show` method (see below)
+    */
+    tomatoToast: (props: any) => (
+      <View style={{ height: 60, width: '100%', backgroundColor: 'tomato' }}>
+        <Text style={{ color: 'white' }}>{props.text1}</Text>
+        <Text style={{ color: 'white' }}>{props.text2}</Text>
+        <Text style={{ color: 'white' }}>{props.text3}</Text>
+      </View>
+    )
+
+  };
+
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       {isLoading &&
-
         <View style={[styles.container, styles.horizontal]}>
           <ActivityIndicator size={'large'} />
         </View>
       }
+      {/* <ToastProvider
+        placement="top"
+        duration={3000}
+        animationType='zoom-in'
+        animationDuration={250}
+        successColor="green"
+        dangerColor="red"
+        warningColor="orange"
+        normalColor="gray"
+        textStyle={{ fontSize: 16 }}
+        offset={50} // offset for both top and bottom toasts
+        offsetTop={30}
+        offsetBottom={40}
+        swipeEnabled={true}
+        renderType={{
+          success_toast: (toast) => (
+
+            <View
+              style={{
+                maxWidth: "100%",
+                width: "100%",
+                top: 0,
+                left: 0,
+                paddingHorizontal: 15,
+                paddingVertical: 10,
+                backgroundColor: "transparent",
+                marginVertical: 4,
+                borderRadius: 8,
+                borderLeftColor: "#00C851",
+                borderLeftWidth: 6,
+                // justifyContent: "center",
+                alignItems: "center",
+                zIndex: 999,
+                paddingLeft: 16,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: "#333",
+                  fontWeight: "bold",
+                }}
+              >
+                {toast.data.title}
+              </Text>
+              <Text style={{ color: "#a3a3a3", marginTop: 2 }}>{toast.message}</Text>
+            </View>
+          ),
+
+        }}
+
+      > */}
       <NavigationContainer theme={DefaultTheme}>
         {isLoggedIn ?
           <TabNavigator />
@@ -73,7 +181,8 @@ function App(): JSX.Element {
           </Stack.Navigator>
         }
       </NavigationContainer>
-      <Toast />
+      {/* </ToastProvider> */}
+      <Toast config={toastConfig} />
     </SafeAreaView>
   );
 }

@@ -8,6 +8,7 @@ import { backGroundCheck_pro, createProUsers, getProdetailsbyuserid, updateProUs
 import { setLoading } from '../../redux/action/General/GeneralSlice'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
 import { audioToText, checkPermission, readAudioFile, startRecord, stopRecord } from '../../services/audioServices/audioServices'
+import CommanAlertBox from '../../components/CommanAlertBox'
 
 
 const ViewProfileScreen = ({ navigation }: any) => {
@@ -35,6 +36,10 @@ const ViewProfileScreen = ({ navigation }: any) => {
             //   navigation.navigate('Home')
             dispatch(setLoading(false));
         }).catch((e) => {
+            CommanAlertBox({
+                title: 'Error',
+                message: e.message,
+            });
             console.log('error', JSON.stringify(e));
             dispatch(setLoading(false))
         })
@@ -56,30 +61,33 @@ const ViewProfileScreen = ({ navigation }: any) => {
             dispatch(setLoading(true))
             if (alreadyProuser) {
                 updateProUsersDetails(provalue, firstToken).then((res) => {
-                    console.log(res, 'pro user details updated')
-                    //   navigation.navigate('Home')
+                    Toast.show({
+                        type: 'success',
+                        text1: 'Success',
+                        text2: 'Pro Profile Updated Successfully',
+                    });
                     dispatch(setLoading(false));
                     resolve(true)
                 }).catch((e) => {
-                    Toast.show({
-                        type: 'error',
-                        text1: 'Error',
-                        text2: e,
+                    CommanAlertBox({
+                        title: 'Error',
+                        message: e.message,
                     });
-                    console.log('error', JSON.stringify(e));
                     dispatch(setLoading(false))
                 })
             } else {
                 createProUsers(provalue, firstToken).then((res) => {
-                    console.log(res, 'pro user details')
-                    //   navigation.navigate('Home')
+                    Toast.show({
+                        type: 'success',
+                        text1: 'Success',
+                        text2: 'Pro user Created Successfully',
+                    });
                     dispatch(setLoading(false));
                     resolve(true)
                 }).catch((e) => {
-                    Toast.show({
-                        type: 'error',
-                        text1: 'Error',
-                        text2: e,
+                    CommanAlertBox({
+                        title: 'Error',
+                        message: e.message,
                     });
                     console.log('error', JSON.stringify(e));
                     dispatch(setLoading(false))
@@ -90,14 +98,28 @@ const ViewProfileScreen = ({ navigation }: any) => {
     }
 
     const backGroundCheck = async () => {
+        dispatch(setLoading(true))
         let userData = await {
             "email": user.email,
             "user_id": user.user_id
         }
         backGroundCheck_pro(userData, firstToken).then((res) => {
+            Toast.show({
+                type: 'success',
+                text1: 'Success',
+                text2: 'Background Check Successfully',
+            });
+            dispatch(setLoading(false))
+
             console.log('backGroundCheck', res);
             setBackGroudCheck(res)
-        }).catch((e) => {
+        }).catch((e: any) => {
+            dispatch(setLoading(false))
+
+            CommanAlertBox({
+                title: 'Error',
+                message: e.message,
+            });
             console.log(e, 'error');
 
         })
@@ -112,7 +134,7 @@ const ViewProfileScreen = ({ navigation }: any) => {
             setError('Skills must be between 10 and 100 characters');
         }
     }
-    const startRecognizing = async () => {
+    const startReconding = async () => {
 
         const granted = await checkPermission();
 
@@ -144,7 +166,11 @@ const ViewProfileScreen = ({ navigation }: any) => {
                         // setSkillValue(res.text)
                         dispatch(setLoading(false))
                     }).catch((error) => {
-                        console.error('error', error);
+                        CommanAlertBox({
+                            title: 'Error',
+                            message: error.message,
+                        });
+                        // console.error('error', error);
                         dispatch(setLoading(false))
                     })
                 }
@@ -183,7 +209,7 @@ const ViewProfileScreen = ({ navigation }: any) => {
                                     style={{ flex: 1, fontSize: 16, color: '#000' }}
                                 />
                                 <View style={{ alignItems: 'center' }}>
-                                    <TouchableOpacity onPress={isRecording ? stopRecording : startRecognizing} >
+                                    <TouchableOpacity onPress={isRecording ? stopRecording : startReconding} >
                                         {isRecording ? <Image resizeMode='contain' source={require('../../assets/images/stopRecording.png')} style={{ width: 50, height: 50 }} /> : <MicIcon height={50} width={50} />}
                                     </TouchableOpacity>
                                     {/* <Image source={require('../../assets/icons/mic1.png')} /> */}
