@@ -169,9 +169,9 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                                             <View style={{ marginTop: 10 }}>
                                                 <Text style={[GlobalStyle.blackColor, style.headFont]}>Gig requirement</Text>
                                                 <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                                    {gigDetails.gig_requirement.map((item: any) => {
+                                                    {gigDetails.gig_requirement.map((item: any, index: any) => {
                                                         return (
-                                                            <Text style={[GlobalStyle.blackColor]}>
+                                                            <Text style={[GlobalStyle.blackColor]} key={index}>
                                                                 {item}
                                                             </Text>
                                                         )
@@ -188,9 +188,9 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                                             <View style={{ marginTop: 10 }}>
                                                 <Text style={[GlobalStyle.blackColor, style.headFont]}>Recommended skills</Text>
                                                 <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                                    {gigDetails.good_to_have_skills.map((item: any) => {
+                                                    {gigDetails.good_to_have_skills.map((item: any, index: any) => {
                                                         return (
-                                                            <Text style={[GlobalStyle.blackColor]}>
+                                                            <Text style={[GlobalStyle.blackColor]} key={index}>
                                                                 {item}
                                                             </Text>
                                                         )

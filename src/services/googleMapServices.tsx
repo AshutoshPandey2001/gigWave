@@ -16,9 +16,6 @@ export const geocodeLocationByName = async (locationName: string): Promise<Locat
         });
 
         const location = response.data.results[0].geometry.location;
-
-
-        // Create an object with the location details
         const locationDetails: LocationDetails = {
             latitude: location.lat,
             longitude: location.lng,

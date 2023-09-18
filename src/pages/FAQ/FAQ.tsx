@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getAllFaq } from '../../services/faqService/faqService';
 import { RootState } from '../../redux/store';
 import { setLoading } from '../../redux/action/General/GeneralSlice';
+import CommanAlertBox from '../../components/CommanAlertBox';
 
 
 const FAQScreen = () => {
@@ -29,6 +30,10 @@ const FAQScreen = () => {
             setProFAQs(proFAQ)
         }).catch((error) => {
             dispatch(setLoading(false))
+            CommanAlertBox({
+                title: 'Error',
+                message: error.message,
+            });
             console.error(JSON.stringify(error));
         })
     }

@@ -267,7 +267,8 @@ const HomeScreen = ({ navigation }: any) => {
                           }} >
                           <View>
                             <Image resizeMode='contain' style={Style.imageStyle}
-                              source={{ uri: item.thumbnail_img_url }}
+                              source={!isError ? { uri: item.thumbnail_img_url } : require('../../assets/images/image.png')}
+                              onError={(error) => setIsError(true)}
                             />
 
                           </View>
@@ -349,39 +350,47 @@ const HomeScreen = ({ navigation }: any) => {
         {
           userType === "CREATOR" ? <CreatorHome /> :
             <ScrollView keyboardShouldPersistTaps="always" >
-              <View style={[GlobalStyle.homecontainer]}>
+              <View style={[GlobalStyle.container]}>
                 <View style={Style.cardContainer}>
                   <Text style={[GlobalStyle.blackColor, Style.commanFont]}>Suggested Gigs</Text>
                   {
                     proLists?.length > 0 ?
                       <>
                         {proLists.map((item: any, index) => (
-                          <View key={index}>
-                            <Pressable onPress={() => navigation.navigate('View-gig', item)} style={[GlobalStyle.card, GlobalStyle.shadowProp,
-                            {
-                              display: 'flex', flexDirection: 'row', paddingVertical: 0,
-                              paddingHorizontal: 0
-                            }]} >
+                          <View key={index} style={[GlobalStyle.card, GlobalStyle.shadowProp, {
+                            paddingVertical: 0,
+                            paddingHorizontal: 0
+                          }]}>
+                            <Pressable onPress={() => navigation.navigate('View-gig', item)}
+                              style={{
+                                display: 'flex', flexDirection: 'row',
+                              }} >
                               <View>
-                                <Image resizeMode='contain' style={Style.imageStyle} source={!isError ? { uri: item.thumbnail_img_url } : require('../../assets/images/image.png')}
-                                  onError={(error) => setIsError(true)} />
+                                <Image resizeMode='contain' style={Style.imageStyle}
+                                  source={{ uri: item.thumbnail_img_url }}
+                                />
 
                               </View>
                               <View style={{ flex: 1, width: 100 }}>
-                                <Text style={[GlobalStyle.blackColor, Style.title]}>
-                                  {item.title}
-                                </Text>
+                                <View style={{
+                                  display: 'flex', flexDirection: 'row',
+                                }}>
+                                  <Text style={[GlobalStyle.blackColor, Style.title, { flex: 1 }]}>
+                                    {item.title}
+                                  </Text>
+                                  <View style={{ padding: 10 }}>
+                                    <Pressable style={{ backgroundColor: item.gig_type === 'paid' ? '#21AF2F' : '#989898', borderRadius: 5, paddingHorizontal: 10, width: 'auto' }}>
+                                      <Text style={{ color: '#fff', textTransform: 'capitalize' }}>{item.gig_type}</Text>
+                                    </Pressable>
+                                  </View>
+                                </View>
                                 <Text style={[GlobalStyle.blackColor, Style.message]}>
-                                  {item.summary}
+                                  {item.informal_description}
                                 </Text>
-                              </View>
-                              <View style={{ padding: 10 }}>
-                                <Pressable style={{ backgroundColor: item.gig_type === 'paid' ? '#21AF2F' : '#989898', borderRadius: 5, paddingHorizontal: 10, width: 'auto' }}>
-                                  <Text style={{ color: '#fff' }}>{item.gig_type}</Text>
-                                </Pressable>
                               </View>
                             </Pressable>
                           </View>
+
                         ))
                         }
 
@@ -392,40 +401,41 @@ const HomeScreen = ({ navigation }: any) => {
                           <Text style={[GlobalStyle.blackColor, { fontSize: 20 }]}>
                             To receive Gig suggestions, please add your skills and/or types of work you would like to do  below.                      </Text>
                         </View>
+                        {!skillValue ?
+                          <><View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
 
-                        <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-
-                          <Text style={[GlobalStyle.blackColor, { fontSize: 20, fontWeight: 'bold' }]}>
-                            My Skills or How I Can Help Others</Text>
-                          <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                            <TextInput
-                              autoFocus={true}
-                              multiline
-                              ref={skillInputRef}
-                              keyboardType="default"
-                              returnKeyType="done"
-                              numberOfLines={5}
-                              placeholder="Type here..."
-                              placeholderTextColor="#000"
-                              value={skillValue ? skillValue : ''}
-                              editable={!skillValue ? true : false}
-                              onChangeText={(msg: string) => handleInputChange(msg)}
-                              style={{ flex: 1, fontSize: 18, color: '#000' }}
-                            />
-                            <View style={{ alignItems: 'center' }}>
-                              <TouchableOpacity onPress={isRecording ? stopRecording : startRecognizing} >
-                                {isRecording ? <Image resizeMode='contain' source={require('../../assets/images/stopRecording.png')} style={{ width: 50, height: 50 }} /> : <MicIcon height={50} width={50} />}
-                              </TouchableOpacity>
+                            <Text style={[GlobalStyle.blackColor, { fontSize: 20, fontWeight: 'bold' }]}>
+                              My Skills or How I Can Help Others</Text>
+                            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                              <TextInput
+                                autoFocus={true}
+                                multiline
+                                ref={skillInputRef}
+                                keyboardType="default"
+                                returnKeyType="done"
+                                numberOfLines={5}
+                                placeholder="Type here..."
+                                placeholderTextColor="#000"
+                                value={skillValue ? skillValue : ''}
+                                editable={!skillValue ? true : false}
+                                onChangeText={(msg: string) => handleInputChange(msg)}
+                                style={{ flex: 1, fontSize: 18, color: '#000' }}
+                              />
+                              <View style={{ alignItems: 'center' }}>
+                                <TouchableOpacity onPress={isRecording ? stopRecording : startRecognizing} >
+                                  {isRecording ? <Image resizeMode='contain' source={require('../../assets/images/stopRecording.png')} style={{ width: 50, height: 50 }} /> : <MicIcon height={50} width={50} />}
+                                </TouchableOpacity>
+                              </View>
                             </View>
+                            {error !== '' && <Text style={{ color: 'red' }}>{error}</Text>}
                           </View>
-                          {error !== '' && <Text style={{ color: 'red' }}>{error}</Text>}
-                        </View>
 
-                        <View style={{ margin: 20, display: skillValue ? 'none' : 'flex' }}>
-                          <Pressable style={GlobalStyle.button} onPress={() => updateProprofile()}>
-                            <Text style={GlobalStyle.btntext}>Add Skills</Text>
-                          </Pressable>
-                        </View>
+                            <View style={{ margin: 20 }}>
+                              <Pressable style={GlobalStyle.button} onPress={() => updateProprofile()}>
+                                <Text style={GlobalStyle.btntext}>Add Skills</Text>
+                              </Pressable>
+                            </View></> : null}
+
                       </>
                   }
                 </View>

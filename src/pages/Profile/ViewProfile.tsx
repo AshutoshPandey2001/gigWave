@@ -115,7 +115,6 @@ const ViewProfileScreen = ({ navigation }: any) => {
             setBackGroudCheck(res)
         }).catch((e: any) => {
             dispatch(setLoading(false))
-
             CommanAlertBox({
                 title: 'Error',
                 message: e.message,
@@ -177,6 +176,10 @@ const ViewProfileScreen = ({ navigation }: any) => {
             })
             .catch((error) => {
                 dispatch(setLoading(false))
+                CommanAlertBox({
+                    title: 'Error',
+                    message: error.message,
+                });
                 console.error('Error reading audio file:', error);
             });
     }

@@ -49,7 +49,7 @@ const SingleproScreen = ({ route, navigation }: any) => {
                 {
                     proUserDetails ?
                         <View style={[GlobalStyle.container, { marginTop: 0 }]}>
-                            <View style={{ marginTop: 50 }}>
+                            <View style={{ marginTop: 0 }}>
                                 <View style={{ display: 'flex', width: '100%', alignItems: 'center' }}>
                                     <Image style={styles.profileImg} source={profilePic ? { uri: profilePic } : require('../../assets/images/avatar_profile.png')} />
                                     <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { marginTop: 70, paddingTop: 50, display: 'flex', justifyContent: 'center', alignItems: 'center' }]}>
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
         top: 15,
         shadowOpacity: 0.1,
         shadowRadius: 4,
-        elevation: 2, // Android shadow
+        // elevation: 2, // Android shadow
     },
 })
 export default SingleproScreen

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Image, PermissionsAndroid, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Dimensions, Image, PermissionsAndroid, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import SelectDropdown from 'react-native-select-dropdown'
 import { useDispatch, useSelector } from 'react-redux'
 import { GlobalStyle } from '../../globalStyle'
@@ -18,6 +18,7 @@ import { audioToText, checkPermission, readAudioFile, startRecord, stopRecord } 
 import { geocodeLocationByName } from '../../services/googleMapServices'
 import { getMatchedGigbyuserid, searchGigbyParameter } from '../../services/proUserService/proUserService'
 import CommanAlertBox from '../../components/CommanAlertBox'
+var heightY = Dimensions.get("window").height;
 
 const SearchGigScreen = ({ navigation }: any) => {
     const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
@@ -301,36 +302,45 @@ const SearchGigScreen = ({ navigation }: any) => {
                 {
                     proLists?.length > 0 ?
                         <>
-                            <ScrollView>
+                            {proLists.map((item: any, index) => (
+                                <View key={index} style={[GlobalStyle.card, GlobalStyle.shadowProp, {
+                                    paddingVertical: 0,
+                                    paddingHorizontal: 0
+                                }]}>
+                                    <Pressable onPress={() => navigation.navigate('View-gig', item)}
+                                        style={{
+                                            display: 'flex', flexDirection: 'row',
+                                        }} >
+                                        <View>
+                                            <Image resizeMode='contain' style={styles.imageStyle}
+                                                source={{ uri: item.thumbnail_img_url }}
+                                            />
 
-                                {proLists.map((item: any, index) => (
-                                    <View key={index}>
-                                        <Pressable onPress={() => navigation.navigate('View-gig', item)} style={[GlobalStyle.card, GlobalStyle.shadowProp,
-                                        {
-                                            display: 'flex', flexDirection: 'row', paddingVertical: 0,
-                                            paddingHorizontal: 0
-                                        }]} >
-                                            <View>
-                                                <Image resizeMode='contain' style={styles.imageStyle} source={item.thumbnail_img_url ? { uri: item.thumbnail_img_url } : item.image} />
-                                            </View>
-                                            <View style={{ flex: 1, width: 100 }}>
-                                                <Text style={[GlobalStyle.blackColor, { fontSize: 18, marginHorizontal: 10, paddingTop: 10, fontWeight: 'bold' }]}>
+                                        </View>
+                                        <View style={{ flex: 1, width: 100 }}>
+                                            <View style={{
+                                                display: 'flex', flexDirection: 'row',
+                                            }}>
+                                                <Text style={[GlobalStyle.blackColor, styles.title, { flex: 1 }]}>
                                                     {item.title}
                                                 </Text>
-                                                <Text style={[GlobalStyle.blackColor, { fontSize: 16, margin: 10, }]}>
-                                                    {item.summary}
-                                                </Text>
+                                                <View style={{ padding: 10 }}>
+                                                    <Pressable style={{ backgroundColor: item.gig_type === 'paid' ? '#21AF2F' : '#989898', borderRadius: 5, paddingHorizontal: 10, width: 'auto' }}>
+                                                        <Text style={{ color: '#fff', textTransform: 'capitalize' }}>{item.gig_type}</Text>
+                                                    </Pressable>
+                                                </View>
                                             </View>
-                                            <View style={{ padding: 10 }}>
-                                                <Pressable style={{ backgroundColor: item.gig_type === 'Paid' ? '#21AF2F' : '#989898', borderRadius: 5, paddingHorizontal: 10, width: 'auto' }}>
-                                                    <Text style={{ color: '#fff' }}>{item.gig_type}</Text>
-                                                </Pressable>
-                                            </View>
-                                        </Pressable>
-                                    </View>
-                                ))
-                                }
-                            </ScrollView>
+                                            <Text style={[GlobalStyle.blackColor, styles.message]}>
+                                                {item.informal_description}
+                                            </Text>
+                                        </View>
+                                    </Pressable>
+
+                                </View>
+
+
+                            ))
+                            }
 
                         </>
                         :
@@ -370,50 +380,34 @@ const SearchGigScreen = ({ navigation }: any) => {
             </View>
         )
     }
-    const MyMapView = (props: any) => {
+    const MyMapView = () => {
         return (
-            <View style={{ height: '80%', width: '100%' }}>
+            <View style={{ height: '71%', width: '100%' }}>
                 <MapView
                     style={{ flex: 1 }}
                     initialRegion={initialRegion}
-
                 >
-                    {/* Display user's current location with a marker */}
-
                     <Marker
                         coordinate={{
                             latitude: currentLocation.latitude,
                             longitude: currentLocation.longitude,
                         }}
-                    // title="Your Location"
                     >
                         <Image resizeMode="contain" source={require('../../assets/images/marker-current_location.png')} style={{ width: 30, height: 30 }} />
-                        {/* <Callout>
-                            <View>
-                                <Text>{'Your Location'}</Text>
-                            </View>
-                        </Callout> */}
                     </Marker>
 
                     {proLists.map((location: any, index: number) => (
                         <Marker
                             key={index}
-                            // image={require('../../assets/images/marker-nearby-gigs.png')}
                             coordinate={{
                                 latitude: location.lat,
                                 longitude: location.lon,
                             }}
                             pinColor="red"
-                            // title={location.address}
                             onPress={() => handleMarkerPress(location)}
                         >
-                            {/* Callout to display location name */}
                             <Image resizeMode="contain" source={require('../../assets/images/marker-nearby-gigs.png')} style={{ width: 30, height: 30 }} />
-                            {/* <Callout>
-                                <View>
-                                    <Text>{location.address}</Text>
-                                </View>
-                            </Callout> */}
+
                         </Marker>
                     ))}
 
@@ -442,7 +436,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                                         {selectedMarker.title}
                                     </Text>
                                     <Text style={[GlobalStyle.blackColor, { fontSize: 16, margin: 10, }]}>
-                                        {selectedMarker.summary}
+                                        {selectedMarker.informal_description}
                                     </Text>
                                 </View>
                                 <View style={{ padding: 10 }}>
@@ -620,21 +614,22 @@ const SearchGigScreen = ({ navigation }: any) => {
                         />
                     </View>
                 </View>
-                <ScrollView>
-                    <View>
-                        {
-                            isListView &&
-                            <ListView />
-                        }
-                    </View>
+                <View style={{ height: '90%' }} >
+                    {isListView ? <ScrollView >
+                        <ListView />
+                    </ScrollView> : <MyMapView />}
+                </View>
 
-                </ScrollView>
             </View>
-            {
-                !isListView &&
-                <MyMapView />
 
-            }
+            {/* <View style={{ height: '90%' }}>
+                {
+                    !isListView &&
+                    <MyMapView />
+
+                }
+            </View> */}
+
         </SafeAreaView>
     )
 
@@ -643,7 +638,7 @@ const SearchGigScreen = ({ navigation }: any) => {
 export default SearchGigScreen
 
 const styles = StyleSheet.create({
-    cardContainer: { marginBottom: 10 },
+    cardContainer: { marginBottom: 200 },
     inputContainer: {
         backgroundColor: '#F9F9F9',
         borderColor: '#05E3D5',
@@ -651,11 +646,22 @@ const styles = StyleSheet.create({
         paddingHorizontal: 5,
         marginLeft: 5,
         flex: 1,
+
+    },
+    title: {
+        fontSize: heightY * 0.022,
+        marginHorizontal: 10,
+        paddingTop: 10,
+        fontWeight: 'bold'
+    },
+    message: {
+        fontSize: heightY * 0.018,
+        margin: 10
     },
     imageStyle: {
-        borderTopLeftRadius: 10,
-        borderBottomLeftRadius: 10,
-        height: 140,
+        borderTopLeftRadius: 15,
+        borderBottomLeftRadius: 15,
+        height: 120,
         width: 100
     }
 })
