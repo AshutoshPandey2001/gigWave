@@ -1,29 +1,32 @@
-import React, { useEffect, useState } from 'react'
-import { Dimensions, Image, PermissionsAndroid, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useState, useRef } from 'react'
+import { Dimensions, Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import SelectDropdown from 'react-native-select-dropdown'
 import { useDispatch, useSelector } from 'react-redux'
 import { GlobalStyle } from '../../globalStyle'
 import { RootState } from '../../redux/store'
 // import SearchIcon from '../../assets/icons/gig Search bar.svg'
 import Geolocation from '@react-native-community/geolocation'
+import { useIsFocused } from '@react-navigation/native'
 import DatePicker from 'react-native-date-picker'
-import MapView, { Callout, Marker, Region } from 'react-native-maps'
+import MapView, { Marker, Region } from 'react-native-maps'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
 import SearchIcon from '../../assets/icons/Search.svg'
 import MicIcon from '../../assets/icons/SearchMic.svg'
 import MarkerIcon from '../../assets/icons/marker.svg'
+import CommanAlertBox from '../../components/CommanAlertBox'
 import LocationSearch from '../../components/LocationSearch'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
 import { audioToText, checkPermission, readAudioFile, startRecord, stopRecord } from '../../services/audioServices/audioServices'
 import { geocodeLocationByName } from '../../services/googleMapServices'
 import { getMatchedGigbyuserid, searchGigbyParameter } from '../../services/proUserService/proUserService'
-import CommanAlertBox from '../../components/CommanAlertBox'
 var heightY = Dimensions.get("window").height;
 
 const SearchGigScreen = ({ navigation }: any) => {
     const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
     const [isRecording, setIsRecording] = useState(false);
     const [audioPath, setAudioPath] = useState<string>('');
+    const selectRef = useRef<SelectDropdown>(null);
+
     const dispatch = useDispatch()
     const [initialRegion, setInitialRegion] = useState<Region>({
         latitude: 0,
@@ -48,6 +51,7 @@ const SearchGigScreen = ({ navigation }: any) => {
     const [nearbyLocationsgigs, setNearbyLocationsgigs] = useState<any>([]);
     const user: any = useSelector((state: RootState) => state.user.user);
     const [selectedMarker, setSelectedMarker] = useState<any>();
+    const focus = useIsFocused();  // useIsFocused as shown         
 
     const closeModel = () => {
         setModalVisible(false)
@@ -152,15 +156,17 @@ const SearchGigScreen = ({ navigation }: any) => {
         return date.toISOString().split('T')[0]; // Extract only the date part
     };
     useEffect(() => {
-        getProList();
-        getDefaultAddress()
-        checkPermission()
+        setSearchValue("");
+        selectRef.current?.reset();
+        setLocation("");
+        setSelectedMarker(null);
+        if (focus) {
+            getProList();
+            getDefaultAddress()
+            checkPermission()
+        }
         // checkPermissionGooglemap();
-        return () => {
-            setLocation("");
-            setSelectedMarker(null);
-        };
-    }, [])
+    }, [focus])
 
     const getDefaultAddress = () => {
         console.log('user.address,user.address', user.address);
@@ -491,7 +497,6 @@ const SearchGigScreen = ({ navigation }: any) => {
                         borderColor: '#05E3D5',
                         borderWidth: 1,
                         borderRadius: 10,
-
                         display: 'flex',
                         flexDirection: 'row',
                         alignItems: 'center',
@@ -511,7 +516,6 @@ const SearchGigScreen = ({ navigation }: any) => {
                         <TouchableOpacity onPress={isRecording ? stopRecording : startRecognizing} >
                             {isRecording ? <Image resizeMode='contain' source={require('../../assets/images/SearchStopRecord.png')} style={{ width: 30, height: 30 }} /> : <MicIcon height={30} width={30} />}
                         </TouchableOpacity>
-
                     }
 
                 </View>
@@ -547,10 +551,6 @@ const SearchGigScreen = ({ navigation }: any) => {
                                 setModalVisible(false);
                                 console.log('location', location);
                                 onChangeLocation(location)
-
-                                // setLocation(location.description)
-                                // values.address = location.description
-
                             }}
                             closeModel={closeModel}
                         />
@@ -601,8 +601,8 @@ const SearchGigScreen = ({ navigation }: any) => {
                             data={['Free', 'Paid', 'Both']}
                             onSelect={(selectedItem) => {
                                 onChangegigType(selectedItem)
-                                // setFieldValue('status', selectedItem)
                             }}
+                            ref={selectRef}
                             buttonStyle={{ backgroundColor: 'transparent' }}
                             defaultButtonText='Free/Paid'
                             buttonTextStyle={{ textAlign: 'left', color: '#1E1E1E', fontSize: 16 }}

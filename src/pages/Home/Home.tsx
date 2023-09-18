@@ -267,10 +267,9 @@ const HomeScreen = ({ navigation }: any) => {
                           }} >
                           <View>
                             <Image resizeMode='contain' style={Style.imageStyle}
-                              source={!isError ? { uri: item.thumbnail_img_url } : require('../../assets/images/image.png')}
-                              onError={(error) => setIsError(true)}
+                              defaultSource={require('../../assets/images/image.png')}
+                              source={item.thumbnail_img_url ? { uri: item.thumbnail_img_url } : require('../../assets/images/image.png')}
                             />
-
                           </View>
                           <View style={{ flex: 1, width: 100 }}>
                             <View style={{
@@ -369,7 +368,6 @@ const HomeScreen = ({ navigation }: any) => {
                                 <Image resizeMode='contain' style={Style.imageStyle}
                                   source={{ uri: item.thumbnail_img_url }}
                                 />
-
                               </View>
                               <View style={{ flex: 1, width: 100 }}>
                                 <View style={{
@@ -391,9 +389,7 @@ const HomeScreen = ({ navigation }: any) => {
                             </Pressable>
                           </View>
 
-                        ))
-                        }
-
+                        ))}
                       </>
                       :
                       <>

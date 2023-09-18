@@ -7,7 +7,7 @@ import { RootState } from '../../redux/store'
 import { getGigByGig_id, updateGig } from '../../services/gigService/gigService'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
-import { checkProItrestedGig, proInterestgig } from '../../services/proUserService/proUserService'
+import { checkProItrestedGig, notInterested, proInterestgig } from '../../services/proUserService/proUserService'
 import { useIsFocused } from '@react-navigation/native'
 import CommanAlertBox from '../../components/CommanAlertBox'
 
@@ -22,10 +22,10 @@ const ViewGigScreen = ({ route, navigation }: any) => {
     useEffect(() => {
         if (focus) {
             dispatch(setLoading(true));
-
             getGigsDetails()
         }
     }, [focus])
+    
     const getGigsDetails = () => {
         dispatch(setLoading(true));
         getGigByGig_id(route.params.gig_id, firstToken).then((res: any) => {
@@ -55,7 +55,6 @@ const ViewGigScreen = ({ route, navigation }: any) => {
 
     const closeGig = () => {
         dispatch(setLoading(true));
-
         updateGig({ gig_id: route.params.gig_id, status: "inactive" }, firstToken)
             .then((res) => {
                 console.log(res, 'response update gig');
@@ -64,8 +63,8 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                     text1: 'Success',
                     text2: 'Gig Closed Successfully',
                 });
-                navigation.navigate('Home');
                 dispatch(setLoading(false));
+                navigation.goBack();
             })
             .catch((e) => {
                 CommanAlertBox({
@@ -112,6 +111,27 @@ const ViewGigScreen = ({ route, navigation }: any) => {
 
         })
     }
+    const notInterest = async () => {
+        try {
+            dispatch(setLoading(true));
+            let dataValue = {
+                "gig_id": route.params.gig_id,
+                "pro_id": user.user_id,
+                "archived": true,
+                "archived_reason": "pro"
+            }
+           let res= await notInterested(dataValue,firstToken)
+           console.log('res---',res);
+           navigation.goBack();
+            dispatch(setLoading(false));
+        } catch (error: any) {
+            CommanAlertBox({
+                title: 'Error',
+                message: error.message,
+            });
+            dispatch(setLoading(false));
+        }
+    }
     return (
         <SafeAreaView>
             <ScrollView>
@@ -135,7 +155,7 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                                 {userType === "PRO" ? <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: -15 }}>
                                     {alreadyIntrest ?
                                         <>
-                                            <Pressable style={[GlobalStyle.button, { flex: 1, backgroundColor: '#000', margin: 5, paddingHorizontal: 15 }]}>
+                                            <Pressable style={[GlobalStyle.button, { flex: 1, backgroundColor: '#000', margin: 5, paddingHorizontal: 15 }]} onPress={notInterest}>
                                                 <Text style={[GlobalStyle.btntext, { fontWeight: 'bold', fontSize: 16 }]}>Not Interested</Text>
                                             </Pressable>
                                             <Pressable onPress={() => navigation.navigate('DirectChat')} style={[GlobalStyle.button, { flex: 1, backgroundColor: '#05E3D5', margin: 5, paddingHorizontal: 10 }]}>

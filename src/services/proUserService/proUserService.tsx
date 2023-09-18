@@ -108,6 +108,22 @@ export const proInterestgig = async (interestValue: any, token: any): Promise<an
         throw error; // Rethrow the error to be caught by the caller
     }
 }
+export const notInterested = async (value:any, token: any): Promise<any> => {
+    try {
+        const response = await axios({
+            method: 'put',
+            url: `${API_BASE_URL}/matching/`,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            data: value
+        });
+        return response.data; // Return the response data
+    } catch (error) {
+        throw error; // Rethrow the error to be caught by the caller
+    }
+}
 
 
 export const backGroundCheck_pro = async (userData: any, token: any): Promise<any> => {

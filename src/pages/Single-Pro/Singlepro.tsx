@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { GlobalStyle } from '../../globalStyle'
-import { getProdetailsbyuserid } from '../../services/proUserService/proUserService'
+import { getProdetailsbyuserid, notInterested } from '../../services/proUserService/proUserService'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
 import CommanAlertBox from '../../components/CommanAlertBox'
@@ -23,10 +23,8 @@ const SingleproScreen = ({ route, navigation }: any) => {
         try {
             dispatch(setLoading(true));
             const proDetails = await getProdetailsbyuserid(route.params.user_id, firstToken);
-            console.log(proDetails, 'pro user details');
             setproDetails(proDetails);
             const proUserResponse = await getUserByUserID(route.params.user_id, firstToken);
-            console.log('res', proUserResponse);
             const dataURI = `data:image/jpeg;base64,${proUserResponse.base64_img}`;
             setProfilePic(dataURI);
             setproUserDetails(proUserResponse);
@@ -39,7 +37,27 @@ const SingleproScreen = ({ route, navigation }: any) => {
             dispatch(setLoading(false));
         }
     };
-
+    const onInterest = async () => {
+        try {
+            dispatch(setLoading(true));
+            let dataValue = {
+                "gig_id": route.params.gig_id,
+                "pro_id": proUserDetails.user_id,
+                "archived": true,
+                "archived_reason": "creator"
+            }
+            let res = await notInterested(dataValue, firstToken)
+            console.log('proUserDetails', res)
+            navigation.goBack();
+            dispatch(setLoading(false));
+        } catch (error: any) {
+            CommanAlertBox({
+                title: 'Error',
+                message: error.message,
+            });
+            dispatch(setLoading(false));
+        }
+    }
 
 
 
@@ -75,15 +93,18 @@ const SingleproScreen = ({ route, navigation }: any) => {
                                     </Text>
                                 </View>
                             </View>
-                            <View>
-                                <Text style={[GlobalStyle.blackColor, { fontSize: 18, marginTop: 10, fontWeight: 'bold' }]}>Company</Text>
-                                <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
-                                        {proDetails.company}
-                                    </Text>
+                            {proDetails?.company &&
+                                <View>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 18, marginTop: 10, fontWeight: 'bold' }]}>Company</Text>
+                                    <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
+                                        <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
+                                            {proDetails.company}
+                                        </Text>
+                                    </View>
                                 </View>
-                            </View>
-                            <Pressable style={[GlobalStyle.button, { backgroundColor: '#FF0000', marginTop: 10 }]}>
+                            }
+
+                            <Pressable style={[GlobalStyle.button, { backgroundColor: '#FF0000', marginTop: 10 }]} onPress={onInterest}>
                                 <Text style={[GlobalStyle.btntext, { fontWeight: 'bold' }]}>I’m Not Interested</Text>
                             </Pressable>
                         </View> : null

@@ -9,27 +9,30 @@ import { matchProuserwithgig_id, updateGig } from '../../services/gigService/gig
 import { setLoading } from '../../redux/action/General/GeneralSlice'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
 import CommanAlertBox from '../../components/CommanAlertBox'
+import { useIsFocused } from '@react-navigation/native'
 
 const HelpScreen = ({ route, navigation }: any) => {
     const [matchedprouserList, setmatchedprouserList] = useState([])
     const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
     const dispatch = useDispatch()
+    const focus = useIsFocused();  // useIsFocused as shown         
+
     useEffect(() => {
-        dispatch(setLoading(true))
-        matchProuserwithgig_id(route.params.gig_id, firstToken).then((res) => {
-            setmatchedprouserList(res)
-            console.log('all gig this user', res);
-
-            dispatch(setLoading(false))
-        }).catch((error) => {
-            CommanAlertBox({
-                title: 'Error',
-                message: error.message,
-            });
-
-            dispatch(setLoading(false))
-        })
-    }, [])
+        if (focus) {
+            dispatch(setLoading(true))
+            matchProuserwithgig_id(route.params.gig_id, firstToken).then((res) => {
+                setmatchedprouserList(res)
+                console.log('all gig this user', res);
+                dispatch(setLoading(false))
+            }).catch((error) => {
+                CommanAlertBox({
+                    title: 'Error',
+                    message: error.message,
+                });
+                dispatch(setLoading(false))
+            })
+        }
+    }, [focus])
 
     const closeGig = () => {
         dispatch(setLoading(true));
@@ -66,7 +69,7 @@ const HelpScreen = ({ route, navigation }: any) => {
                                 <View>
                                     <Image resizeMode='contain' style={Style.imageStyle} source={{ uri: route.params.thumbnail_img_url }} />
                                 </View>
-                                <View style={{ flex: 1, width: 100 ,marginVertical:10}}>
+                                <View style={{ flex: 1, width: 100, marginVertical: 10 }}>
                                     <Text style={[GlobalStyle.blackColor, Style.commanPaddingFontSize, { marginHorizontal: 10 }]}>
                                         {route.params?.title}
                                     </Text>
@@ -86,10 +89,10 @@ const HelpScreen = ({ route, navigation }: any) => {
                         <Text style={[GlobalStyle.blackColor, Style.commanmargin]}>Review Pro List</Text>
                         {matchedprouserList?.length > 0 ?
                             matchedprouserList?.map((item: any, i) =>
-                                <Pressable onPress={() => navigation.navigate('Single-pro', item)} key={i}>
+                                <Pressable onPress={() => navigation.navigate('Single-pro', { user_id: item.user_id, gig_id: route.params.gig_id })} key={i}>
                                     <View style={[GlobalStyle.card, GlobalStyle.shadowProp, Style.localCardStyle]}>
                                         <View style={{ padding: 10 }}>
-                                            <Image resizeMode='contain' source={require('../../assets/images/avatar-1.png')} />
+                                            <Image resizeMode='contain' style={Style.profileImg} source={ item.base64_img? { uri: `data:image/jpeg;base64,${item.base64_img}` } : require('../../assets/images/avatar_profile.png')}  />
                                         </View>
                                         <View style={{ flex: 1, width: 100, marginHorizontal: 10 }}>
                                             <Text style={[GlobalStyle.blackColor, Style.commanPaddingFontSize]}>
@@ -115,69 +118,6 @@ const HelpScreen = ({ route, navigation }: any) => {
                                     No matches found
                                 </Text>
                             </View>}
-                        {/* <Pressable onPress={() => navigation.navigate('Single-pro')}>
-                            <View style={[GlobalStyle.card, GlobalStyle.shadowProp, Style.localCardStyle]}>
-                                <View style={{ padding: 10 }}>
-                                    <Image resizeMode='contain' source={require('../../assets/images/avatar-1.png')} />
-                                </View>
-                                <View style={{ flex: 1, width: 100, marginHorizontal: 10 }}>
-                                    <Text style={[GlobalStyle.blackColor, Style.commanPaddingFontSize]}>
-                                        Lala Kian
-                                    </Text>
-                                    <View style={{ display: 'flex', flexDirection: 'row' }}>
-                                        <MarkerIcon />
-                                        <Text style={{ fontSize: 14 }}>
-                                            &nbsp;San Francisco, CA
-                                        </Text>
-                                    </View>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 14, paddingTop: 5 }]}>
-                                        Plays piano and violin for events
-                                    </Text>
-                                </View>
-                            </View>
-                        </Pressable>
-                        <Pressable onPress={() => navigation.navigate('Single-pro')}>
-                            <View style={[GlobalStyle.card, GlobalStyle.shadowProp, Style.localCardStyle]}>
-                                <View style={{ padding: 10 }}>
-                                    <Image resizeMode='contain' source={require('../../assets/images/avatar-2.png')} />
-                                </View>
-                                <View style={{ flex: 1, width: 100, marginHorizontal: 10 }}>
-                                    <Text style={[GlobalStyle.blackColor, Style.commanPaddingFontSize]}>
-                                        Marley Vaccaro
-                                    </Text>
-                                    <View style={{ display: 'flex', flexDirection: 'row' }}>
-                                        <MarkerIcon />
-                                        <Text style={{ fontSize: 14 }}>
-                                            &nbsp;San Francisco, CA
-                                        </Text>
-                                    </View>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 14, paddingTop: 5 }]}>
-                                        Professional pianist
-                                    </Text>
-                                </View>
-                            </View>
-                        </Pressable>
-                        <Pressable onPress={() => navigation.navigate('Single-pro')}>
-                            <View style={[GlobalStyle.card, GlobalStyle.shadowProp, Style.localCardStyle]}>
-                                <View style={{ padding: 10 }}>
-                                    <Image resizeMode='contain' source={require('../../assets/images/avatar-1.png')} />
-                                </View>
-                                <View style={{ flex: 1, width: 100, marginHorizontal: 10 }}>
-                                    <Text style={[GlobalStyle.blackColor, Style.commanPaddingFontSize]}>
-                                        Ann Calzoni
-                                    </Text>
-                                    <View style={{ display: 'flex', flexDirection: 'row' }}>
-                                        <MarkerIcon />
-                                        <Text style={{ fontSize: 14 }}>
-                                            &nbsp;San Francisco, CA
-                                        </Text>
-                                    </View>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 14, paddingTop: 5 }]}>
-                                        Teaches piano lessons
-                                    </Text>
-                                </View>
-                            </View>
-                        </Pressable> */}
                     </View>
                 </View>
             </ScrollView>
@@ -190,7 +130,8 @@ const Style = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         paddingVertical: 0,
-        paddingHorizontal: 0
+        paddingHorizontal: 0,
+        alignItems: 'center'
     },
     commanmargin: {
         fontSize: 18,
@@ -207,7 +148,20 @@ const Style = StyleSheet.create({
         borderBottomLeftRadius: 15,
         height: 150,
         width: 100
-    }
+    }, 
+    profileImg: {
+        height: 80, width: 80,
+        borderRadius: 40, // Half of the height or width for a circular effect
+        resizeMode: 'cover',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        // elevation: 2, // Android shadow
+    },
 })
 
 export default HelpScreen
