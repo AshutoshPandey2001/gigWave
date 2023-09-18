@@ -9,13 +9,12 @@ import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import {
-  SafeAreaView,
   ActivityIndicator,
-  StyleSheet,
-  View,
   Platform,
-  PermissionsAndroid,
-  Text
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View
 } from 'react-native';
 
 import AuthNavigator from './src/navigator/AuthNavigator';
@@ -25,13 +24,12 @@ import TabNavigator from './src/navigator/TabNavigator';
 import { RootState } from './src/redux/store';
 
 import { LogBox } from 'react-native';
-import { getLoginToken } from './src/services/authServices/authServices';
+import { ErrorToast, SuccessToast } from 'react-native-toast-message';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { setFirstToken } from './src/redux/action/Auth/authAction';
 import { setLoading } from './src/redux/action/General/GeneralSlice';
-import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { checkPermission } from './src/services/audioServices/audioServices';
-import { ToastProvider } from 'react-native-toast-notifications'
-import { BaseToast, ErrorToast, SuccessToast } from 'react-native-toast-message';
+import { getLoginToken } from './src/services/authServices/authServices';
 
 LogBox.ignoreLogs(['new NativeEventEmitter', 'ViewPropTypes']);
 function App(): JSX.Element {

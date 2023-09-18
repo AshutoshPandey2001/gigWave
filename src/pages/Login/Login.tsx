@@ -1,25 +1,23 @@
 import { Formik } from 'formik'
 import React, { useState } from 'react'
 import { Pressable, SafeAreaView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Toast } from 'react-native-toast-message/lib/src/Toast'
+import { useDispatch, useSelector } from 'react-redux'
 import * as yup from "yup"
 import GigwaveIcon from '../../assets/icons/gigwave.svg'
 import LockIcon from '../../assets/icons/lock.svg'
 import PhoneIcon from '../../assets/icons/phone.svg'
+import CommanAlertBox from '../../components/CommanAlertBox'
 import { GlobalStyle } from '../../globalStyle'
-import { getOtp, verifyOtp } from '../../services/authServices/authServices'
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '../../redux/store'
 import { setUser } from '../../redux/action/Auth/authAction'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
-import { Toast } from 'react-native-toast-message/lib/src/Toast'
-import { useToast } from "react-native-toast-notifications";
-import CommanAlertBox from '../../components/CommanAlertBox'
+import { RootState } from '../../redux/store'
+import { getOtp, verifyOtp } from '../../services/authServices/authServices'
 
 const LoginScreen = ({ navigation }: any) => {
   const dispatch = useDispatch();
   const [isOtpsent, setOtpSend] = useState(false);
   const [mobile, setMobile] = useState("");
-  const toast = useToast();
 
   const loginPhoneSchema = yup.object().shape({
     phone: yup.string().required('Phone number is required')
@@ -39,19 +37,6 @@ const LoginScreen = ({ navigation }: any) => {
       const response = await getOtp(values.phone, firsToken);
       console.log('Response:', response);
       if (response) {
-        // toast.show("OTP sent successfully ", {
-        //   type: "success",
-        // });
-        // toast.show(
-        //   "OTP sent successfully",
-        //   {
-        //     type: "success_toast",
-        //     animationDuration: 100,
-        //     data: {
-        //       title: "Customized toast",
-        //     },
-        //   }
-        // )
         Toast.show({
           type: 'success',
           text1: 'Success',
@@ -61,12 +46,6 @@ const LoginScreen = ({ navigation }: any) => {
         setOtpSend(true)
       }
     } catch (error: any) {
-
-      // Toast.show({
-      //   type: 'error',
-      //   text1: 'Error',
-      //   text2: error.message,
-      // });
       await dispatch(setLoading(false))
       // console.error('Error:', error);
     }

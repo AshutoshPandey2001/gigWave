@@ -337,8 +337,6 @@ const SearchGigScreen = ({ navigation }: any) => {
                                     </Pressable>
 
                                 </View>
-
-
                             ))
                             }
 

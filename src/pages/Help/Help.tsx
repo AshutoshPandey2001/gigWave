@@ -66,11 +66,11 @@ const HelpScreen = ({ route, navigation }: any) => {
                                 <View>
                                     <Image resizeMode='contain' style={Style.imageStyle} source={{ uri: route.params.thumbnail_img_url }} />
                                 </View>
-                                <View style={{ flex: 1, width: 100 }}>
+                                <View style={{ flex: 1, width: 100 ,marginVertical:10}}>
                                     <Text style={[GlobalStyle.blackColor, Style.commanPaddingFontSize, { marginHorizontal: 10 }]}>
                                         {route.params?.title}
                                     </Text>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 14, margin: 10, }]}>
+                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16, margin: 10, }]}>
                                         {route.params?.informal_description}
                                     </Text>
                                 </View>
@@ -189,7 +189,7 @@ const Style = StyleSheet.create({
     localCardStyle: {
         display: 'flex',
         flexDirection: 'row',
-        paddingVertical: 15,
+        paddingVertical: 0,
         paddingHorizontal: 0
     },
     commanmargin: {
@@ -205,7 +205,7 @@ const Style = StyleSheet.create({
     imageStyle: {
         borderTopLeftRadius: 15,
         borderBottomLeftRadius: 15,
-        height: 120,
+        height: 150,
         width: 100
     }
 })

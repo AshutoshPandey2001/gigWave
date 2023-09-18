@@ -170,15 +170,14 @@ const CreategigScreen = ({ navigation }: any) => {
   }
 
   return (
-    <KeyboardAvoidingView
-      behavior={'padding'}
-      keyboardVerticalOffset={90}
-    >
+    // <KeyboardAvoidingView
+    //   behavior={'padding'}
+    //   keyboardVerticalOffset={90}
+    // >
       <SafeAreaView>
 
         <ScrollView keyboardShouldPersistTaps={keyboardPersist ? 'always' : 'never'}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={true}>
-
             <View style={[GlobalStyle.container]}>
               <View style={Style.cardContainer}>
                 <Text style={[GlobalStyle.blackColor, { fontSize: 22, fontWeight: 'bold' }]}>How It Works</Text>
@@ -307,12 +306,11 @@ const CreategigScreen = ({ navigation }: any) => {
           </TouchableWithoutFeedback>
         </ScrollView>
       </SafeAreaView>
-    </KeyboardAvoidingView>
-
+    // </KeyboardAvoidingView>
   )
 }
 const Style = StyleSheet.create({
-  cardContainer: { marginBottom: 10 },
+  cardContainer: { marginBottom: 0 },
   inputContainer: {
     backgroundColor: ''
   },

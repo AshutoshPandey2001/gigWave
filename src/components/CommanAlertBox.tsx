@@ -14,9 +14,7 @@ const CommanAlertBox = ({ title, message }: ErrorAlertProps) => {
             [
                 {
                     text: 'OK',
-                    onPress: () => {
-
-                    },
+                    onPress: () => {},
                 },
             ],
             {
@@ -24,7 +22,6 @@ const CommanAlertBox = ({ title, message }: ErrorAlertProps) => {
                 onDismiss: () => {
 
                 }
-
             },
         )
     );
