@@ -32,7 +32,8 @@ const RoleScreen = ({ navigation }: any) => {
         </View>
       </View>
       {/* <ScrollView> */}
-        <View style={[GlobalStyle.centerContentPage, { padding: 25, marginTop: 0,paddingTop:10, height: 'auto' }]}>
+      <View style={[GlobalStyle.centerContentPage, { padding: 25, marginTop: 0, paddingTop: 10, height: 'auto' }]}>
+        <View style={{ display: "flex", alignItems: 'center', justifyContent: "center", width: '100%', height: '85%' }}>
           <Text style={[GlobalStyle.title, { fontSize: 26 }]}>I want to</Text>
           <View>
             <Text style={[GlobalStyle.subtitle]}>
@@ -40,7 +41,7 @@ const RoleScreen = ({ navigation }: any) => {
               {/* <GigwaveIcon height={50} /> */}
               <Image style={{ resizeMode: 'contain', width: 34, height: 20 }} source={require('../../assets/images/gigwave.png')} />
             </Text>
-            <Pressable style={[Style.button, { marginTop: 30,height:'35%' }]} onPress={() => { navigation.navigate('Home'); dispatch(setUserType('CREATOR')) }}>
+            <Pressable style={[Style.button, { marginTop: 30 }]} onPress={() => { navigation.navigate('Home'); dispatch(setUserType('CREATOR')) }}>
               <View>
                 {/* <Image source={require('../../assets/images/help.png')} /> */}
                 <HelpSVG />
@@ -57,7 +58,7 @@ const RoleScreen = ({ navigation }: any) => {
                 </Text>
               </View>
             </Pressable>
-            <Pressable style={[Style.button, { marginTop: 20,height:'35%'}]} onPress={() => { navigation.navigate('Home'); dispatch(setUserType('PRO')) }}>
+            <Pressable style={[Style.button, { marginTop: 20 }]} onPress={() => { navigation.navigate('Home'); dispatch(setUserType('PRO')) }}>
               <View>
                 {/* <Image source={require('../../assets/images/help_other.png')} /> */}
                 <GroupSvg />
@@ -76,6 +77,7 @@ const RoleScreen = ({ navigation }: any) => {
             </Pressable>
           </View>
         </View>
+      </View>
       {/* </ScrollView> */}
     </SafeAreaView >
   )
