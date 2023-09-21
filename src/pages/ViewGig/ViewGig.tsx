@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useDispatch, useSelector } from 'react-redux'
 import { GlobalStyle } from '../../globalStyle'
@@ -25,7 +25,7 @@ const ViewGigScreen = ({ route, navigation }: any) => {
             getGigsDetails()
         }
     }, [focus])
-    
+
     const getGigsDetails = () => {
         dispatch(setLoading(true));
         getGigByGig_id(route.params.gig_id, firstToken).then((res: any) => {
@@ -54,25 +54,49 @@ const ViewGigScreen = ({ route, navigation }: any) => {
     }
 
     const closeGig = () => {
-        dispatch(setLoading(true));
-        updateGig({ gig_id: route.params.gig_id, status: "inactive" }, firstToken)
-            .then((res) => {
-                console.log(res, 'response update gig');
-                Toast.show({
-                    type: 'success',
-                    text1: 'Success',
-                    text2: 'Gig Closed Successfully',
-                });
-                dispatch(setLoading(false));
-                navigation.goBack();
-            })
-            .catch((e) => {
-                CommanAlertBox({
-                    title: 'Error',
-                    message: e.message,
-                });
-                dispatch(setLoading(false));
-            });
+        Alert.alert(
+            'Confirm',
+            '“Are you sure? This gig All data will be deleted.”',
+            [
+                {
+                    text: 'N0',
+                    onPress: () => {
+                        // Handle the cancel button press
+                    },
+                    style: 'cancel',
+                },
+                {
+                    text: 'Yes',
+                    onPress: () => {
+                        dispatch(setLoading(true));
+                        updateGig({ gig_id: route.params.gig_id, status: "inactive" }, firstToken)
+                            .then((res) => {
+                                Toast.show({
+                                    type: 'success',
+                                    text1: 'Success',
+                                    text2: 'Gig Closed Successfully',
+                                });
+                                dispatch(setLoading(false));
+                                navigation.goBack();
+                            })
+                            .catch((e) => {
+                                CommanAlertBox({
+                                    title: 'Error',
+                                    message: e.message,
+                                });
+                                dispatch(setLoading(false));
+                            });
+                    },
+                },
+            ],
+            {
+                cancelable: true,
+                onDismiss: () => {
+                    // Handle the alert dismissal (e.g., pressing outside the alert)
+                },
+            }
+        );
+
     };
     const gigInterest = () => {
         dispatch(setLoading(true));
@@ -120,9 +144,9 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                 "archived": true,
                 "archived_reason": "pro"
             }
-           let res= await notInterested(dataValue,firstToken)
-           console.log('res---',res);
-           navigation.goBack();
+            let res = await notInterested(dataValue, firstToken)
+            console.log('res---', res);
+            navigation.goBack();
             dispatch(setLoading(false));
         } catch (error: any) {
             CommanAlertBox({

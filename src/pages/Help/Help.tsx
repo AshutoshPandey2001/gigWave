@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import MarkerIcon from '../../assets/icons/marker.svg'
 import { GlobalStyle } from '../../globalStyle'
@@ -35,25 +35,50 @@ const HelpScreen = ({ route, navigation }: any) => {
     }, [focus])
 
     const closeGig = () => {
-        dispatch(setLoading(true));
-        updateGig({ gig_id: route.params.gig_id, status: "inactive" }, firstToken)
-            .then((res) => {
-                console.log(res, 'response update gig');
-                Toast.show({
-                    type: 'success',
-                    text1: 'Success',
-                    text2: 'Gig Closed Sucessfully',
-                });
-                navigation.navigate('Home')
-                dispatch(setLoading(false));
-            })
-            .catch((e) => {
-                CommanAlertBox({
-                    title: 'Error',
-                    message: e.message,
-                });
-                dispatch(setLoading(false));
-            });
+        Alert.alert(
+            'Confirm',
+            '“Are you sure? This gig All data will be deleted.”',
+            [
+                {
+                    text: 'N0',
+                    onPress: () => {
+                        // Handle the cancel button press
+                    },
+                    style: 'cancel',
+                },
+                {
+                    text: 'Yes',
+                    onPress: () => {
+                        dispatch(setLoading(true));
+                        updateGig({ gig_id: route.params.gig_id, status: "inactive" }, firstToken)
+                            .then((res) => {
+                                console.log(res, 'response update gig');
+                                Toast.show({
+                                    type: 'success',
+                                    text1: 'Success',
+                                    text2: 'Gig Closed Sucessfully',
+                                });
+                                navigation.goBack();
+                                dispatch(setLoading(false));
+                            })
+                            .catch((e) => {
+                                CommanAlertBox({
+                                    title: 'Error',
+                                    message: e.message,
+                                });
+                                dispatch(setLoading(false));
+                            });
+                    },
+                },
+            ],
+            {
+                cancelable: true,
+                onDismiss: () => {
+                    // Handle the alert dismissal (e.g., pressing outside the alert)
+                },
+            }
+        );
+
     };
 
     return (
@@ -92,7 +117,7 @@ const HelpScreen = ({ route, navigation }: any) => {
                                 <Pressable onPress={() => navigation.navigate('Single-pro', { user_id: item.user_id, gig_id: route.params.gig_id })} key={i}>
                                     <View style={[GlobalStyle.card, GlobalStyle.shadowProp, Style.localCardStyle]}>
                                         <View style={{ padding: 10 }}>
-                                            <Image resizeMode='contain' style={Style.profileImg} source={ item.base64_img? { uri: `data:image/jpeg;base64,${item.base64_img}` } : require('../../assets/images/avatar_profile.png')}  />
+                                            <Image resizeMode='contain' style={Style.profileImg} source={item.base64_img ? { uri: `data:image/jpeg;base64,${item.base64_img}` } : require('../../assets/images/avatar_profile.png')} />
                                         </View>
                                         <View style={{ flex: 1, width: 100, marginHorizontal: 10 }}>
                                             <Text style={[GlobalStyle.blackColor, Style.commanPaddingFontSize]}>
@@ -148,7 +173,7 @@ const Style = StyleSheet.create({
         borderBottomLeftRadius: 15,
         height: 150,
         width: 100
-    }, 
+    },
     profileImg: {
         height: 80, width: 80,
         borderRadius: 40, // Half of the height or width for a circular effect

@@ -15,6 +15,7 @@ import { RootState } from '../../redux/store'
 import { checkUser, createUser } from '../../services/authServices/authServices'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
 import CommanAlertBox from '../../components/CommanAlertBox'
+import { setLoading } from '../../redux/action/General/GeneralSlice'
 
 const RegisterScreen = ({ navigation }: any) => {
     const dispatch = useDispatch();
@@ -37,11 +38,14 @@ const RegisterScreen = ({ navigation }: any) => {
     })
     const onRegister = (values: any) => {
         console.log('values', values);
+        dispatch(setLoading(true))
         checkUser(values.email, mobileNumber, firstToken).then((res) => {
             let response = JSON.parse(JSON.stringify(res))
             console.log('res', response.status)
             if (response.status === 404 || response.status === "404") {
                 createUser({ ...values, phone: mobileNumber }, firstToken).then((response: any) => {
+                    dispatch(setLoading(false))
+
                     Toast.show({
                         type: 'success',
                         text1: 'Success',
@@ -50,6 +54,7 @@ const RegisterScreen = ({ navigation }: any) => {
                     dispatch(setUser(response))
                     console.log('Create user data Response:', response);
                 }).catch((error) => {
+                    dispatch(setLoading(false))
                     CommanAlertBox({
                         title: 'Error',
                         message: error.message,

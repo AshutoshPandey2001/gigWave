@@ -27,7 +27,7 @@ interface InitialFormValues {
     address: string,
     company: string,
 }
-const EditProfileScreen = () => {
+const EditProfileScreen = ({ navigation }: any) => {
     const dispatch = useDispatch();
     const user: any = useSelector((state: RootState) => state.user.user);
     const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
@@ -131,7 +131,6 @@ const EditProfileScreen = () => {
         if (user.is_pro) {
 
             updateProUsersDetails(provalue, firstToken).then((res) => {
-                console.log(res, 'pro user details', res.company)
                 dispatch(setLoading(false));
             }).catch((e) => {
                 console.log('error', JSON.stringify(e));
@@ -140,7 +139,7 @@ const EditProfileScreen = () => {
         }
 
         updateUsersDetails(values, firstToken).then((response) => {
-            console.log('res', response);
+            navigation.goBack();
             Toast.show({
                 type: 'success',
                 text1: 'Success',

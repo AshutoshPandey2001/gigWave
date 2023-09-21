@@ -37,7 +37,7 @@ const HomeScreen = ({ navigation }: any) => {
   const [refreshing, setRefreshing] = useState(false);
 
   const isRequired = (value: any) => value.trim() !== '';
-  const isWithinRange = (value: any, min: any) => value.length >= min;
+  const isWithinRange = (value: any, min: any, max: any) => value.length >= min && value.length <= max;
   useEffect(() => {
     if (userType === "CREATOR")
       getList();
@@ -320,8 +320,8 @@ const HomeScreen = ({ navigation }: any) => {
     setError('');
     if (!isRequired(msg)) {
       setError('This field is required');
-    } else if (!isWithinRange(msg, 10)) { // Adjust min and max length as needed
-      setError('Skills must have atleast 10 characters');
+    } else if (!isWithinRange(msg, 10, 200)) { // Adjust min and max length as needed
+      setError('Skills must be between 10 and 200 characters');
     }
   }
   useEffect(() => {
@@ -395,7 +395,8 @@ const HomeScreen = ({ navigation }: any) => {
                       <>
                         <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
                           <Text style={[GlobalStyle.blackColor, { fontSize: 20 }]}>
-                            To receive Gig suggestions, please add your skills and/or types of work you would like to do  below.                      </Text>
+                            {skillValue ? "There are currently no matches for you at the moment." :
+                              "To receive Gig suggestions, please add your skills and/or types of work you would like to do  below."}                      </Text>
                         </View>
                         {!skillValue ?
                           <><View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>

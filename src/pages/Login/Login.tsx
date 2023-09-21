@@ -56,16 +56,19 @@ const LoginScreen = ({ navigation }: any) => {
       await dispatch(setLoading(true))
       const response = await verifyOtp(mobile, values.code, firsToken);
       console.log('verify otp Response:', response.status, response);
-      await dispatch(setLoading(false))
       if (response.user && response.user?.email && response.user?.phone) {
         Toast.show({
           type: 'success',
           text1: 'Success',
           text2: 'OTP Verification Successfully Completed',
         });
+        await dispatch(setLoading(false))
+
         dispatch(setUser(response.user))
       } else {
         setOtpSend(false)
+        await dispatch(setLoading(false))
+
         CommanAlertBox({
           title: 'Error',
           message: 'You Mobile number is Register',

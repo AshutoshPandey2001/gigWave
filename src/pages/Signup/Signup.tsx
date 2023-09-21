@@ -11,6 +11,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
 import { setUser } from '../../redux/action/Auth/authAction'
 import CommanAlertBox from '../../components/CommanAlertBox'
+import { setLoading } from '../../redux/action/General/GeneralSlice'
+import { Toast } from 'react-native-toast-message/lib/src/Toast'
 const SignupScreen = ({ navigation }: any) => {
     const dispatch = useDispatch();
     const [isOtpsent, setOtpSend] = useState(false)
@@ -33,13 +35,24 @@ const SignupScreen = ({ navigation }: any) => {
         console.log('values', values);
         // navigation.navigate('Home')
         try {
+            dispatch(setLoading(true))
+
             const response = await getOtp(values.phone, firsToken);
             // if (response === true) {
             console.log('Response:', response);
             if (response) {
+                Toast.show({
+                    type: 'success',
+                    text1: 'Success',
+                    text2: 'OTP sent successfully ',
+                });
+                dispatch(setLoading(false))
+
                 setOtpSend(true)
             }
         } catch (error: any) {
+            dispatch(setLoading(false))
+
             CommanAlertBox({
                 title: 'Error',
                 message: error.message,
@@ -49,27 +62,67 @@ const SignupScreen = ({ navigation }: any) => {
         setMobile(values.phone)
     }
     const onSubmit = async (values: any) => {
-
-        console.log('values', values);
-        // navigation.navigate('Home')
         try {
+            await dispatch(setLoading(true))
             const response = await verifyOtp(mobile, values.code, firsToken);
-            // if (response === true) {
-            console.log('verify otp Response:', response);
-            if (response.user) {
-                dispatch(setUser(response.user))
+            if (response.user && response.user?.email && response.user?.phone) {
+                Toast.show({
+                    type: 'success',
+                    text1: 'Success',
+                    text2: 'OTP Verification Successfully Completed',
+                });
+                await dispatch(setLoading(false))
 
+                dispatch(setUser(response.user))
             } else {
                 setOtpSend(false)
-                navigation.navigate('Register', { mobileNumber: mobile })
+                await dispatch(setLoading(false))
+
+                CommanAlertBox({
+                    title: 'Error',
+                    message: 'You Mobile number is Register',
+                });
+
             }
         } catch (error: any) {
             CommanAlertBox({
                 title: 'Error',
                 message: error.message,
             });
+
+            await dispatch(setLoading(false))
+            // navigation.navigate('Register', { mobileNumber: mobile })
+            console.error('Error:', error);
         }
     }
+    // const onSubmit = async (values: any) => {
+
+    //     console.log('values', values);
+    //     // navigation.navigate('Home')
+    //     try {
+    //         dispatch(setLoading(true))
+    //         const response = await verifyOtp(mobile, values.code, firsToken);
+    //         // if (response === true) {
+    //         console.log('verify otp Response:', response);
+    //         if (response.user) {
+    //             dispatch(setUser(response.user))
+    //             dispatch(setLoading(false))
+
+    //         } else {
+    //             setOtpSend(false)
+    //             dispatch(setLoading(false))
+
+    //             navigation.navigate('Register', { mobileNumber: mobile })
+    //         }
+    //     } catch (error: any) {
+    //         dispatch(setLoading(false))
+
+    //         CommanAlertBox({
+    //             title: 'Error',
+    //             message: error.message,
+    //         });
+    //     }
+    // }
     return (
         <SafeAreaView style={GlobalStyle.safeAreaCotainer}>
             <StatusBar

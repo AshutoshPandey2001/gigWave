@@ -93,6 +93,37 @@ const SingleproScreen = ({ route, navigation }: any) => {
                                     </Text>
                                 </View>
                             </View>
+                            <View style={{ marginTop: 10 }}>
+                                <Text style={[GlobalStyle.blackColor, { fontSize: 18, marginTop: 10, fontWeight: 'bold' }]}>Official Skill</Text>
+                                <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
+                                    {proDetails.formal_skills.map((item: any, index: any) => {
+                                        return (
+                                            <View style={{ flexDirection: 'row', alignItems: 'center' }} key={index}>
+                                                <Text style={{ fontSize: 18, marginRight: 5 }}>•</Text>
+                                                <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
+                                                    {item}
+                                                </Text>
+                                            </View>
+                                        );
+                                    })}
+                                </View>
+                            </View>
+                            <View style={{ marginTop: 10 }}>
+                                <Text style={[GlobalStyle.blackColor, { fontSize: 18, marginTop: 10, fontWeight: 'bold' }]}>Potential Skills</Text>
+                                <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
+                                    {proDetails.potential_skills.map((item: any, index: any) => {
+                                        return (
+                                            <View style={{ flexDirection: 'row', alignItems: 'center' }} key={index}>
+                                                <Text style={{ fontSize: 18, marginRight: 5 }}>•</Text>
+                                                <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
+                                                    {item}
+                                                </Text>
+                                            </View>
+                                        );
+                                    })}
+                                </View>
+                            </View>
+
                             {proDetails?.company &&
                                 <View>
                                     <Text style={[GlobalStyle.blackColor, { fontSize: 18, marginTop: 10, fontWeight: 'bold' }]}>Company</Text>

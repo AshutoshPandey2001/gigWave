@@ -129,8 +129,8 @@ const ViewProfileScreen = ({ navigation }: any) => {
         setError('');
         if (!isRequired(msg)) {
             setError('This field is required');
-        } else if (!isWithinRange(msg, 10, 100)) { // Adjust min and max length as needed
-            setError('Skills must be between 10 and 100 characters');
+        } else if (!isWithinRange(msg, 10, 200)) { // Adjust min and max length as needed
+            setError('Skills must be between 10 and 200 characters');
         }
     }
     const startReconding = async () => {
