@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, Pressable, SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native'
+import { Image, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { GlobalStyle } from '../../globalStyle'
 import { setUserType } from '../../redux/action/User/userTypeSlice'
@@ -32,50 +32,50 @@ const RoleScreen = ({ navigation }: any) => {
         </View>
       </View>
       {/* <ScrollView> */}
-      <View style={[GlobalStyle.centerContentPage, { padding: 30, marginTop: 0, height: 'auto' }]}>
-        <Text style={[GlobalStyle.title, { fontSize: 26 }]}>I want to</Text>
-        <View>
-          <Text style={[GlobalStyle.subtitle]}>
-            Select want to do first, you can select the other option later by tapping.&nbsp;
-            {/* <GigwaveIcon height={50} /> */}
-            <Image style={{ resizeMode: 'contain', width: 34, height: 20 }} source={require('../../assets/images/gigwave.png')} />
-          </Text>
-          <Pressable style={[Style.button, { marginTop: 30 }]} onPress={() => { navigation.navigate('Home'); dispatch(setUserType('CREATOR')) }}>
-            <View>
-              {/* <Image source={require('../../assets/images/help.png')} /> */}
-              <HelpSVG />
-            </View>
-            <View>
-              <Text style={Style.btnTitle}>Get Help</Text>
-            </View>
-            <View>
-              <Text style={Style.btnSubTitle}>I am looking for help and
-              </Text>
-            </View>
-            <View>
-              <Text style={Style.btnSubTitle}>want to CREATE a gig
-              </Text>
-            </View>
-          </Pressable>
-          <Pressable style={[Style.button, { marginTop: 20 }]} onPress={() => { navigation.navigate('Home'); dispatch(setUserType('PRO')) }}>
-            <View>
-              {/* <Image source={require('../../assets/images/help_other.png')} /> */}
-              <GroupSvg />
-            </View>
-            <View>
-              <Text style={Style.btnTitle}>Help Others</Text>
-            </View>
-            <View>
-              <Text style={Style.btnSubTitle}>I’m a PRO looking for a gig
-              </Text>
-            </View>
-            <View>
-              <Text style={Style.btnSubTitle}>or help someone
-              </Text>
-            </View>
-          </Pressable>
+        <View style={[GlobalStyle.centerContentPage, { padding: 25, marginTop: 0,paddingTop:10, height: 'auto' }]}>
+          <Text style={[GlobalStyle.title, { fontSize: 26 }]}>I want to</Text>
+          <View>
+            <Text style={[GlobalStyle.subtitle]}>
+              Select want to do first, you can select the other option later by tapping.&nbsp;
+              {/* <GigwaveIcon height={50} /> */}
+              <Image style={{ resizeMode: 'contain', width: 34, height: 20 }} source={require('../../assets/images/gigwave.png')} />
+            </Text>
+            <Pressable style={[Style.button, { marginTop: 30,height:'35%' }]} onPress={() => { navigation.navigate('Home'); dispatch(setUserType('CREATOR')) }}>
+              <View>
+                {/* <Image source={require('../../assets/images/help.png')} /> */}
+                <HelpSVG />
+              </View>
+              <View>
+                <Text style={Style.btnTitle}>Get Help</Text>
+              </View>
+              <View>
+                <Text style={Style.btnSubTitle}>I am looking for help and
+                </Text>
+              </View>
+              <View>
+                <Text style={Style.btnSubTitle}>want to CREATE a gig
+                </Text>
+              </View>
+            </Pressable>
+            <Pressable style={[Style.button, { marginTop: 20,height:'35%'}]} onPress={() => { navigation.navigate('Home'); dispatch(setUserType('PRO')) }}>
+              <View>
+                {/* <Image source={require('../../assets/images/help_other.png')} /> */}
+                <GroupSvg />
+              </View>
+              <View>
+                <Text style={Style.btnTitle}>Help Others</Text>
+              </View>
+              <View>
+                <Text style={Style.btnSubTitle}>I’m a PRO looking for a gig
+                </Text>
+              </View>
+              <View>
+                <Text style={Style.btnSubTitle}>or help someone
+                </Text>
+              </View>
+            </Pressable>
+          </View>
         </View>
-      </View>
       {/* </ScrollView> */}
     </SafeAreaView >
   )
