@@ -37,29 +37,24 @@ const RegisterScreen = ({ navigation }: any) => {
 
     })
     const onRegister = (values: any) => {
-        console.log('values', values);
         dispatch(setLoading(true))
         checkUser(values.email, mobileNumber, firstToken).then((res) => {
             let response = JSON.parse(JSON.stringify(res))
-            console.log('res', response.status)
             if (response.status === 404 || response.status === "404") {
                 createUser({ ...values, phone: mobileNumber }, firstToken).then((response: any) => {
                     dispatch(setLoading(false))
-
                     Toast.show({
                         type: 'success',
                         text1: 'Success',
                         text2: 'Registration Successfully Completed',
                     });
                     dispatch(setUser(response))
-                    console.log('Create user data Response:', response);
                 }).catch((error) => {
                     dispatch(setLoading(false))
                     CommanAlertBox({
                         title: 'Error',
                         message: error.message,
                     });
-
                     console.error("registeration error", JSON.stringify(error))
                 })
             }

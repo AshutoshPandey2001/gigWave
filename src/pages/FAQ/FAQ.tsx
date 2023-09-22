@@ -22,7 +22,6 @@ const FAQScreen = () => {
     const getFAQS = () => {
         dispatch(setLoading(true));
         getAllFaq(firstToken).then((res) => {
-            // res.map((item: any) => item.image = require('../../assets/images/list1.png'))
             let creatorFAQ = res.filter((item: any) => item.section === "Creator")
             let proFAQ = res.filter((item: any) => item.section === "Pro")
             dispatch(setLoading(false))

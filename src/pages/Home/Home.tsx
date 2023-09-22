@@ -56,15 +56,7 @@ const HomeScreen = ({ navigation }: any) => {
       }
     }
   }, [focus])
-  // useEffect(() => {
-  //   if (isGigCreated) {
-  //     setTimeout(() => {
-  //       getList();
-  //       dispatch(setGigCreated(false))
-  //     }, 10000);
-  //   }
 
-  // }, [isGigCreated])
   const startRecognizing = async () => {
 
     const granted = await checkPermission();
@@ -81,9 +73,7 @@ const HomeScreen = ({ navigation }: any) => {
   }
   const stopRecording = async () => {
     stopRecord(setIsRecording);
-    console.log('audioPath', audioPath);
     dispatch(setLoading(true))
-
     readAudioFile(audioPath)
       .then((base64Data) => {
         if (base64Data) {
@@ -92,10 +82,7 @@ const HomeScreen = ({ navigation }: any) => {
             audio_format: 'mp4', // Set the desired audio format
           };
           audioToText(audioDataToSend, firstToken).then((res) => {
-            console.log('Return audio to text', res);
             handleInputChange(res.text)
-
-            // setSkillValue(res.text)
             dispatch(setLoading(false))
           }).catch((error) => {
             CommanAlertBox({
@@ -117,10 +104,7 @@ const HomeScreen = ({ navigation }: any) => {
       setSkillValue(res.raw_skills_text)
       setInterestGigType(res.interest_gig_type)
       setalreadyprouser(true)
-      console.log(res, 'pro user details')
-      //   navigation.navigate('Home')
       setRefreshing(false);
-
       dispatch(setLoading(false));
     }).catch((e) => {
       CommanAlertBox({
@@ -157,7 +141,6 @@ const HomeScreen = ({ navigation }: any) => {
         })
       } else {
         createProUsers(provalue, firstToken).then((res) => {
-          //   navigation.navigate('Home')
           dispatch(setLoading(false));
           resolve(true)
         }).catch((e) => {
@@ -173,18 +156,14 @@ const HomeScreen = ({ navigation }: any) => {
   }
   const getList = () => {
     dispatch(setLoading(true))
-    // console.log('user.user_id', user.user_id);
-
     getGigByUser(user.user_id, firstToken).then((res) => {
       if (selectedIndex === 0) {
         let activegig = res.filter((item: any) => item.status === "active")
         setLists(activegig)
-
       } else {
         let inactivgig = res.filter((item: any) => item.status === "inactive")
         setLists(inactivgig)
       }
-      // console.log('all gig this user', res);
       setRefreshing(false);
       dispatch(setLoading(false))
     }).catch((error) => {
@@ -330,13 +309,6 @@ const HomeScreen = ({ navigation }: any) => {
     }
   }, []);
 
-
-
-  // const ProHome = () => {
-  //   return (
-
-  //   )
-  // }
 
   return (
     <SafeAreaView>

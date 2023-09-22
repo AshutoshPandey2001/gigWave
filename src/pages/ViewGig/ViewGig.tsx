@@ -29,13 +29,11 @@ const ViewGigScreen = ({ route, navigation }: any) => {
     const getGigsDetails = () => {
         dispatch(setLoading(true));
         getGigByGig_id(route.params.gig_id, firstToken).then((res: any) => {
-            console.log(res, 'gig details response');
             setGigDetails(res)
             checkProItrestedGig({
                 "gig_id": res.gig_id,
                 "pro_id": user.user_id
             }, firstToken).then((rese1: any) => {
-                console.log('rese1 already intrested', rese1);
                 setAlreadyIntrest(rese1.status)
                 dispatch(setLoading(false));
 
@@ -105,7 +103,6 @@ const ViewGigScreen = ({ route, navigation }: any) => {
             "gig_id": route.params.gig_id,
             "pro_id": user.user_id
         }, firstToken).then((res) => {
-            console.log('Interest gig response', res);
             dispatch(setLoading(false));
             if (res?.compatibility == "1") {
                 setAlreadyIntrest(true)
@@ -145,7 +142,6 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                 "archived_reason": "pro"
             }
             let res = await notInterested(dataValue, firstToken)
-            console.log('res---', res);
             navigation.goBack();
             dispatch(setLoading(false));
         } catch (error: any) {
@@ -162,12 +158,6 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                 {
                     gigDetails ?
                         <View style={[GlobalStyle.container, { marginTop: 0 }]}>
-                            {/* <View style={[GlobalStyle.headerLeft, { margin: 0 }]}>
-                        <HeaderProfile />
-                    </View> */}
-                            {/* <View style={{ marginTop: 10, width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                <Text style={[GlobalStyle.blackColor, { fontSize: 22, fontWeight: 'bold' }]}>Gig</Text>
-                            </View> */}
                             <View style={{ marginTop: 10 }}>
                                 <View style={{ display: 'flex', alignItems: 'center' }}>
                                     <Image resizeMode='cover' source={{ uri: gigDetails.thumbnail_img_url }} style={{ position: 'absolute', zIndex: 999, top: 0, width: "100%", height: 250 }} />
@@ -182,7 +172,7 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                                             <Pressable style={[GlobalStyle.button, { flex: 1, backgroundColor: '#000', margin: 5, paddingHorizontal: 15 }]} onPress={notInterest}>
                                                 <Text style={[GlobalStyle.btntext, { fontWeight: 'bold', fontSize: 16 }]}>Not Interested</Text>
                                             </Pressable>
-                                            <Pressable onPress={() => navigation.navigate('DirectChat')} style={[GlobalStyle.button, { flex: 1, backgroundColor: '#05E3D5', margin: 5, paddingHorizontal: 10 }]}>
+                                            <Pressable onPress={() => navigation.navigate('DirectChat', { user_id: gigDetails.user_id, gig_id: gigDetails.gig_id })} style={[GlobalStyle.button, { flex: 1, backgroundColor: '#05E3D5', margin: 5, paddingHorizontal: 10 }]}>
                                                 <Text style={[GlobalStyle.blackColor, { fontWeight: 'bold', fontSize: 16 }]}>Message Creator</Text>
                                             </Pressable>
                                         </> :
@@ -215,14 +205,14 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                                                 <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
                                                     {gigDetails.gig_requirement.map((item: any, index: any) => {
                                                         return (
-                                                            <Text style={[GlobalStyle.blackColor]} key={index}>
-                                                                {item}
-                                                            </Text>
-                                                        )
-
+                                                            <View style={{ flexDirection: 'row', alignItems: 'center' }} key={index}>
+                                                                <Text style={{ fontSize: 18, marginRight: 5 }}>•</Text>
+                                                                <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
+                                                                    {item}
+                                                                </Text>
+                                                            </View>
+                                                        );
                                                     })}
-
-
                                                 </View>
                                             </View> : null
                                     }
@@ -234,10 +224,13 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                                                 <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
                                                     {gigDetails.good_to_have_skills.map((item: any, index: any) => {
                                                         return (
-                                                            <Text style={[GlobalStyle.blackColor]} key={index}>
-                                                                {item}
-                                                            </Text>
-                                                        )
+                                                            <View style={{ flexDirection: 'row', alignItems: 'center' }} key={index}>
+                                                                <Text style={{ fontSize: 18, marginRight: 5 }}>•</Text>
+                                                                <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
+                                                                    {item}
+                                                                </Text>
+                                                            </View>
+                                                        );
                                                     })}
                                                 </View>
                                             </View> : null

@@ -32,7 +32,6 @@ const ViewProfileScreen = ({ navigation }: any) => {
             setPayment(res.payments)
             setInterestGigType(res.interest_gig_type)
             setalreadyprouser(true)
-            console.log(res, 'pro user details')
             //   navigation.navigate('Home')
             dispatch(setLoading(false));
         }).catch((e) => {
@@ -149,9 +148,7 @@ const ViewProfileScreen = ({ navigation }: any) => {
     }
     const stopRecording = async () => {
         stopRecord(setIsRecording);
-        console.log('audioPath', audioPath);
         dispatch(setLoading(true))
-
         readAudioFile(audioPath)
             .then((base64Data) => {
                 if (base64Data) {
@@ -160,9 +157,7 @@ const ViewProfileScreen = ({ navigation }: any) => {
                         audio_format: 'mp4', // Set the desired audio format
                     };
                     audioToText(audioDataToSend, firstToken).then((res) => {
-                        console.log('Return audio to text', res);
                         handleInputChange(res.text)
-                        // setSkillValue(res.text)
                         dispatch(setLoading(false))
                     }).catch((error) => {
                         CommanAlertBox({

@@ -47,7 +47,6 @@ const SingleproScreen = ({ route, navigation }: any) => {
                 "archived_reason": "creator"
             }
             let res = await notInterested(dataValue, firstToken)
-            console.log('proUserDetails', res)
             navigation.goBack();
             dispatch(setLoading(false));
         } catch (error: any) {
@@ -77,7 +76,7 @@ const SingleproScreen = ({ route, navigation }: any) => {
                                     </View>
                                 </View>
                                 <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: -15 }}>
-                                    <Pressable style={[GlobalStyle.button, { width: '50%', backgroundColor: '#000', marginRight: 10 }]} onPress={() => navigation.navigate('DirectChat')}>
+                                    <Pressable style={[GlobalStyle.button, { width: '50%', backgroundColor: '#000', marginRight: 10 }]} onPress={() => navigation.navigate('DirectChat', { user_id: route.params.user_id, gig_id: route.params.gig_id })}>
                                         <Text style={[GlobalStyle.btntext, { fontWeight: 'bold', fontSize: 18 }]}>Message Pro</Text>
                                     </Pressable>
                                     <Pressable style={[GlobalStyle.button, { width: '50%' }]}>

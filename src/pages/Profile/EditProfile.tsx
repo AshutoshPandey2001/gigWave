@@ -90,7 +90,6 @@ const EditProfileScreen = ({ navigation }: any) => {
                 console.log(res, 'pro user details', res.company)
                 setProuserData(res)
                 setFieldValue('company', res.company)
-                //   navigation.navigate('Home')
                 dispatch(setLoading(false));
             }).catch((e) => {
                 console.log('error', JSON.stringify(e));
@@ -117,8 +116,6 @@ const EditProfileScreen = ({ navigation }: any) => {
 
 
     const updateProfile = async (values: any) => {
-        // await dispatch(setLoading(true));
-        // return new Promise((resolve, reject) => {
         let provalue = {
             "company": values.company,
             "user_id": prouserData?.user_id,
@@ -127,9 +124,7 @@ const EditProfileScreen = ({ navigation }: any) => {
             "interest_gig_type": prouserData.interest_gig_type,
         }
         dispatch(setLoading(true))
-        console.log('i am updating pro values', provalue);
         if (user.is_pro) {
-
             updateProUsersDetails(provalue, firstToken).then((res) => {
                 dispatch(setLoading(false));
             }).catch((e) => {
@@ -139,7 +134,7 @@ const EditProfileScreen = ({ navigation }: any) => {
         }
 
         updateUsersDetails(values, firstToken).then((response) => {
-            navigation.goBack();
+            // navigation.goBack();
             Toast.show({
                 type: 'success',
                 text1: 'Success',
@@ -157,8 +152,6 @@ const EditProfileScreen = ({ navigation }: any) => {
             console.log('error', JSON.stringify(e));
             dispatch(setLoading(false))
         })
-
-        // })
 
     }
     return (

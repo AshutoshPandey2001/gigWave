@@ -35,7 +35,6 @@ const LoginScreen = ({ navigation }: any) => {
     try {
       await dispatch(setLoading(true))
       const response = await getOtp(values.phone, firsToken);
-      console.log('Response:', response);
       if (response) {
         Toast.show({
           type: 'success',
@@ -55,7 +54,6 @@ const LoginScreen = ({ navigation }: any) => {
     try {
       await dispatch(setLoading(true))
       const response = await verifyOtp(mobile, values.code, firsToken);
-      console.log('verify otp Response:', response.status, response);
       if (response.user && response.user?.email && response.user?.phone) {
         Toast.show({
           type: 'success',

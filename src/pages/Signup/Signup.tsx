@@ -31,14 +31,9 @@ const SignupScreen = ({ navigation }: any) => {
 
     })
     const onLogin = async (values: any) => {
-
-        console.log('values', values);
-        // navigation.navigate('Home')
         try {
             dispatch(setLoading(true))
-
             const response = await getOtp(values.phone, firsToken);
-            // if (response === true) {
             console.log('Response:', response);
             if (response) {
                 Toast.show({
@@ -47,7 +42,6 @@ const SignupScreen = ({ navigation }: any) => {
                     text2: 'OTP sent successfully ',
                 });
                 dispatch(setLoading(false))
-
                 setOtpSend(true)
             }
         } catch (error: any) {
@@ -57,7 +51,6 @@ const SignupScreen = ({ navigation }: any) => {
                 title: 'Error',
                 message: error.message,
             });
-            // console.error('Error:', error);
         }
         setMobile(values.phone)
     }
@@ -91,38 +84,10 @@ const SignupScreen = ({ navigation }: any) => {
             });
 
             await dispatch(setLoading(false))
-            // navigation.navigate('Register', { mobileNumber: mobile })
             console.error('Error:', error);
         }
     }
-    // const onSubmit = async (values: any) => {
 
-    //     console.log('values', values);
-    //     // navigation.navigate('Home')
-    //     try {
-    //         dispatch(setLoading(true))
-    //         const response = await verifyOtp(mobile, values.code, firsToken);
-    //         // if (response === true) {
-    //         console.log('verify otp Response:', response);
-    //         if (response.user) {
-    //             dispatch(setUser(response.user))
-    //             dispatch(setLoading(false))
-
-    //         } else {
-    //             setOtpSend(false)
-    //             dispatch(setLoading(false))
-
-    //             navigation.navigate('Register', { mobileNumber: mobile })
-    //         }
-    //     } catch (error: any) {
-    //         dispatch(setLoading(false))
-
-    //         CommanAlertBox({
-    //             title: 'Error',
-    //             message: error.message,
-    //         });
-    //     }
-    // }
     return (
         <SafeAreaView style={GlobalStyle.safeAreaCotainer}>
             <StatusBar

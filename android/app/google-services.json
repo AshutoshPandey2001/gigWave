@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "611905046288",
+    "project_id": "message-app-23cab",
+    "storage_bucket": "message-app-23cab.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:611905046288:android:b18d7cad2b934bea558795",
+        "android_client_info": {
+          "package_name": "com.chatting"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "611905046288-ukj67jqtqqe04sc6o0s5sb73j0sija73.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAlx-MPVpM1V9iN2P9UGck4Ee_xdca3KU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "611905046288-ukj67jqtqqe04sc6o0s5sb73j0sija73.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:611905046288:android:c7b9c8650e987ead558795",
+        "android_client_info": {
+          "package_name": "com.gigwave"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "611905046288-ukj67jqtqqe04sc6o0s5sb73j0sija73.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAlx-MPVpM1V9iN2P9UGck4Ee_xdca3KU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "611905046288-ukj67jqtqqe04sc6o0s5sb73j0sija73.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -22,7 +22,6 @@ const HelpScreen = ({ route, navigation }: any) => {
             dispatch(setLoading(true))
             matchProuserwithgig_id(route.params.gig_id, firstToken).then((res) => {
                 setmatchedprouserList(res)
-                console.log('all gig this user', res);
                 dispatch(setLoading(false))
             }).catch((error) => {
                 CommanAlertBox({
@@ -52,7 +51,6 @@ const HelpScreen = ({ route, navigation }: any) => {
                         dispatch(setLoading(true));
                         updateGig({ gig_id: route.params.gig_id, status: "inactive" }, firstToken)
                             .then((res) => {
-                                console.log(res, 'response update gig');
                                 Toast.show({
                                     type: 'success',
                                     text1: 'Success',

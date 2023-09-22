@@ -156,20 +156,21 @@ const SearchGigScreen = ({ navigation }: any) => {
         return date.toISOString().split('T')[0]; // Extract only the date part
     };
     useEffect(() => {
+        setGigType('unpaid')
         setSearchValue("");
         selectRef.current?.reset();
         setLocation("");
         setSelectedMarker(null);
         if (focus) {
-            getProList();
             getDefaultAddress()
             checkPermission()
         }
-        // checkPermissionGooglemap();
     }, [focus])
+    useEffect(() => {
+        getProList();
+    }, [])
 
     const getDefaultAddress = () => {
-        console.log('user.address,user.address', user.address);
         setLocation({ description: user.address, terms: [{ "offset": 0, "value": user.city }, { "offset": 10, "value": user.state }, { "offset": 14, "value": user.country }] })
         geocodeLocationByName(user.address)
             .then((res: any) => {
@@ -195,32 +196,11 @@ const SearchGigScreen = ({ navigation }: any) => {
             });
     }
 
-    // const checkPermissionGooglemap = async () => {
-    //     const permission = PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-    //     try {
-    //         const hasPermission = await PermissionsAndroid.check(permission);
-    //         if (hasPermission) {
-    //             getCurrentLocation()
-    //             console.log('Permission already granted', hasPermission);
-    //         } else {
-    //             const status = await PermissionsAndroid.request(permission);
-    //             if (status === PermissionsAndroid.RESULTS.GRANTED) {
-    //                 getCurrentLocation()
-    //                 console.log('Permission granted', status);
-    //             } else {
-    //                 console.log('Permission denied');
-    //             }
-    //         }
-    //     } catch (error) {
-    //         console.error('Error checking or requesting permission:', error);
-    //     }
-    // };
+
     const getCurrentLocation = () => {
         Geolocation.getCurrentPosition(
             position => {
                 const { latitude, longitude } = position.coords;
-                console.log('latitude, longitude', latitude, longitude);
-                console.log(position, 'position')
                 setInitialRegion((prevState) => ({
                     ...prevState,
                     latitude,
@@ -604,11 +584,10 @@ const SearchGigScreen = ({ navigation }: any) => {
                             }}
                             ref={selectRef}
                             buttonStyle={{ backgroundColor: 'transparent' }}
-                            defaultButtonText='Free/Paid'
+                            defaultButtonText='Free'
                             buttonTextStyle={{ textAlign: 'left', color: '#1E1E1E', fontSize: 16 }}
                             dropdownStyle={{ width: '25%', borderRadius: 10 }}
                             rowTextStyle={{ fontSize: 16 }}
-                            defaultValue={''}
                         />
                     </View>
                 </View>
