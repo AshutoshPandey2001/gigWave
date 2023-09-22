@@ -71,7 +71,6 @@ const EditProfileScreen = ({ navigation }: any) => {
     });
     const { handleChange, handleBlur, handleSubmit, values, errors, isValid, touched, setFieldValue } = formik
 
-    console.log('values', values);
     const getProfileImage = async () => {
         getProfilePhoto(user.user_id, firstToken).then(async (res: any) => {
             // console.log('res', res);
@@ -87,7 +86,6 @@ const EditProfileScreen = ({ navigation }: any) => {
         await dispatch(setLoading(true));
         if (user.is_pro) {
             getProdetailsbyuserid(user.user_id, firstToken).then((res) => {
-                console.log(res, 'pro user details', res.company)
                 setProuserData(res)
                 setFieldValue('company', res.company)
                 dispatch(setLoading(false));
@@ -97,9 +95,7 @@ const EditProfileScreen = ({ navigation }: any) => {
             })
         }
         getUserByUserID(user.user_id, firstToken).then((response) => {
-            console.log('res', response);
             const dataURI = `data:image/jpeg;base64,${response.base64_img}`; // Assuming res is a base64 encoded image
-            console.log('image data url', dataURI);
             setProfilePic(dataURI);
             dispatch(setLoading(false))
             dispatch(setUser(response))

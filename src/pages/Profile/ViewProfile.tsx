@@ -49,7 +49,6 @@ const ViewProfileScreen = ({ navigation }: any) => {
         if (error !== '') {
             return
         }
-        console.log('calling', interestGigType);
 
         return new Promise((resolve, reject) => {
             let provalue = {
@@ -110,7 +109,6 @@ const ViewProfileScreen = ({ navigation }: any) => {
             });
             dispatch(setLoading(false))
 
-            console.log('backGroundCheck', res);
             setBackGroudCheck(res)
         }).catch((e: any) => {
             dispatch(setLoading(false))

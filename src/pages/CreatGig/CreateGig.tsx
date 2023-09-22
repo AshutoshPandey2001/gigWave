@@ -102,7 +102,6 @@ const CreategigScreen = ({ navigation }: any) => {
     validationSchema: gigSchema,
     onSubmit: (async (values: any) => {
       let res = await onCreate(values);
-      console.log('res', res);
       resetForm();
       return res
     }),
@@ -129,7 +128,6 @@ const CreategigScreen = ({ navigation }: any) => {
   }
   const stopRecording = async () => {
     stopRecord(setIsRecording);
-    console.log('audioPath', audioPath);
     dispatch(setLoading(true))
 
     readAudioFile(audioPath)
@@ -140,7 +138,6 @@ const CreategigScreen = ({ navigation }: any) => {
             audio_format: 'mp4', // Set the desired audio format
           };
           audioToText(audioDataToSend, firstToken).then((res) => {
-            console.log('Return audio to text', res);
             setFieldValue('description', res.text)
             // values.description = res.text
             dispatch(setLoading(false))

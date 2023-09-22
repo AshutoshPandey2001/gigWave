@@ -65,7 +65,6 @@ const SearchGigScreen = ({ navigation }: any) => {
             });
             return;
         }
-        console.log(searchValue, location, gigType);
         searchGigs(searchValue, location, gigType)
     }
     const onChangeLocation = (value: any) => {
@@ -86,10 +85,8 @@ const SearchGigScreen = ({ navigation }: any) => {
             });
     }
     const separateAddressComponents = (addressJSON: any) => {
-        console.log(addressJSON)
         if (addressJSON.terms && addressJSON.terms?.length) {
             const terms = addressJSON.terms.slice(-3) // Extract last three terms
-            console.log(terms, 'terms-------------', addressJSON.terms)
             if (terms.length === 1) {
                 const city = "";
                 const state = "";
@@ -158,7 +155,7 @@ const SearchGigScreen = ({ navigation }: any) => {
     useEffect(() => {
         setGigType('unpaid')
         setSearchValue("");
-        selectRef.current?.reset();
+        // selectRef.current?.reset();
         setLocation("");
         setSelectedMarker(null);
         if (focus) {
@@ -235,7 +232,6 @@ const SearchGigScreen = ({ navigation }: any) => {
     }
     const stopRecording = async () => {
         stopRecord(setIsRecording);
-        console.log('audioPath', audioPath);
         dispatch(setLoading(true))
 
         readAudioFile(audioPath)
@@ -441,7 +437,6 @@ const SearchGigScreen = ({ navigation }: any) => {
             return;
         }
         const { city, state, country } = await separateAddressComponents(location);
-        console.log('city, state, country', city, state, country);
 
         const gigParms = await {
             "city": city,
@@ -526,15 +521,12 @@ const SearchGigScreen = ({ navigation }: any) => {
                         <LocationSearch
                             placeholder="Address"
                             isModalVisible={isModalVisible}
-                            // notifyChange={handleLocationChange}
                             notifyChange={location => {
                                 setModalVisible(false);
-                                console.log('location', location);
                                 onChangeLocation(location)
                             }}
                             closeModel={closeModel}
                         />
-
                         <Text numberOfLines={1} style={{ width: '100%', fontSize: 16, color: '#000', paddingLeft: 10 }} onPress={() => setModalVisible(true)}>{location ? location.description : 'Address'}</Text>
 
                     </View>
