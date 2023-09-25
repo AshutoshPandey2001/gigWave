@@ -1,5 +1,5 @@
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
     Image, SafeAreaView, ScrollView, StyleSheet,
     Text, Pressable,
@@ -32,6 +32,8 @@ const ChatScreen = ({ route, navigation }: any) => {
     const [audioPath, setAudioPath] = useState<string>('');
     const user: any = useSelector((state: RootState) => state.user.user);
     const dispatch = useDispatch()
+    const scrollViewRef = useRef<any>();
+
     const [chats, setChats] = useState<any[]>([
         // { id: 0, message: 'Hi There', time: new Date(), from: 'lala' },
         // { id: 1, message: 'Lorem ipsum dolor sit amet consectetur. Leo faucibus integer mi sit morbi.', time: new Date(), from: 'Rev' },
@@ -64,6 +66,8 @@ const ChatScreen = ({ route, navigation }: any) => {
 
         return () => subscriber();
     }, []);
+
+
     const getTouserAndgigDetails = async () => {
         try {
             dispatch(setLoading(true));
@@ -84,6 +88,10 @@ const ChatScreen = ({ route, navigation }: any) => {
     };
 
     const onSend = async () => {
+        if (message.trim() === '') {
+            // Message is blank, don't send it
+            return;
+        }
         setMessage('');
         const myMsg: any = {
             id: undefined,
@@ -227,7 +235,14 @@ const ChatScreen = ({ route, navigation }: any) => {
                     <Text style={{ flex: 1, marginLeft: 26, fontSize: 20, color: '#000', fontWeight: 'bold' }}>Chatting with {toUserDetails.fname + " " + toUserDetails.lname}</Text>
                 }
             </View>
-            <ScrollView>
+            <ScrollView
+                ref={scrollViewRef}
+                style={{ flex: 1 }}
+                onContentSizeChange={(contentWidth, contentHeight) => {
+                    // Scroll to the end when content size changes (new content is added)
+                    scrollViewRef.current.scrollToEnd({ animated: true });
+                }}
+            >
                 {gigDetails &&
                     <View style={[GlobalStyle.container, { marginTop: 0 }]}>
                         <View>
