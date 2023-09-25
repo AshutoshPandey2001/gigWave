@@ -123,6 +123,7 @@ const ChatScreen = ({ route, navigation }: any) => {
             to_userName: '',
             to_useruid: '',
             to_userProfilepic: '',
+            status: 'active'
         }
         // Use a batch write to add messages to both sender and receiver collections
         const batch = firestore().batch();

@@ -23,7 +23,13 @@ const MessageScreen = ({ navigation }: any) => {
       .doc(user.user_id)
       .collection('messages')
       .onSnapshot(querySnapshot => {
-        const allProfiles = querySnapshot.docs.map(doc => (doc.data()));
+        const allProfiles = querySnapshot.docs.map((doc) => {
+          if (doc.data().status === 'active') {
+            return doc.data()
+          } else {
+            return null; // Return null for non-active documents
+          }
+        }).filter((profile) => profile !== null);;
         setProfiles(allProfiles)
 
       });
@@ -81,7 +87,7 @@ const MessageScreen = ({ navigation }: any) => {
             <DropDownIcon style={{ marginEnd: 10 }} />
             {/* <Image source={require('../../assets/icons/dropdown.png')} style={{ marginEnd: 10 }} /> */}
           </View>
-          {profiles.length > 0 && profiles.map((data, index) => (
+          {profiles.length > 0 ? profiles.map((data, index) => (
             <Pressable onPress={() => navigation.navigate('Chat', { user_id: data.to_useruid, gig_id: data.gig_id })} key={index}>
               <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingHorizontal: 10 }]} >
                 <View style={[{ display: 'flex', flexDirection: 'row', alignItems: 'center' }]}>
@@ -100,7 +106,15 @@ const MessageScreen = ({ navigation }: any) => {
                 </View>
               </View>
             </Pressable>
-          ))
+          )) : <>
+
+            <View style={{ marginTop: 50 }}>
+              <Text style={{ fontWeight: 'bold', fontSize: 18, textAlign: 'center' }}>
+                No messages found
+              </Text>
+            </View>
+
+          </>
           }
         </View>
       </ScrollView>

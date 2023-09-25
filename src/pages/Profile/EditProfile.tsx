@@ -73,10 +73,6 @@ const EditProfileScreen = ({ navigation }: any) => {
 
     const getProfileImage = async () => {
         getProfilePhoto(user.user_id, firstToken).then(async (res: any) => {
-            // console.log('res', res);
-            // const dataURI = await `data:image/jpeg;base64,${res}`; // Assuming res is a base64 encoded image
-            // console.log('image data url', dataURI);
-
         }).catch((e) => {
             console.error(e, 'error when getting profile image');
 
@@ -107,7 +103,25 @@ const EditProfileScreen = ({ navigation }: any) => {
     const closecamaraModel = () => {
         setIscamaraModalVisible(false)
     }
-    // Launch Camera
+    const uploadProfileImage = (selectedImage: any) => {
+        dispatch(setLoading(true))
+        fs.readFile(selectedImage.uri, "base64").then((imgRes) => {
+            setProfilePic(`data:image/jpeg;base64,${imgRes}`)
+            uploadProfilePhoto(user.user_id, firstToken, imgRes)
+                .then((res) => {
+                    console.log(res, 'uploaded image');
+                    getUserByUserID(user.user_id, firstToken).then((response) => {
+                        // console.log('res--------', response.base64_img);
+                        const dataURI = `data:image/jpeg;base64,${response.base64_img}`; // Assuming res is a base64 encoded image
+                        setProfilePic(dataURI);
+                        dispatch(setLoading(false))
+                        dispatch(setUser(response))
+                    })
+                    dispatch(setLoading(false))
+                    // You might want to perform additional actions here after successful upload
+                }).catch((err) => { dispatch(setLoading(false)); console.error(err) })
+        })
+    }
 
 
 
@@ -164,7 +178,8 @@ const EditProfileScreen = ({ navigation }: any) => {
                             <Text style={styles.editText}>Upload Photo </Text>
                         </Pressable>
                         {
-                            iscamaraModalVisible && <UploadPhotosScreen isVisible={iscamaraModalVisible} onClose={closecamaraModel} setProfilePic={setProfilePic} />
+                            iscamaraModalVisible && <UploadPhotosScreen isVisible={iscamaraModalVisible} onClose={closecamaraModel} setProfilePic={setProfilePic} uploadFunction={uploadProfileImage}
+                            />
                         }
                     </View>
                     {/* <Formik

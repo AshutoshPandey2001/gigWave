@@ -10,13 +10,15 @@ import { setLoading } from '../../redux/action/General/GeneralSlice'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
 import CommanAlertBox from '../../components/CommanAlertBox'
 import { useIsFocused } from '@react-navigation/native'
+import firestore from '@react-native-firebase/firestore';
 
 const HelpScreen = ({ route, navigation }: any) => {
     const [matchedprouserList, setmatchedprouserList] = useState([])
     const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
     const dispatch = useDispatch()
     const focus = useIsFocused();  // useIsFocused as shown         
-
+    const [gigprofiles, setGigProfiles] = useState<any>()
+    const user: any = useSelector((state: RootState) => state.user.user);
     useEffect(() => {
         if (focus) {
             dispatch(setLoading(true))
@@ -32,8 +34,28 @@ const HelpScreen = ({ route, navigation }: any) => {
             })
         }
     }, [focus])
+    useEffect(() => {
+        const subscriber = firestore()
+            .collection('chats')
+            .doc(user.user_id)
+            .collection('messages')
+            .onSnapshot(querySnapshot => {
+                querySnapshot.docs.map((doc) => {
+                    if (doc.data().gig_id === route.params.gig_id) {
+                        setGigProfiles(doc.data())
+                        console.log('doc.data()', doc.data());
 
+                    }
+                }
+                );
+
+            });
+
+        return () => subscriber();
+    }, []);
     const closeGig = () => {
+        console.log(gigprofiles, 'gigprofiles');
+
         Alert.alert(
             'Confirm',
             '“Are you sure? This gig All data will be deleted.”',
@@ -50,14 +72,48 @@ const HelpScreen = ({ route, navigation }: any) => {
                     onPress: () => {
                         dispatch(setLoading(true));
                         updateGig({ gig_id: route.params.gig_id, status: "inactive" }, firstToken)
-                            .then((res) => {
-                                Toast.show({
-                                    type: 'success',
-                                    text1: 'Success',
-                                    text2: 'Gig Closed Sucessfully',
-                                });
-                                navigation.goBack();
-                                dispatch(setLoading(false));
+                            .then(async (res) => {
+                                try {
+                                    const senderDocRef = firestore()
+                                        .collection('chats')
+                                        .doc(user.user_id) // sender id
+                                        .collection('messages')
+                                        .doc(gigprofiles.to_useruid);
+
+                                    const receiverDocRef = firestore()
+                                        .collection('chats')
+                                        .doc(gigprofiles.to_useruid) // receiver id
+                                        .collection('messages')
+                                        .doc(user.user_id);
+
+                                    const batch = firestore().batch();
+
+                                    // Use object spread to update the 'status' field
+                                    batch.set(senderDocRef, { ...gigprofiles, status: 'inactive' });
+                                    batch.set(receiverDocRef, {
+                                        ...gigprofiles,
+                                        to_userName: user.fname + " " + user.lname,
+                                        to_userProfilepic: user.base64_img,
+                                        to_useruid: user.user_id,
+                                        status: 'inactive'
+                                    });
+
+                                    await batch.commit(); // Commit the batch write
+
+                                    Toast.show({
+                                        type: 'success',
+                                        text1: 'Success',
+                                        text2: 'Gig Closed Successfully',
+                                    });
+                                    navigation.goBack();
+                                } catch (error: any) {
+                                    CommanAlertBox({
+                                        title: 'Error',
+                                        message: error.message,
+                                    });
+                                } finally {
+                                    dispatch(setLoading(false));
+                                }
                             })
                             .catch((e) => {
                                 CommanAlertBox({
@@ -66,6 +122,7 @@ const HelpScreen = ({ route, navigation }: any) => {
                                 });
                                 dispatch(setLoading(false));
                             });
+
                     },
                 },
             ],

@@ -19,9 +19,10 @@ interface UploadPhotosProps {
     isVisible: boolean;
     onClose: () => void;
     setProfilePic: any;
+    uploadFunction: (imageData: string) => void;
 }
 
-const UploadPhotosScreen = ({ isVisible, onClose, setProfilePic }: UploadPhotosProps) => {
+const UploadPhotosScreen = ({ isVisible, onClose, setProfilePic, uploadFunction }: UploadPhotosProps) => {
     const cameraRef = React.useRef<RNCamera | null>(null);
     const [isCameraReady, setIsCameraReady] = useState(false);
     const [showCamera, setShowCamera] = useState(false); // New state to control camera visibility
@@ -69,22 +70,23 @@ const UploadPhotosScreen = ({ isVisible, onClose, setProfilePic }: UploadPhotosP
                         onClose()
                         console.log(res, 'original ROtation--------------------')
                         const selectedImage = res.assets[0];
-                        fs.readFile(selectedImage.uri, "base64").then((imgRes) => {
-                            setProfilePic(`data:image/jpeg;base64,${imgRes}`)
-                            uploadProfilePhoto(user.user_id, firstToken, imgRes)
-                                .then((res) => {
-                                    console.log(res, 'uploaded image');
-                                    getUserByUserID(user.user_id, firstToken).then((response) => {
-                                        // console.log('res--------', response.base64_img);
-                                        const dataURI = `data:image/jpeg;base64,${response.base64_img}`; // Assuming res is a base64 encoded image
-                                        setProfilePic(dataURI);
-                                        dispatch(setLoading(false))
-                                        dispatch(setUser(response))
-                                    })
-                                    dispatch(setLoading(false))
-                                    // You might want to perform additional actions here after successful upload
-                                }).catch((err) => { dispatch(setLoading(false)); console.error(err) })
-                        })
+                        uploadFunction(selectedImage);
+                        // fs.readFile(selectedImage.uri, "base64").then((imgRes) => {
+                        //     setProfilePic(`data:image/jpeg;base64,${imgRes}`)
+                        //     uploadProfilePhoto(user.user_id, firstToken, imgRes)
+                        //         .then((res) => {
+                        //             console.log(res, 'uploaded image');
+                        //             getUserByUserID(user.user_id, firstToken).then((response) => {
+                        //                 // console.log('res--------', response.base64_img);
+                        //                 const dataURI = `data:image/jpeg;base64,${response.base64_img}`; // Assuming res is a base64 encoded image
+                        //                 setProfilePic(dataURI);
+                        //                 dispatch(setLoading(false))
+                        //                 dispatch(setUser(response))
+                        //             })
+                        //             dispatch(setLoading(false))
+                        //             // You might want to perform additional actions here after successful upload
+                        //         }).catch((err) => { dispatch(setLoading(false)); console.error(err) })
+                        // })
                     }
                 });
             } else {
@@ -110,8 +112,8 @@ const UploadPhotosScreen = ({ isVisible, onClose, setProfilePic }: UploadPhotosP
                 console.log('ImagePicker Error: ', response.error);
             } else if (response.assets && response.assets.length > 0) {
                 onClose()
-                dispatch(setLoading(true))
                 const selectedImage = response.assets[0];
+                uploadFunction(selectedImage);
                 fs.readFile(selectedImage.uri, "base64").then((imgRes) => {
                     setProfilePic(`data:image/jpeg;base64,${imgRes}`)
                     uploadProfilePhoto(user.user_id, firstToken, imgRes)

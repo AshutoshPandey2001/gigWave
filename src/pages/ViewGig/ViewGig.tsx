@@ -10,6 +10,7 @@ import { Toast } from 'react-native-toast-message/lib/src/Toast'
 import { checkProItrestedGig, notInterested, proInterestgig } from '../../services/proUserService/proUserService'
 import { useIsFocused } from '@react-navigation/native'
 import CommanAlertBox from '../../components/CommanAlertBox'
+import firestore from '@react-native-firebase/firestore';
 
 const ViewGigScreen = ({ route, navigation }: any) => {
     const { userType }: any = useSelector((state: RootState) => state.userType)
@@ -17,6 +18,8 @@ const ViewGigScreen = ({ route, navigation }: any) => {
     const [gigDetails, setGigDetails] = useState<any>()
     const [alreadyIntrest, setAlreadyIntrest] = useState(false)
     const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
+    const [gigprofiles, setGigProfiles] = useState<any>()
+
     const dispatch = useDispatch()
     const focus = useIsFocused();
     useEffect(() => {
@@ -25,7 +28,25 @@ const ViewGigScreen = ({ route, navigation }: any) => {
             getGigsDetails()
         }
     }, [focus])
+    useEffect(() => {
+        const subscriber = firestore()
+            .collection('chats')
+            .doc(user.user_id)
+            .collection('messages')
+            .onSnapshot(querySnapshot => {
+                querySnapshot.docs.map((doc) => {
+                    if (doc.data().gig_id === route.params.gig_id) {
+                        setGigProfiles(doc.data())
+                        console.log('doc.data()', doc.data());
 
+                    }
+                }
+                );
+
+            });
+
+        return () => subscriber();
+    }, []);
     const getGigsDetails = () => {
         dispatch(setLoading(true));
         getGigByGig_id(route.params.gig_id, firstToken).then((res: any) => {
@@ -68,14 +89,48 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                     onPress: () => {
                         dispatch(setLoading(true));
                         updateGig({ gig_id: route.params.gig_id, status: "inactive" }, firstToken)
-                            .then((res) => {
-                                Toast.show({
-                                    type: 'success',
-                                    text1: 'Success',
-                                    text2: 'Gig Closed Successfully',
-                                });
-                                dispatch(setLoading(false));
-                                navigation.goBack();
+                            .then(async (res) => {
+                                try {
+                                    const senderDocRef = firestore()
+                                        .collection('chats')
+                                        .doc(user.user_id) // sender id
+                                        .collection('messages')
+                                        .doc(gigprofiles.to_useruid);
+
+                                    const receiverDocRef = firestore()
+                                        .collection('chats')
+                                        .doc(gigprofiles.to_useruid) // receiver id
+                                        .collection('messages')
+                                        .doc(user.user_id);
+
+                                    const batch = firestore().batch();
+
+                                    // Use object spread to update the 'status' field
+                                    batch.set(senderDocRef, { ...gigprofiles, status: 'inactive' });
+                                    batch.set(receiverDocRef, {
+                                        ...gigprofiles,
+                                        to_userName: user.fname + " " + user.lname,
+                                        to_userProfilepic: user.base64_img,
+                                        to_useruid: user.user_id,
+                                        status: 'inactive'
+                                    });
+
+                                    await batch.commit(); // Commit the batch write
+
+                                    Toast.show({
+                                        type: 'success',
+                                        text1: 'Success',
+                                        text2: 'Gig Closed Successfully',
+                                    });
+                                    navigation.goBack();
+                                } catch (error: any) {
+                                    CommanAlertBox({
+                                        title: 'Error',
+                                        message: error.message,
+                                    });
+                                } finally {
+                                    dispatch(setLoading(false));
+                                }
                             })
                             .catch((e) => {
                                 CommanAlertBox({
