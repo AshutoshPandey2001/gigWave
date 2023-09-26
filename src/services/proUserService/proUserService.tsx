@@ -108,7 +108,7 @@ export const proInterestgig = async (interestValue: any, token: any): Promise<an
         throw error; // Rethrow the error to be caught by the caller
     }
 }
-export const notInterested = async (value:any, token: any): Promise<any> => {
+export const notInterested = async (value: any, token: any): Promise<any> => {
     try {
         const response = await axios({
             method: 'put',
@@ -153,6 +153,24 @@ export const checkProItrestedGig = async (matchingData: any, token: any): Promis
                 'Content-Type': 'application/json',
             },
             data: matchingData
+        });
+        return response.data; // Return the response data
+    } catch (error) {
+        throw error; // Rethrow the error to be caught by the caller
+    }
+}
+
+
+export const uploadChatimages = async (imageValues: any, token: any): Promise<any> => {
+    try {
+        const response = await axios({
+            method: 'post',
+            url: `${API_BASE_URL}/chat/image`,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            data: imageValues
         });
         return response.data; // Return the response data
     } catch (error) {

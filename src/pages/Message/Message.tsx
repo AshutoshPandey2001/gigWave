@@ -5,15 +5,24 @@ import SelectDropdown from 'react-native-select-dropdown'
 import SearchIcon from '../../assets/icons/Search.svg'
 import DropDownIcon from '../../assets/icons/dropdown.svg'
 import firestore from '@react-native-firebase/firestore';
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
 import moment from 'moment'
+import { getMatchedGigbyuserid } from '../../services/proUserService/proUserService'
+import { getGigByUser } from '../../services/gigService/gigService'
+import CommanAlertBox from '../../components/CommanAlertBox'
+import { setLoading } from '../../redux/action/General/GeneralSlice'
 
 const MessageScreen = ({ navigation }: any) => {
   const [searchValue, setSearchValue] = useState('')
-  const [selectedValue, setSelectValue] = useState('')
+  const [selectedValue, setSelectValue] = useState<any>()
   const [profiles, setProfiles] = useState<any[]>([])
+  const [gigList, setGigList] = useState<any[]>([])
   const user: any = useSelector((state: RootState) => state.user.user);
+  const { userType }: any = useSelector((state: RootState) => state.userType)
+  const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
+  const dispatch = useDispatch();
+
   const onChangeSearch = (value: any) => {
     setSearchValue(value)
   }
@@ -24,18 +33,69 @@ const MessageScreen = ({ navigation }: any) => {
       .collection('messages')
       .onSnapshot(querySnapshot => {
         const allProfiles = querySnapshot.docs.map((doc) => {
-          if (doc.data().status === 'active') {
-            return doc.data()
+          if (!selectedValue) {
+            if (doc.data().status === 'active') {
+              return doc.data()
+            } else {
+              return null; // Return null for non-active documents
+            }
           } else {
-            return null; // Return null for non-active documents
+            if (doc.data().status === 'active' && doc.data().gig_id === selectedValue.gig_id) {
+              return doc.data()
+            } else {
+              return null; // Return null for non-active documents
+            }
           }
+
         }).filter((profile) => profile !== null);;
         setProfiles(allProfiles)
 
       });
 
     return () => subscriber();
-  }, []);
+  }, [selectedValue]);
+
+  useEffect(() => {
+    if (userType === "CREATOR")
+      getList();
+    else
+      getProList()
+  }, [userType])
+
+  const getList = () => {
+    dispatch(setLoading(true))
+    getGigByUser(user.user_id, firstToken).then((res) => {
+
+      let activegig = res.filter((item: any) => item.status === "active")
+      setGigList(activegig)
+
+      dispatch(setLoading(false))
+    }).catch((error) => {
+      CommanAlertBox({
+        title: 'Error',
+        message: error.message,
+      });
+      console.error(JSON.stringify(error));
+      // setRefreshing(false);
+
+      dispatch(setLoading(false))
+    })
+  }
+  const getProList = async () => {
+    try {
+      dispatch(setLoading(true));
+      const matchedGigs = await getMatchedGigbyuserid(user.user_id, firstToken);
+      setGigList(matchedGigs);
+      dispatch(setLoading(false));
+    } catch (error: any) {
+      CommanAlertBox({
+        title: 'Error',
+        message: error.message,
+      });
+      console.error(JSON.stringify(error));
+      dispatch(setLoading(false));
+    }
+  }
   return (
     <SafeAreaView>
       <ScrollView>
@@ -72,16 +132,18 @@ const MessageScreen = ({ navigation }: any) => {
             }]}>
             <View style={{ flex: 1, padding: 5 }}>
               <SelectDropdown
-                data={['Gig']}
+                data={gigList} // Pass the entire GigList array
                 onSelect={(selectedItem) => {
-                  setSelectValue(selectedItem)
+                  setSelectValue(selectedItem);
                 }}
-
                 buttonStyle={{ backgroundColor: 'transparent', width: '100%' }}
                 defaultButtonText='Select Gig'
                 buttonTextStyle={{ textAlign: 'left' }}
                 dropdownStyle={{ width: '85%', borderRadius: 10 }}
-                defaultValue={selectedValue}
+                buttonTextAfterSelection={(selectedItem) => selectedValue ? selectedValue.title : 'Select Gig'}
+                renderCustomizedRowChild={(item: any) => (
+                  <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'black', fontSize: 16 }}>{item.title}</Text> // Render the title or any other property you want to display
+                )}
               />
             </View>
             <DropDownIcon style={{ marginEnd: 10 }} />
@@ -98,7 +160,15 @@ const MessageScreen = ({ navigation }: any) => {
                   <View style={{ flex: 1, marginStart: 10 }}>
                     <Text style={[GlobalStyle.blackColor, { fontSize: 18 }]}>{data.to_userName}</Text>
                     <Text style={[GlobalStyle.blackColor]}>{data.gig_title}</Text>
-                    <Text numberOfLines={1} style={[GlobalStyle.greyColor,]}>{data.latest_message}</Text>
+                    {data.latest_message &&
+                      <Text numberOfLines={1} style={[GlobalStyle.greyColor]}>{data.latest_message}</Text>}
+                    {data.img &&
+                      <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                        <Image resizeMode='contain' style={{ width: 25, height: 25 }} source={require('../../assets/images/photo.png')} />
+                        <Text style={[GlobalStyle.greyColor]}>Photo</Text>
+                      </View>
+
+                    }
                   </View>
                   <View>
                     <Text style={[GlobalStyle.themeColor, { fontWeight: 'bold' }]}>{data.latest_messageTime ? moment(data.latest_messageTime.toDate()).format('HH:mm A') : ''}</Text>

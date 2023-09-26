@@ -19,11 +19,14 @@ import { setLoading } from '../../redux/action/General/GeneralSlice';
 import { getUserByUserID } from '../../services/userService/userServices';
 import { getGigByGig_id } from '../../services/gigService/gigService';
 import CommanAlertBox from '../../components/CommanAlertBox';
-import { getProdetailsbyuserid } from '../../services/proUserService/proUserService';
+import { getProdetailsbyuserid, uploadChatimages } from '../../services/proUserService/proUserService';
 import firestore from '@react-native-firebase/firestore';
+import UploadPhotosScreen from '../../components/CamaraRoll'
+import fs from 'react-native-fs';
 
 const ChatScreen = ({ route, navigation }: any) => {
     const [message, setMessage] = useState('');
+    const [imgUrl, setImgUrl] = useState('');
     const [result, setResults] = useState([]);
     const [isRecording, setIsRecording] = useState(false);
     const [gigDetails, setGigDetails] = useState<any>()
@@ -31,7 +34,9 @@ const ChatScreen = ({ route, navigation }: any) => {
     const [proDetails, setproDetails] = useState<any>()
     const [audioPath, setAudioPath] = useState<string>('');
     const user: any = useSelector((state: RootState) => state.user.user);
+    const [iscamaraModalVisible, setIscamaraModalVisible] = useState(false);
     const dispatch = useDispatch()
+
     const scrollViewRef = useRef<any>();
 
     const [chats, setChats] = useState<any[]>([
@@ -75,32 +80,34 @@ const ChatScreen = ({ route, navigation }: any) => {
             setGigDetails(gigDetailsResponse);
             const userDetailsResponse = await getUserByUserID(route.params.user_id, firstToken);
             setTouserDetails(userDetailsResponse);
-            if (userType === "CREATOR") {
-                const proDetails = await getProdetailsbyuserid(route.params.user_id, firstToken);
-                setproDetails(proDetails);
-            }
+            const proDetails = await getProdetailsbyuserid(route.params.user_id, firstToken);
+            setproDetails(proDetails);
             dispatch(setLoading(false));
-        } catch (error) {
+        } catch (error: any) {
+            CommanAlertBox({
+                title: 'Error',
+                message: error.message,
+            });
             console.error(error);
             dispatch(setLoading(false));
             // Handle the error as needed, e.g., show an error message to the user
         }
     };
 
-    const onSend = async () => {
-        if (message.trim() === '') {
-            // Message is blank, don't send it
+    const onSend = async (img: any) => {
+        if (message.trim() === '' && img.trim() === '') {
             return;
         }
         setMessage('');
+        setImgUrl('');
         const myMsg: any = {
             id: undefined,
+            img: img,
             message: message,
             time: new Date(),
             from: user.fname
         };
-
-
+        console.log(myMsg, 'myMsg');
 
         // Firestore collections and document references
         const senderDocRef = firestore()
@@ -120,6 +127,7 @@ const ChatScreen = ({ route, navigation }: any) => {
             gig_id: gigDetails.gig_id,
             latest_message: myMsg.message,
             latest_messageTime: new Date(),
+            img: myMsg.img,
             to_userName: '',
             to_useruid: '',
             to_userProfilepic: '',
@@ -136,8 +144,13 @@ const ChatScreen = ({ route, navigation }: any) => {
 
         try {
             await batch.commit();
-        } catch (error) {
 
+
+        } catch (error: any) {
+            CommanAlertBox({
+                title: 'Error',
+                message: error.message,
+            });
             console.error('Error sending message: ', error);
         }
     }
@@ -193,11 +206,20 @@ const ChatScreen = ({ route, navigation }: any) => {
                             {data.id === 0 &&
                                 <View style={{ marginBottom: 25, display: 'flex', alignItems: 'flex-end' }}>
                                     <View style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-                                        <View style={{ backgroundColor: '#05E3D5', maxWidth: '80%', borderTopLeftRadius: 10, borderTopRightRadius: 10, borderBottomLeftRadius: 10 }}>
-                                            <View style={{ padding: 15 }}>
-                                                <Text style={{ fontSize: 18, color: '#fff' }}>{data.message}</Text>
+                                        {data.message &&
+                                            <View style={{ backgroundColor: '#05E3D5', maxWidth: '80%', borderTopLeftRadius: 10, borderTopRightRadius: 10, borderBottomLeftRadius: 10 }}>
+                                                <View style={{ padding: 15 }}>
+                                                    {data.message && <Text style={{ fontSize: 18, color: '#fff' }}>{data.message}</Text>}
+                                                </View>
+                                            </View>}
+                                        {data.img &&
+                                            <View style={{ backgroundColor: '#05E3D5', maxWidth: '80%', borderTopLeftRadius: 10, borderTopRightRadius: 10, borderBottomLeftRadius: 10 }}>
+                                                <View style={{ padding: 5 }}>
+                                                    {data.img && <Image source={{ uri: data.img }} style={{ width: 200, height: 300, borderRadius: 10 }} />}
+                                                </View>
                                             </View>
-                                        </View>
+                                        }
+
                                     </View>
                                     <View style={{ margin: 5 }}>
                                         <Text style={styles.chatTime}>{data.time ? moment(data.time.toDate()).format('HH:mm A') : ''}</Text>
@@ -207,11 +229,19 @@ const ChatScreen = ({ route, navigation }: any) => {
                             {data.id === 1 &&
                                 <View style={{ marginBottom: 25, display: 'flex', alignItems: 'flex-start' }}>
                                     <View style={{ display: 'flex', flexDirection: 'row' }}>
-                                        <View style={{ backgroundColor: '#EAEAEA', maxWidth: '80%', borderTopLeftRadius: 10, borderTopRightRadius: 10, borderBottomRightRadius: 10 }}>
-                                            <View style={{ padding: 15 }}>
-                                                <Text style={{ fontSize: 18, color: '#000' }}>{data.message}</Text>
+                                        {data.message &&
+                                            <View style={{ backgroundColor: '#EAEAEA', maxWidth: '80%', borderTopLeftRadius: 10, borderTopRightRadius: 10, borderBottomLeftRadius: 10 }}>
+                                                <View style={{ padding: 15 }}>
+                                                    {data.message && <Text style={{ fontSize: 18, color: '#000' }}>{data.message}</Text>}
+                                                </View>
+                                            </View>}
+                                        {data.img &&
+                                            <View style={{ backgroundColor: '#EAEAEA', maxWidth: '80%', borderTopLeftRadius: 10, borderTopRightRadius: 10, borderBottomLeftRadius: 10 }}>
+                                                <View style={{ padding: 5 }}>
+                                                    {data.img && <Image source={{ uri: data.img }} style={{ width: 200, height: 300, borderRadius: 10 }} />}
+                                                </View>
                                             </View>
-                                        </View>
+                                        }
                                     </View>
                                     <View style={{ margin: 5, display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                         <Text style={styles.chatTime}>{data.time ? moment(data.time.toDate()).format('HH:mm A') : ''}</Text>
@@ -224,8 +254,29 @@ const ChatScreen = ({ route, navigation }: any) => {
             </>
         );
     }
-
-
+    const closecamaraModel = () => {
+        setIscamaraModalVisible(false)
+    }
+    const uploadAndSendImage = (selectedImage: any) => {
+        fs.readFile(selectedImage.uri, "base64").then((imgRes) => {
+            const imgJson = {
+                "pro_id": proDetails.user_id,
+                "gig_id": gigDetails.gig_id,
+                "base64_image": imgRes,
+                "timestamp": new Date()
+            }
+            uploadChatimages(imgJson, firstToken).then((res) => {
+                console.log('res', res);
+                setImgUrl(res.message);
+                onSend(res.message)
+            }).catch((error) => {
+                CommanAlertBox({
+                    title: 'Error',
+                    message: error.message,
+                });
+            })
+        })
+    }
     return (
         <SafeAreaView style={{ height: '100%' }}>
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: 80, padding: 20 }}>
@@ -284,7 +335,7 @@ const ChatScreen = ({ route, navigation }: any) => {
                                                 </Text>
                                             </View>
                                             <Text style={[GlobalStyle.blackColor, { fontSize: 14, paddingTop: 5 }]}>
-                                                {proDetails.raw_skills_text}
+                                                {proDetails.summary}
                                             </Text>
                                         </View>
                                         <View style={{ justifyContent: 'center' }}>
@@ -306,9 +357,13 @@ const ChatScreen = ({ route, navigation }: any) => {
             </ScrollView>
             <View style={styles.footer}>
                 <View>
-                    <TouchableOpacity style={[styles.btnSend, { paddingRight: 10 }]} onPress={() => console.log('send')}>
+                    <TouchableOpacity style={[styles.btnSend, { paddingRight: 10 }]} onPress={() => setIscamaraModalVisible(true)}>
                         <CamaraIcon height={30} width={30} />
                     </TouchableOpacity>
+                    {
+                        iscamaraModalVisible && <UploadPhotosScreen isVisible={iscamaraModalVisible} onClose={closecamaraModel} uploadFunction={uploadAndSendImage}
+                        />
+                    }
                 </View>
                 <View style={styles.inputContainer}>
                     <TextInput style={styles.inputs}
@@ -319,25 +374,18 @@ const ChatScreen = ({ route, navigation }: any) => {
                         returnKeyType='send'
                         value={message ? message : ''}
                         onChangeText={(msg: string) => setMessage(msg)}
-                        onSubmitEditing={() => onSend()}
+                        onSubmitEditing={() => onSend(imgUrl)}
                         blurOnSubmit={false}
                     />
                 </View>
-                <TouchableOpacity style={[styles.btnSend, { paddingRight: 10 }]} onPress={() => onSend()}>
+                <TouchableOpacity style={[styles.btnSend, { paddingRight: 10 }]} onPress={() => onSend(imgUrl)}>
                     <SendIcon fill={'#fff'} height={30} width={30} />
-                    {/* <Image style={{ height: 30, width: 30 }} resizeMode='contain'
-                        source={require('../../assets/icons/send.png')}
-                    /> */}
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.btnSend} onPress={isRecording ? stopRecording : startRecognizing} >
                     {isRecording ? <Image resizeMode='contain' source={require('../../assets/images/stopRecording.png')} style={{ width: 35, height: 35 }} /> : <MicIcon height={35} width={35} />}
                 </TouchableOpacity>
             </View>
-
-
-
-        </SafeAreaView >
-
+        </SafeAreaView>
     )
 }
 

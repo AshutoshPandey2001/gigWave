@@ -73,47 +73,57 @@ const HelpScreen = ({ route, navigation }: any) => {
                         dispatch(setLoading(true));
                         updateGig({ gig_id: route.params.gig_id, status: "inactive" }, firstToken)
                             .then(async (res) => {
-                                try {
-                                    const senderDocRef = firestore()
-                                        .collection('chats')
-                                        .doc(user.user_id) // sender id
-                                        .collection('messages')
-                                        .doc(gigprofiles.to_useruid);
+                                if (gigprofiles) {
+                                    try {
+                                        const senderDocRef = firestore()
+                                            .collection('chats')
+                                            .doc(user.user_id) // sender id
+                                            .collection('messages')
+                                            .doc(gigprofiles.to_useruid);
 
-                                    const receiverDocRef = firestore()
-                                        .collection('chats')
-                                        .doc(gigprofiles.to_useruid) // receiver id
-                                        .collection('messages')
-                                        .doc(user.user_id);
+                                        const receiverDocRef = firestore()
+                                            .collection('chats')
+                                            .doc(gigprofiles.to_useruid) // receiver id
+                                            .collection('messages')
+                                            .doc(user.user_id);
 
-                                    const batch = firestore().batch();
+                                        const batch = firestore().batch();
 
-                                    // Use object spread to update the 'status' field
-                                    batch.set(senderDocRef, { ...gigprofiles, status: 'inactive' });
-                                    batch.set(receiverDocRef, {
-                                        ...gigprofiles,
-                                        to_userName: user.fname + " " + user.lname,
-                                        to_userProfilepic: user.base64_img,
-                                        to_useruid: user.user_id,
-                                        status: 'inactive'
-                                    });
+                                        // Use object spread to update the 'status' field
+                                        batch.set(senderDocRef, { ...gigprofiles, status: 'inactive' });
+                                        batch.set(receiverDocRef, {
+                                            ...gigprofiles,
+                                            to_userName: user.fname + " " + user.lname,
+                                            to_userProfilepic: user.base64_img,
+                                            to_useruid: user.user_id,
+                                            status: 'inactive'
+                                        });
 
-                                    await batch.commit(); // Commit the batch write
+                                        await batch.commit(); // Commit the batch write
 
+                                        Toast.show({
+                                            type: 'success',
+                                            text1: 'Success',
+                                            text2: 'Gig Closed Successfully',
+                                        });
+                                        navigation.goBack();
+                                    } catch (error: any) {
+                                        CommanAlertBox({
+                                            title: 'Error',
+                                            message: error.message,
+                                        });
+                                    } finally {
+                                        dispatch(setLoading(false));
+                                    }
+                                } else {
                                     Toast.show({
                                         type: 'success',
                                         text1: 'Success',
                                         text2: 'Gig Closed Successfully',
                                     });
                                     navigation.goBack();
-                                } catch (error: any) {
-                                    CommanAlertBox({
-                                        title: 'Error',
-                                        message: error.message,
-                                    });
-                                } finally {
-                                    dispatch(setLoading(false));
                                 }
+
                             })
                             .catch((e) => {
                                 CommanAlertBox({
@@ -169,7 +179,7 @@ const HelpScreen = ({ route, navigation }: any) => {
                         <Text style={[GlobalStyle.blackColor, Style.commanmargin]}>Review Pro List</Text>
                         {matchedprouserList?.length > 0 ?
                             matchedprouserList?.map((item: any, i) =>
-                                <Pressable onPress={() => navigation.navigate('Single-pro', { user_id: item.user_id, gig_id: route.params.gig_id })} key={i}>
+                                <Pressable onPress={() => route.params.status === 'active' ? navigation.navigate('Single-pro', { user_id: item.user_id, gig_id: route.params.gig_id }) : null} key={i}>
                                     <View style={[GlobalStyle.card, GlobalStyle.shadowProp, Style.localCardStyle]}>
                                         <View style={{ padding: 10 }}>
                                             <Image resizeMode='contain' style={Style.profileImg} source={item.base64_img ? { uri: `data:image/jpeg;base64,${item.base64_img}` } : require('../../assets/images/avatar_profile.png')} />

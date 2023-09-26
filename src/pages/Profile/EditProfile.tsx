@@ -178,7 +178,7 @@ const EditProfileScreen = ({ navigation }: any) => {
                             <Text style={styles.editText}>Upload Photo </Text>
                         </Pressable>
                         {
-                            iscamaraModalVisible && <UploadPhotosScreen isVisible={iscamaraModalVisible} onClose={closecamaraModel} setProfilePic={setProfilePic} uploadFunction={uploadProfileImage}
+                            iscamaraModalVisible && <UploadPhotosScreen isVisible={iscamaraModalVisible} onClose={closecamaraModel} uploadFunction={uploadProfileImage}
                             />
                         }
                     </View>
