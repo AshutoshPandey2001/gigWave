@@ -19,7 +19,7 @@ import { setLoading } from '../../redux/action/General/GeneralSlice';
 import { getUserByUserID } from '../../services/userService/userServices';
 import { getGigByGig_id } from '../../services/gigService/gigService';
 import CommanAlertBox from '../../components/CommanAlertBox';
-import { getProdetailsbyuserid, uploadChatimages } from '../../services/proUserService/proUserService';
+import { getImageFromdb, getProdetailsbyuserid, uploadChatimages } from '../../services/proUserService/proUserService';
 import firestore from '@react-native-firebase/firestore';
 import UploadPhotosScreen from '../../components/CamaraRoll'
 import fs from 'react-native-fs';
@@ -95,6 +95,7 @@ const ChatScreen = ({ route, navigation }: any) => {
     };
 
     const onSend = async (img: any) => {
+
         if (message.trim() === '' && img.trim() === '') {
             return;
         }
@@ -196,7 +197,22 @@ const ChatScreen = ({ route, navigation }: any) => {
                 console.error('Error reading audio file:', error);
             });
     }
-
+    const getImage = (imgUrl: string) => {
+        if (imgUrl.indexOf("http://") == 0 || imgUrl.indexOf("https://") == 0) {
+            // do something here
+            getImageFromdb(imgUrl, firstToken).then((res) => {
+                setImgUrl(`data:image/jpeg;base64,${res}`);
+                onSend(`data:image/jpeg;base64,${res}`)
+                dispatch(setLoading(false));
+            }).catch((err) => {
+                CommanAlertBox({
+                    title: 'Error',
+                    message: err.message,
+                });
+                dispatch(setLoading(false));
+            })
+        }
+    }
     const RenderChats = () => {
         return (
             <>
@@ -205,24 +221,22 @@ const ChatScreen = ({ route, navigation }: any) => {
                         <View key={i}>
                             {data.id === 0 &&
                                 <View style={{ marginBottom: 25, display: 'flex', alignItems: 'flex-end' }}>
-                                    <View style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-                                        {data.message &&
-                                            <View style={{ backgroundColor: '#05E3D5', maxWidth: '80%', borderTopLeftRadius: 10, borderTopRightRadius: 10, borderBottomLeftRadius: 10 }}>
-                                                <View style={{ padding: 15 }}>
-                                                    {data.message && <Text style={{ fontSize: 18, color: '#fff' }}>{data.message}</Text>}
-                                                </View>
-                                            </View>}
-                                        {data.img &&
-                                            <View style={{ backgroundColor: '#05E3D5', maxWidth: '80%', borderTopLeftRadius: 10, borderTopRightRadius: 10, borderBottomLeftRadius: 10 }}>
+                                    <View style={{ display: 'flex', flexDirection: 'column' }}>
+                                        <View style={{ backgroundColor: '#05E3D5', maxWidth: '80%', borderTopLeftRadius: 10, borderTopRightRadius: 10, borderBottomLeftRadius: 10 }}>
+                                            {data.img &&
                                                 <View style={{ padding: 5 }}>
-                                                    {data.img && <Image source={{ uri: data.img }} style={{ width: 200, height: 300, borderRadius: 10 }} />}
+                                                    {data.img ? <Image source={{ uri: data.img }} defaultSource={require('../../assets/images/image.png')} style={{ width: 200, height: 300, borderRadius: 10 }} /> : null}
                                                 </View>
-                                            </View>
-                                        }
-
+                                            }
+                                            {data.message &&
+                                                <View style={{ padding: 15 }}>
+                                                    {data.message && <Text style={{ fontSize: 18, color: '#000' }}>{data.message}</Text>}
+                                                </View>
+                                            }
+                                        </View>
                                     </View>
                                     <View style={{ margin: 5 }}>
-                                        <Text style={styles.chatTime}>{data.time ? moment(data.time.toDate()).format('HH:mm A') : ''}</Text>
+                                        <Text style={styles.chatTime}>{data.time ? moment(data.time.toDate()).format('hh:mm A') : ''}</Text>
                                     </View>
                                 </View>
                             }
@@ -238,7 +252,7 @@ const ChatScreen = ({ route, navigation }: any) => {
                                         {data.img &&
                                             <View style={{ backgroundColor: '#EAEAEA', maxWidth: '80%', borderTopLeftRadius: 10, borderTopRightRadius: 10, borderBottomLeftRadius: 10 }}>
                                                 <View style={{ padding: 5 }}>
-                                                    {data.img && <Image source={{ uri: data.img }} style={{ width: 200, height: 300, borderRadius: 10 }} />}
+                                                    {/* {data.img && <Image source={{ uri: data.img }} style={{ width: 200, height: 300, borderRadius: 10 }} />} */}
                                                 </View>
                                             </View>
                                         }
@@ -265,10 +279,10 @@ const ChatScreen = ({ route, navigation }: any) => {
                 "base64_image": imgRes,
                 "timestamp": new Date()
             }
+            dispatch(setLoading(true));
             uploadChatimages(imgJson, firstToken).then((res) => {
-                console.log('res', res);
-                setImgUrl(res.message);
-                onSend(res.message)
+                console.log(res, 'res------------------------------')
+                getImage(res?.url)
             }).catch((error) => {
                 CommanAlertBox({
                     title: 'Error',

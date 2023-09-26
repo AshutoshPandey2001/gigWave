@@ -171,7 +171,7 @@ const MessageScreen = ({ navigation }: any) => {
                     }
                   </View>
                   <View>
-                    <Text style={[GlobalStyle.themeColor, { fontWeight: 'bold' }]}>{data.latest_messageTime ? moment(data.latest_messageTime.toDate()).format('HH:mm A') : ''}</Text>
+                    <Text style={[GlobalStyle.themeColor, { fontWeight: 'bold' }]}>{data.latest_messageTime ? moment(data.latest_messageTime.toDate()).format('hh:mm A') : ''}</Text>
                   </View>
                 </View>
               </View>
@@ -180,7 +180,7 @@ const MessageScreen = ({ navigation }: any) => {
 
             <View style={{ marginTop: 50 }}>
               <Text style={{ fontWeight: 'bold', fontSize: 18, textAlign: 'center' }}>
-                No messages found
+                Be first to write!
               </Text>
             </View>
 

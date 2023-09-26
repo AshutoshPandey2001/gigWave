@@ -1,18 +1,16 @@
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
+import { useIsFocused } from '@react-navigation/native';
 import React, { useEffect, useRef, useState } from 'react';
 import { Dimensions, Image, Pressable, RefreshControl, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import MicIcon from '../../assets/icons/Mic1.svg';
+import CommanAlertBox from '../../components/CommanAlertBox';
 import { GlobalStyle } from '../../globalStyle';
 import { setLoading } from '../../redux/action/General/GeneralSlice';
 import { RootState } from '../../redux/store';
+import { audioToText, checkPermission, readAudioFile, startRecord, stopRecord } from '../../services/audioServices/audioServices';
 import { getGigByUser } from '../../services/gigService/gigService';
 import { createProUsers, getMatchedGigbyuserid, getProdetailsbyuserid, updateProUsersDetails } from '../../services/proUserService/proUserService';
-import { useIsFocused } from '@react-navigation/native';
-import Toast from 'react-native-toast-message';
-import { audioToText, checkPermission, readAudioFile, startRecord, stopRecord } from '../../services/audioServices/audioServices';
-import { setGigCreated } from '../../redux/action/Gig/GigSlice';
-import CommanAlertBox from '../../components/CommanAlertBox';
 var heightY = Dimensions.get("window").height;
 
 const HomeScreen = ({ navigation }: any) => {

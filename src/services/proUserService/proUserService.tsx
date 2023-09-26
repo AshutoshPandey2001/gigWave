@@ -177,3 +177,18 @@ export const uploadChatimages = async (imageValues: any, token: any): Promise<an
         throw error; // Rethrow the error to be caught by the caller
     }
 }
+export const getImageFromdb = async (imgUrl: any, token: any): Promise<any> => {
+    try {
+        const response = await axios({
+            method: 'get',
+            url: `${imgUrl}`,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+        console.log(response, 'response---------')
+        return response.data; // Return the response data
+    } catch (error) {
+        throw error; // Rethrow the error to be caught by the caller
+    }
+}

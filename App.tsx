@@ -58,10 +58,6 @@ function App(): JSX.Element {
   }, [])
 
   const toastConfig = {
-    /*
-      Overwrite 'success' type,
-      by modifying the existing `BaseToast` component
-    */
     success: (props: any) => (
       <SuccessToast
         {...props}
@@ -74,10 +70,6 @@ function App(): JSX.Element {
         }}
       />
     ),
-    /*
-      Overwrite 'error' type,
-      by modifying the existing `ErrorToast` component
-    */
     error: (props: any) => (
       <ErrorToast
         {...props}
@@ -91,15 +83,6 @@ function App(): JSX.Element {
         }}
       />
     ),
-
-
-    /*
-      Or create a completely new type - `tomatoToast`,
-      building the layout from scratch.
-  
-      I can consume any custom `props` I want.
-      They will be passed when calling the `show` method (see below)
-    */
     tomatoToast: (props: any) => (
       <View style={{ height: 60, width: '100%', backgroundColor: 'tomato' }}>
         <Text style={{ color: 'white' }}>{props.text1}</Text>
@@ -107,7 +90,6 @@ function App(): JSX.Element {
         <Text style={{ color: 'white' }}>{props.text3}</Text>
       </View>
     )
-
   };
 
 
@@ -118,58 +100,6 @@ function App(): JSX.Element {
           <ActivityIndicator size={'large'} />
         </View>
       }
-      {/* <ToastProvider
-        placement="top"
-        duration={3000}
-        animationType='zoom-in'
-        animationDuration={250}
-        successColor="green"
-        dangerColor="red"
-        warningColor="orange"
-        normalColor="gray"
-        textStyle={{ fontSize: 16 }}
-        offset={50} // offset for both top and bottom toasts
-        offsetTop={30}
-        offsetBottom={40}
-        swipeEnabled={true}
-        renderType={{
-          success_toast: (toast) => (
-
-            <View
-              style={{
-                maxWidth: "100%",
-                width: "100%",
-                top: 0,
-                left: 0,
-                paddingHorizontal: 15,
-                paddingVertical: 10,
-                backgroundColor: "transparent",
-                marginVertical: 4,
-                borderRadius: 8,
-                borderLeftColor: "#00C851",
-                borderLeftWidth: 6,
-                // justifyContent: "center",
-                alignItems: "center",
-                zIndex: 999,
-                paddingLeft: 16,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 14,
-                  color: "#333",
-                  fontWeight: "bold",
-                }}
-              >
-                {toast.data.title}
-              </Text>
-              <Text style={{ color: "#a3a3a3", marginTop: 2 }}>{toast.message}</Text>
-            </View>
-          ),
-
-        }}
-
-      > */}
       <NavigationContainer theme={DefaultTheme}>
         {isLoggedIn ?
           <TabNavigator />
@@ -179,7 +109,6 @@ function App(): JSX.Element {
           </Stack.Navigator>
         }
       </NavigationContainer>
-      {/* </ToastProvider> */}
       <Toast config={toastConfig} />
     </SafeAreaView>
   );
