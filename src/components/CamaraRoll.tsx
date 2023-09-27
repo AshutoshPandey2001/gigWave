@@ -70,22 +70,7 @@ const UploadPhotosScreen = ({ isVisible, onClose, uploadFunction }: UploadPhotos
                         console.log(res, 'original ROtation--------------------')
                         const selectedImage = res.assets[0];
                         uploadFunction(selectedImage);
-                        // fs.readFile(selectedImage.uri, "base64").then((imgRes) => {
-                        //     setProfilePic(`data:image/jpeg;base64,${imgRes}`)
-                        //     uploadProfilePhoto(user.user_id, firstToken, imgRes)
-                        //         .then((res) => {
-                        //             console.log(res, 'uploaded image');
-                        //             getUserByUserID(user.user_id, firstToken).then((response) => {
-                        //                 // console.log('res--------', response.base64_img);
-                        //                 const dataURI = `data:image/jpeg;base64,${response.base64_img}`; // Assuming res is a base64 encoded image
-                        //                 setProfilePic(dataURI);
-                        //                 dispatch(setLoading(false))
-                        //                 dispatch(setUser(response))
-                        //             })
-                        //             dispatch(setLoading(false))
-                        //             // You might want to perform additional actions here after successful upload
-                        //         }).catch((err) => { dispatch(setLoading(false)); console.error(err) })
-                        // })
+
                     }
                 });
             } else {

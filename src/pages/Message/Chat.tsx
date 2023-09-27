@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
     Image, SafeAreaView, ScrollView, StyleSheet,
     Text, Pressable,
-    TextInput, TouchableOpacity, View
+    TextInput, TouchableOpacity, View, Modal
 } from 'react-native';
 import MicIcon from '../../assets/icons/Mic.svg';
 import CamaraIcon from '../../assets/icons/camera.svg';
@@ -23,6 +23,7 @@ import { getImageFromdb, getProdetailsbyuserid, uploadChatimages } from '../../s
 import firestore from '@react-native-firebase/firestore';
 import UploadPhotosScreen from '../../components/CamaraRoll'
 import fs from 'react-native-fs';
+import CloseIcon from '../../assets/icons/close.svg';
 
 const ChatScreen = ({ route, navigation }: any) => {
     const [message, setMessage] = useState('');
@@ -213,6 +214,15 @@ const ChatScreen = ({ route, navigation }: any) => {
             })
         }
     }
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+    const openImageModal = (imgUrl: string) => {
+        setSelectedImage(imgUrl);
+    };
+
+    const closeImageModal = () => {
+        setSelectedImage(null);
+    };
     const RenderChats = () => {
         return (
             <>
@@ -225,7 +235,10 @@ const ChatScreen = ({ route, navigation }: any) => {
                                         <View style={{ backgroundColor: '#05E3D5', maxWidth: '80%', borderTopLeftRadius: 10, borderTopRightRadius: 10, borderBottomLeftRadius: 10 }}>
                                             {data.img &&
                                                 <View style={{ padding: 5 }}>
-                                                    {data.img ? <Image source={{ uri: data.img }} defaultSource={require('../../assets/images/image.png')} style={{ width: 200, height: 300, borderRadius: 10 }} /> : null}
+                                                    <TouchableOpacity onPress={() => openImageModal(data.img)}>
+                                                        <Image source={{ uri: data.img }} style={{ width: 200, height: 300, borderRadius: 10 }} />
+                                                    </TouchableOpacity>
+                                                    {/* {data.img ? <Image source={{ uri: data.img }} defaultSource={require('../../assets/images/image.png')} style={{ width: 200, height: 300, borderRadius: 10 }} /> : null} */}
                                                 </View>
                                             }
                                             {data.message &&
@@ -242,26 +255,48 @@ const ChatScreen = ({ route, navigation }: any) => {
                             }
                             {data.id === 1 &&
                                 <View style={{ marginBottom: 25, display: 'flex', alignItems: 'flex-start' }}>
-                                    <View style={{ display: 'flex', flexDirection: 'row' }}>
-                                        {data.message &&
-                                            <View style={{ backgroundColor: '#EAEAEA', maxWidth: '80%', borderTopLeftRadius: 10, borderTopRightRadius: 10, borderBottomLeftRadius: 10 }}>
-                                                <View style={{ padding: 15 }}>
-                                                    {data.message && <Text style={{ fontSize: 18, color: '#000' }}>{data.message}</Text>}
-                                                </View>
-                                            </View>}
-                                        {data.img &&
-                                            <View style={{ backgroundColor: '#EAEAEA', maxWidth: '80%', borderTopLeftRadius: 10, borderTopRightRadius: 10, borderBottomLeftRadius: 10 }}>
+                                    <View style={{ display: 'flex', flexDirection: 'column' }}>
+                                        <View style={{ backgroundColor: '#EAEAEA', maxWidth: '80%', borderTopLeftRadius: 10, borderTopRightRadius: 10, borderBottomLeftRadius: 10 }}>
+                                            {data.img &&
                                                 <View style={{ padding: 5 }}>
-                                                    {/* {data.img && <Image source={{ uri: data.img }} style={{ width: 200, height: 300, borderRadius: 10 }} />} */}
+                                                    {data.img && (
+                                                        <TouchableOpacity onPress={() => openImageModal(data.img)}>
+                                                            <Image source={{ uri: data.img }} style={{ width: 200, height: 300, borderRadius: 10 }} />
+                                                        </TouchableOpacity>
+                                                    )}
+                                                    {/* {data.img && <Image source={{ uri: data.img }}  style={{ width: 200, height: 300, borderRadius: 10 }} />} */}
                                                 </View>
-                                            </View>
-                                        }
+                                            }
+                                            {data.message &&
+                                                <View style={{ backgroundColor: '#EAEAEA', maxWidth: '80%', borderTopLeftRadius: 10, borderTopRightRadius: 10, borderBottomLeftRadius: 10 }}>
+                                                    <View style={{ padding: 15 }}>
+                                                        {data.message && <Text style={{ fontSize: 18, color: '#000' }}>{data.message}</Text>}
+                                                    </View>
+                                                </View>}
+                                        </View>
+
                                     </View>
                                     <View style={{ margin: 5, display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                         <Text style={styles.chatTime}>{data.time ? moment(data.time.toDate()).format('HH:mm A') : ''}</Text>
                                     </View>
                                 </View>
                             }
+                            {selectedImage && (
+                                <Modal transparent={true} animationType="fade" visible={selectedImage !== null}>
+                                    <View style={{ flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
+                                        <Image
+                                            source={{ uri: selectedImage }}
+                                            style={{ width: '90%', height: '90%', resizeMode: 'contain' }}
+                                        />
+                                        <TouchableOpacity
+                                            style={{ position: 'absolute', top: 20, right: 20 }}
+                                            onPress={closeImageModal}
+                                        >
+                                            <CloseIcon height={30} width={30} fill={"#fff"} />
+                                        </TouchableOpacity>
+                                    </View>
+                                </Modal>
+                            )}
                         </View>
                     ))
                 }
@@ -282,6 +317,7 @@ const ChatScreen = ({ route, navigation }: any) => {
             dispatch(setLoading(true));
             uploadChatimages(imgJson, firstToken).then((res) => {
                 console.log(res, 'res------------------------------')
+                setMessage('');
                 getImage(res?.url)
             }).catch((error) => {
                 CommanAlertBox({

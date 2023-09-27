@@ -9,22 +9,41 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
 import moment from 'moment'
 import { getMatchedGigbyuserid } from '../../services/proUserService/proUserService'
-import { getGigByUser } from '../../services/gigService/gigService'
+import { getGigByUser, matchProuserwithgig_id } from '../../services/gigService/gigService'
 import CommanAlertBox from '../../components/CommanAlertBox'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
+import { AnyAsyncThunk } from '@reduxjs/toolkit/dist/matchers'
+import { getUserByUserID } from '../../services/userService/userServices'
 
 const MessageScreen = ({ navigation }: any) => {
   const [searchValue, setSearchValue] = useState('')
   const [selectedValue, setSelectValue] = useState<any>()
   const [profiles, setProfiles] = useState<any[]>([])
+  const [profilesfilter, setProfilesfilter] = useState<any[]>([])
   const [gigList, setGigList] = useState<any[]>([])
   const user: any = useSelector((state: RootState) => state.user.user);
   const { userType }: any = useSelector((state: RootState) => state.userType)
   const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
+  const [matchedprouserList, setmatchedprouserList] = useState([])
   const dispatch = useDispatch();
 
   const onChangeSearch = (value: any) => {
-    setSearchValue(value)
+    if (value.length === 0) {
+      setProfiles([...profilesfilter]);
+      return;
+    }
+
+    const filteredRows = profilesfilter.filter((row) => {
+      const searchString = value.toLowerCase();
+      return (
+        row.gig_title.toLowerCase().includes(searchString) ||
+        row.latest_message.toLowerCase().includes(searchString) ||
+        row.to_userName.toLowerCase().includes(searchString) // Make sure to convert to lowercase for case-insensitive search
+      );
+    });
+
+    setProfiles(filteredRows);
+    // setSearchValue(value);
   }
   useEffect(() => {
     const subscriber = firestore()
@@ -33,27 +52,20 @@ const MessageScreen = ({ navigation }: any) => {
       .collection('messages')
       .onSnapshot(querySnapshot => {
         const allProfiles = querySnapshot.docs.map((doc) => {
-          if (!selectedValue) {
-            if (doc.data().status === 'active') {
-              return doc.data()
-            } else {
-              return null; // Return null for non-active documents
-            }
+          if (doc.data().status === 'active') {
+            return doc.data()
           } else {
-            if (doc.data().status === 'active' && doc.data().gig_id === selectedValue.gig_id) {
-              return doc.data()
-            } else {
-              return null; // Return null for non-active documents
-            }
+            return null; // Return null for non-active documents
           }
 
-        }).filter((profile) => profile !== null);;
-        setProfiles(allProfiles)
+        }).filter((profile) => profile !== null);
 
+        setProfiles(allProfiles)
+        setProfilesfilter(allProfiles)
       });
 
     return () => subscriber();
-  }, [selectedValue]);
+  }, []);
 
   useEffect(() => {
     if (userType === "CREATOR")
@@ -61,7 +73,19 @@ const MessageScreen = ({ navigation }: any) => {
     else
       getProList()
   }, [userType])
-
+  const matchedProprofile = () => {
+    dispatch(setLoading(true))
+    matchProuserwithgig_id(selectedValue.gig_id, firstToken).then((res) => {
+      setmatchedprouserList(res)
+      dispatch(setLoading(false))
+    }).catch((error) => {
+      CommanAlertBox({
+        title: 'Error',
+        message: error.message,
+      });
+      dispatch(setLoading(false))
+    })
+  }
   const getList = () => {
     dispatch(setLoading(true))
     getGigByUser(user.user_id, firstToken).then((res) => {
@@ -96,6 +120,134 @@ const MessageScreen = ({ navigation }: any) => {
       dispatch(setLoading(false));
     }
   }
+
+  const onGigSelection = async (selecteditem: any) => {
+    if (userType === "CREATOR") {
+      dispatch(setLoading(true));
+
+      try {
+        // Assuming user is defined elsewhere
+        const user_id = user.user_id;
+        const querySnapshot = await firestore()
+          .collection('chats')
+          .doc(user_id) // Use user_id from user object
+          .collection('messages')
+          .get();
+
+        const allProfiles = querySnapshot.docs
+          .filter((doc) => {
+            // Check if selecteditem is defined
+            if (!selecteditem) {
+              return doc.data().status === 'active';
+            } else {
+              // Check if gig_id exists in doc.data() before accessing it
+              return (
+                doc.data().status === 'active' &&
+                doc.data().gig_id === (selecteditem.gig_id || null)
+              );
+            }
+          })
+          .map((doc) => doc.data())
+          .filter((profile) => profile !== null);
+
+        let matchedProfile = allProfiles;
+
+        if (userType === 'CREATOR' && selecteditem) {
+          const res = await matchProuserwithgig_id(selecteditem.gig_id, firstToken);
+
+          if (res.length > 0) {
+            matchedProfile = res.map((item: any) => {
+              const matchedProfile = allProfiles.find(
+                (data: any) => data.to_useruid === item.user_id
+              );
+
+              if (matchedProfile) {
+                return matchedProfile;
+              } else {
+                // Use selecteditem.gig_id instead of selectedValue.gig_id
+                return {
+                  gig_title: selecteditem.title,
+                  gig_id: selecteditem.gig_id,
+                  to_userName: item.fname + ' ' + item.lname,
+                  to_useruid: item.user_id,
+                  to_userProfilepic: item.base64_img,
+                };
+              }
+            });
+          }
+        }
+        setProfiles(matchedProfile);
+        setProfilesfilter(matchedProfile);
+
+      } catch (error: any) {
+        console.error(error);
+
+        CommanAlertBox({
+          title: 'Error',
+          message: error.message,
+        });
+      } finally {
+        dispatch(setLoading(false));
+      }
+    } else {
+      dispatch(setLoading(true));
+
+      try {
+        // Assuming user is defined elsewhere
+        const user_id = user.user_id;
+
+        const querySnapshot = await firestore()
+          .collection('chats')
+          .doc(user_id)
+          .collection('messages')
+          .get();
+
+        const allProfiles = querySnapshot.docs
+          .filter((doc) => {
+            // Check if selecteditem is defined
+            if (!selecteditem) {
+              return doc.data().status === 'active';
+            } else {
+              // Check if gig_id exists in doc.data() before accessing it
+              return (
+                doc.data().status === 'active' &&
+                doc.data().gig_id === (selecteditem.gig_id || null)
+              );
+            }
+          })
+          .map((doc) => doc.data())
+          .filter((profile) => profile !== null);
+
+        let matchedProfile = [...allProfiles]; // Clone the array
+
+        if (allProfiles.length < 1 && selecteditem) {
+          const response = await getUserByUserID(selecteditem.user_id, firstToken);
+          matchedProfile = [
+            {
+              gig_title: selecteditem.title,
+              gig_id: selecteditem.gig_id,
+              to_userName: response.fname + ' ' + response.lname,
+              to_useruid: response.user_id,
+              to_userProfilepic: response.base64_img,
+            },
+          ];
+        }
+
+        setProfiles(matchedProfile);
+      } catch (error: any) {
+        console.error(error);
+
+        CommanAlertBox({
+          title: 'Error',
+          message: error.message,
+        });
+      } finally {
+        dispatch(setLoading(false));
+      }
+    }
+  };
+
+
   return (
     <SafeAreaView>
       <ScrollView>
@@ -114,7 +266,7 @@ const MessageScreen = ({ navigation }: any) => {
             }}>
             <TextInput
               onChangeText={text => onChangeSearch(text)}
-              value={searchValue}
+              // value={searchValue}
               placeholder='Search chats'
               style={{ padding: 5, flex: 1, fontSize: 16 }}
             />
@@ -134,7 +286,7 @@ const MessageScreen = ({ navigation }: any) => {
               <SelectDropdown
                 data={gigList} // Pass the entire GigList array
                 onSelect={(selectedItem) => {
-                  setSelectValue(selectedItem);
+                  onGigSelection(selectedItem)
                 }}
                 buttonStyle={{ backgroundColor: 'transparent', width: '100%' }}
                 defaultButtonText='Select Gig'
