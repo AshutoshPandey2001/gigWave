@@ -13,7 +13,7 @@ export const checkPermission = async () => {
     try {
         const hasPermission = await PermissionsAndroid.check(permission);
         if (hasPermission) {
-            console.log('Permission already granted', hasPermission);
+            // console.log('Permission already granted', hasPermission);
             return true
         } else {
             const status = await PermissionsAndroid.request(permission);

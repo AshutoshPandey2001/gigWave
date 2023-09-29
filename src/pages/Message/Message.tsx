@@ -1,18 +1,17 @@
-import { View, Text, SafeAreaView, ScrollView, TextInput, Image, Pressable } from 'react-native'
+import firestore from '@react-native-firebase/firestore'
+import moment from 'moment'
 import React, { useEffect, useState } from 'react'
-import { GlobalStyle } from '../../globalStyle'
+import { Image, Pressable, SafeAreaView, ScrollView, Text, TextInput, View } from 'react-native'
 import SelectDropdown from 'react-native-select-dropdown'
+import { useDispatch, useSelector } from 'react-redux'
 import SearchIcon from '../../assets/icons/Search.svg'
 import DropDownIcon from '../../assets/icons/dropdown.svg'
-import firestore from '@react-native-firebase/firestore';
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '../../redux/store'
-import moment from 'moment'
-import { getMatchedGigbyuserid } from '../../services/proUserService/proUserService'
-import { getGigByUser, matchProuserwithgig_id } from '../../services/gigService/gigService'
 import CommanAlertBox from '../../components/CommanAlertBox'
+import { GlobalStyle } from '../../globalStyle'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
-import { AnyAsyncThunk } from '@reduxjs/toolkit/dist/matchers'
+import { RootState } from '../../redux/store'
+import { getGigByUser, matchProuserwithgig_id } from '../../services/gigService/gigService'
+import { getMatchedGigbyuserid } from '../../services/proUserService/proUserService'
 import { getUserByUserID } from '../../services/userService/userServices'
 
 const MessageScreen = ({ navigation }: any) => {
@@ -286,7 +285,8 @@ const MessageScreen = ({ navigation }: any) => {
               <SelectDropdown
                 data={gigList} // Pass the entire GigList array
                 onSelect={(selectedItem) => {
-                  onGigSelection(selectedItem)
+                  onGigSelection(selectedItem);
+                  setSelectValue(selectedItem);
                 }}
                 buttonStyle={{ backgroundColor: 'transparent', width: '100%' }}
                 defaultButtonText='Select Gig'
