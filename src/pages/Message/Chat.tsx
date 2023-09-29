@@ -27,7 +27,7 @@ import CloseIcon from '../../assets/icons/close.svg';
 
 const ChatScreen = ({ route, navigation }: any) => {
     const [message, setMessage] = useState('');
-    const [imgUrl, setImgUrl] = useState('');
+    const [imgUrl, setImgUrl] = useState<string | null>(null);
     const [result, setResults] = useState([]);
     const [isRecording, setIsRecording] = useState(false);
     const [gigDetails, setGigDetails] = useState<any>()
@@ -37,15 +37,10 @@ const ChatScreen = ({ route, navigation }: any) => {
     const user: any = useSelector((state: RootState) => state.user.user);
     const [iscamaraModalVisible, setIscamaraModalVisible] = useState(false);
     const dispatch = useDispatch()
-
     const scrollViewRef = useRef<any>();
 
     const [chats, setChats] = useState<any[]>([
-        // { id: 0, message: 'Hi There', time: new Date(), from: 'lala' },
-        // { id: 1, message: 'Lorem ipsum dolor sit amet consectetur. Leo faucibus integer mi sit morbi.', time: new Date(), from: 'Rev' },
-        // { id: 1, message: 'Are you ready?', time: new Date(), from: 'Rev' },
-        // { id: 0, message: 'Yes I am ready', time: new Date(), from: 'lala' },
-        // { id: 0, message: 'What is the work', time: new Date(), from: 'lala' },
+
     ])
     const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
     const { userType }: any = useSelector((state: RootState) => state.userType)
@@ -95,16 +90,16 @@ const ChatScreen = ({ route, navigation }: any) => {
         }
     };
 
-    const onSend = async (img: any) => {
+    const onSend = async () => {
 
-        if (message.trim() === '' && img.trim() === '') {
+        if ((message.trim() === '' && (imgUrl === null || imgUrl.trim() === ''))) {
             return;
         }
         setMessage('');
-        setImgUrl('');
+        setImgUrl(null);
         const myMsg: any = {
             id: undefined,
-            img: img,
+            img: imgUrl,
             message: message,
             time: new Date(),
             from: user.fname
@@ -198,14 +193,16 @@ const ChatScreen = ({ route, navigation }: any) => {
                 console.error('Error reading audio file:', error);
             });
     }
-    const getImage = (imgUrl: string) => {
-        if (imgUrl.indexOf("http://") == 0 || imgUrl.indexOf("https://") == 0) {
+    const getImage = (img: string) => {
+        if (img.indexOf("http://") == 0 || img.indexOf("https://") == 0) {
             // do something here
-            getImageFromdb(imgUrl, firstToken).then((res) => {
+            getImageFromdb(img, firstToken).then((res) => {
                 setImgUrl(`data:image/jpeg;base64,${res}`);
-                onSend(`data:image/jpeg;base64,${res}`)
+                // onSend(`data:image/jpeg;base64,${res}`)
                 dispatch(setLoading(false));
             }).catch((err) => {
+                console.log();
+
                 CommanAlertBox({
                     title: 'Error',
                     message: err.message,
@@ -216,12 +213,15 @@ const ChatScreen = ({ route, navigation }: any) => {
     }
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-    const openImageModal = (imgUrl: string) => {
-        setSelectedImage(imgUrl);
+    const openImageModal = (img: string) => {
+        setSelectedImage(img);
     };
 
     const closeImageModal = () => {
         setSelectedImage(null);
+    };
+    const closeImage = () => {
+        setImgUrl(null);
     };
     const RenderChats = () => {
         return (
@@ -428,13 +428,63 @@ const ChatScreen = ({ route, navigation }: any) => {
                         blurOnSubmit={false}
                     />
                 </View>
-                <TouchableOpacity style={[styles.btnSend, { paddingRight: 10 }]} onPress={() => onSend(imgUrl)}>
+                <TouchableOpacity style={[styles.btnSend, { paddingRight: 10 }]} onPress={() => onSend()}>
                     <SendIcon fill={'#fff'} height={30} width={30} />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.btnSend} onPress={isRecording ? stopRecording : startRecognizing} >
                     {isRecording ? <Image resizeMode='contain' source={require('../../assets/images/stopRecording.png')} style={{ width: 35, height: 35 }} /> : <MicIcon height={35} width={35} />}
                 </TouchableOpacity>
             </View>
+            {imgUrl && (
+                <View style={{
+                    width: "100%",
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    marginBottom: 80,
+                    height: '15%',
+                    position: 'relative', // Make the parent view relative for absolute positioning
+                }}>
+                    <View style={{
+                        borderTopLeftRadius: 5,
+                        borderTopRightRadius: 15,
+                        padding: 10,
+                        width: '30%',
+                    }}>
+                        <View style={{
+                            width: '100%',
+                            aspectRatio: 1, // Create a perfect square
+                            overflow: 'hidden', // Hide any content outside the square
+                            borderWidth: 2, // Add a border for a circular shape
+                            borderColor: 'white',
+                            borderRadius: 10
+                        }}>
+
+                            <Image
+                                source={{ uri: imgUrl }}
+                                style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    resizeMode: 'cover', // Cover the entire circle
+                                }}
+                            />
+                        </View>
+                        <TouchableOpacity
+                            style={{
+                                position: 'absolute',
+                                right: -8,
+                                backgroundColor: 'black',
+                                borderRadius: 50,
+                                width: 28,
+                                height: 28,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                            onPress={closeImage}
+                        >
+                            <CloseIcon height={15} width={15} fill={"#fff"} />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            )}
         </SafeAreaView>
     )
 }
