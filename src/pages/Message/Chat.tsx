@@ -424,7 +424,7 @@ const ChatScreen = ({ route, navigation }: any) => {
                         returnKeyType='send'
                         value={message ? message : ''}
                         onChangeText={(msg: string) => setMessage(msg)}
-                        onSubmitEditing={() => onSend(imgUrl)}
+                        onSubmitEditing={() => onSend()}
                         blurOnSubmit={false}
                     />
                 </View>
