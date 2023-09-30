@@ -277,7 +277,7 @@ const ChatScreen = ({ route, navigation }: any) => {
 
                                     </View>
                                     <View style={{ margin: 5, display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                        <Text style={styles.chatTime}>{data.time ? moment(data.time.toDate()).format('HH:mm A') : ''}</Text>
+                                        <Text style={styles.chatTime}>{data.time ? moment(data.time.toDate()).format('hh:mm A') : ''}</Text>
                                     </View>
                                 </View>
                             }
