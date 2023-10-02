@@ -95,14 +95,13 @@ export const stopRecord = async (
 export const readAudioFile = async (audioPath: string): Promise<string | null> => {
     try {
         const base64Data = await RNFetchBlob.fs.readFile(audioPath, 'base64');
-        console.log('base64Data', base64Data);
-
+        // console.log('base64Data', base64Data);
         // Process the base64 data or return it as needed
         return base64Data;
     } catch (error) {
         console.error('Error reading audio file:', error);
         // Handle errors related to reading the audio file
-        return null;
+        throw error;
     }
 };
 
@@ -119,7 +118,7 @@ export const audioToText = async (audio: any, token: any) => {
             },
             data: audio
         });
-        console.log('response.data', response.data);
+        // console.log('response.data', response.data);
         return response.data; // Return the response data
     } catch (error: any) {
         console.log(error.message);

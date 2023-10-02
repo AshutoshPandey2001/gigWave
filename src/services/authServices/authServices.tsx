@@ -63,8 +63,6 @@ export const verifyOtp = async (phoneNumber: any, otp: any, token: any): Promise
 
 
 export const createUser = async (userData: any, token: any): Promise<any> => {
-    console.log(userData, 'userData');
-
     try {
         const response = await axios({
             method: 'post',
@@ -83,7 +81,7 @@ export const createUser = async (userData: any, token: any): Promise<any> => {
     }
 }
 export const updateUsersDetails = async (userData: any, token: any): Promise<any> => {
-    console.log(userData, 'userData');
+    // console.log(userData, 'userData');
     try {
         const response = await axios({
             method: 'put',

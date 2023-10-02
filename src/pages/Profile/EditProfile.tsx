@@ -1,10 +1,11 @@
 import { useFormik } from 'formik'
 import React, { useEffect, useState } from 'react'
-import { Alert, Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View, PermissionsAndroid, Button } from 'react-native'
-import { CameraOptions, ImageLibraryOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker'
+import { Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import fs from 'react-native-fs'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
 import { useDispatch, useSelector } from 'react-redux'
 import * as yup from "yup"
+import UploadPhotosScreen from '../../components/CamaraRoll'
 import LocationSearch from '../../components/LocationSearch'
 import { GlobalStyle } from '../../globalStyle'
 import { setUser } from '../../redux/action/Auth/authAction'
@@ -13,9 +14,6 @@ import { RootState } from '../../redux/store'
 import { updateUsersDetails } from '../../services/authServices/authServices'
 import { getProdetailsbyuserid, updateProUsersDetails } from '../../services/proUserService/proUserService'
 import { getProfilePhoto, getUserByUserID, uploadProfilePhoto } from '../../services/userService/userServices'
-import fs from 'react-native-fs';
-import { Modal } from 'react-native-paper'
-import UploadPhotosScreen from '../../components/CamaraRoll'
 
 
 interface InitialFormValues {

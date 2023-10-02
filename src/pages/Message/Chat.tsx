@@ -62,7 +62,7 @@ const ChatScreen = ({ route, navigation }: any) => {
             .orderBy('time', 'asc')
             .onSnapshot(querySnapshot => {
                 const allMessages = querySnapshot.docs.map(doc => (doc.data()));
-                console.log('allMessages', allMessages);
+                // console.log('allMessages', allMessages);
 
                 setChats(allMessages)
             });
@@ -106,7 +106,7 @@ const ChatScreen = ({ route, navigation }: any) => {
             time: new Date(),
             from: user.fname
         };
-        console.log(myMsg, 'myMsg');
+        // console.log(myMsg, 'myMsg');
 
         // Firestore collections and document references
         const senderDocRef = firestore()
@@ -155,7 +155,7 @@ const ChatScreen = ({ route, navigation }: any) => {
     }
     const onSpeechResults = (e: any) => {
         //Invoked when SpeechRecognizer is finished recognizing
-        console.log('onSpeechResults: ', e);
+        // console.log('onSpeechResults: ', e);
         if (e.value && e.value.length) {
             setResults(e.value);
             setMessage(e.value[0])
@@ -203,8 +203,6 @@ const ChatScreen = ({ route, navigation }: any) => {
                 // onSend(`data:image/jpeg;base64,${res}`)
                 dispatch(setLoading(false));
             }).catch((err) => {
-                console.log();
-
                 CommanAlertBox({
                     title: 'Error',
                     message: err.message,

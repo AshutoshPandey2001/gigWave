@@ -1,8 +1,8 @@
-import React, { useRef, useState } from 'react'
-import { ScrollView, StyleSheet, View, TouchableOpacity, Modal, Text } from 'react-native';
+import React, { useRef } from 'react';
+import { Modal, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import BackButtonIcon from '../assets/icons/Backbutton.svg';
 import { GlobalStyle } from '../globalStyle';
-import BackButtonIcon from '../assets/icons/Backbutton.svg'
 
 interface LocationSearchProps {
     placeholder: string;
@@ -21,7 +21,7 @@ const LocationSearch = ({ placeholder, isModalVisible, notifyChange, closeModel 
         // if (autocompleteRef.current) {
         //     autocompleteRef.current.setAddressText('');
         // }
-        console.log('details.geometry.location', data);
+        // console.log('details.geometry.location', data);
 
         // setModalVisible(false);
         // notifyChange(details.geometry.location);

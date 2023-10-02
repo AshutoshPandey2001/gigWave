@@ -11,6 +11,7 @@ import { RootState } from '../../redux/store';
 import { audioToText, checkPermission, readAudioFile, startRecord, stopRecord } from '../../services/audioServices/audioServices';
 import { getGigByUser } from '../../services/gigService/gigService';
 import { createProUsers, getMatchedGigbyuserid, getProdetailsbyuserid, updateProUsersDetails } from '../../services/proUserService/proUserService';
+import { Toast } from 'react-native-toast-message/lib/src/Toast'
 var heightY = Dimensions.get("window").height;
 
 const HomeScreen = ({ navigation }: any) => {
@@ -23,6 +24,7 @@ const HomeScreen = ({ navigation }: any) => {
   const [lists, setLists] = useState([])
   const [proLists, setProLists] = useState<any[]>([])
   const [skillValue, setSkillValue] = useState<any>("")
+  const [isSkillAvailable, setIsSkillAvailable] = useState<any>(false)
   const { userType }: any = useSelector((state: RootState) => state.userType)
   const user: any = useSelector((state: RootState) => state.user.user);
   const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
@@ -56,9 +58,7 @@ const HomeScreen = ({ navigation }: any) => {
   }, [focus])
 
   const startRecognizing = async () => {
-
     const granted = await checkPermission();
-
     if (!granted) {
       // Permissions not granted, return early
       console.log('Permissions not granted');
@@ -94,12 +94,17 @@ const HomeScreen = ({ navigation }: any) => {
       })
       .catch((error) => {
         dispatch(setLoading(false))
+        CommanAlertBox({
+          title: 'Error',
+          message: error.message,
+        });
         console.error('Error reading audio file:', error);
       });
   }
   const getProDetails = () => {
     getProdetailsbyuserid(user.user_id, firstToken).then((res) => {
       setSkillValue(res.raw_skills_text)
+      setIsSkillAvailable(res.raw_skills_text ? true : false)
       setInterestGigType(res.interest_gig_type)
       setalreadyprouser(true)
       setRefreshing(false);
@@ -111,7 +116,6 @@ const HomeScreen = ({ navigation }: any) => {
       });
       console.log('error', JSON.stringify(e));
       setRefreshing(false);
-
       dispatch(setLoading(false))
     })
   }
@@ -129,6 +133,12 @@ const HomeScreen = ({ navigation }: any) => {
       if (alreadyProuser) {
         updateProUsersDetails(provalue, firstToken).then((res) => {
           dispatch(setLoading(false));
+          Toast.show({
+            type: 'success',
+            text1: 'Success',
+            text2: 'Skill Added Successfully',
+          });
+          setIsSkillAvailable(true)
           resolve(true)
         }).catch((e) => {
           CommanAlertBox({
@@ -365,29 +375,25 @@ const HomeScreen = ({ navigation }: any) => {
                       <>
                         <View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
                           <Text style={[GlobalStyle.blackColor, { fontSize: 20 }]}>
-                            {skillValue ? "There are currently no matches for you at the moment." :
+                            {isSkillAvailable ? "There are currently no matches for you at the moment." :
                               "To receive Gig suggestions, please add your skills and/or types of work you would like to do  below."}                      </Text>
                         </View>
-                        {!skillValue ?
+                        {!isSkillAvailable ?
                           <><View style={[GlobalStyle.card, GlobalStyle.shadowProp]}>
-
                             <Text style={[GlobalStyle.blackColor, { fontSize: 20, fontWeight: 'bold' }]}>
                               My Skills or How I Can Help Others</Text>
                             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                               <TextInput
-                                autoFocus={true}
                                 multiline
-                                ref={skillInputRef}
-                                keyboardType="default"
-                                returnKeyType="done"
                                 numberOfLines={5}
                                 placeholder="Type here..."
                                 placeholderTextColor="#000"
                                 value={skillValue ? skillValue : ''}
-                                editable={!skillValue ? true : false}
+                                editable={true}
                                 onChangeText={(msg: string) => handleInputChange(msg)}
                                 style={{ flex: 1, fontSize: 18, color: '#000' }}
                               />
+
                               <View style={{ alignItems: 'center' }}>
                                 <TouchableOpacity onPress={isRecording ? stopRecording : startRecognizing} >
                                   {isRecording ? <Image resizeMode='contain' source={require('../../assets/images/stopRecording.png')} style={{ width: 50, height: 50 }} /> : <MicIcon height={50} width={50} />}

@@ -43,8 +43,7 @@ const HelpScreen = ({ route, navigation }: any) => {
                 querySnapshot.docs.map((doc) => {
                     if (doc.data().gig_id === route.params.gig_id) {
                         setGigProfiles(doc.data())
-                        console.log('doc.data()', doc.data());
-
+                        // console.log('doc.data()', doc.data());
                     }
                 }
                 );
@@ -54,7 +53,7 @@ const HelpScreen = ({ route, navigation }: any) => {
         return () => subscriber();
     }, []);
     const closeGig = () => {
-        console.log(gigprofiles, 'gigprofiles');
+        // console.log(gigprofiles, 'gigprofiles');
 
         Alert.alert(
             'Confirm',

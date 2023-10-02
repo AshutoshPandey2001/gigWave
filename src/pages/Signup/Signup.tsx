@@ -1,18 +1,18 @@
 import { Formik } from 'formik'
 import React, { useState } from 'react'
-import { Image, Pressable, SafeAreaView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native'
-import { GlobalStyle } from '../../globalStyle'
+import { Pressable, SafeAreaView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Toast } from 'react-native-toast-message/lib/src/Toast'
+import { useDispatch, useSelector } from 'react-redux'
+import * as yup from "yup"
 import GigwaveIcon from '../../assets/icons/gigwave.svg'
 import LockIcon from '../../assets/icons/lock.svg'
 import PhoneIcon from '../../assets/icons/phone.svg'
-import * as yup from "yup"
-import { getOtp, verifyOtp } from '../../services/authServices/authServices'
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '../../redux/store'
-import { setUser } from '../../redux/action/Auth/authAction'
 import CommanAlertBox from '../../components/CommanAlertBox'
+import { GlobalStyle } from '../../globalStyle'
+import { setUser } from '../../redux/action/Auth/authAction'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
-import { Toast } from 'react-native-toast-message/lib/src/Toast'
+import { RootState } from '../../redux/store'
+import { getOtp, verifyOtp } from '../../services/authServices/authServices'
 const SignupScreen = ({ navigation }: any) => {
     const dispatch = useDispatch();
     const [isOtpsent, setOtpSend] = useState(false)
@@ -70,12 +70,7 @@ const SignupScreen = ({ navigation }: any) => {
             } else {
                 setOtpSend(false)
                 await dispatch(setLoading(false))
-
-                CommanAlertBox({
-                    title: 'Error',
-                    message: 'You Mobile number is Register',
-                });
-
+                navigation.navigate('Register', { mobileNumber: mobile })
             }
         } catch (error: any) {
             CommanAlertBox({

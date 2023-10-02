@@ -1,17 +1,13 @@
 import React, { useState } from 'react';
 import { Dimensions, Modal, PermissionsAndroid, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { RNCamera } from 'react-native-camera';
-import fs from 'react-native-fs';
 import { CameraOptions, ImageLibraryOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { useDispatch, useSelector } from 'react-redux';
 import CamaraIcon from '../assets/icons/camera1.svg';
 import CloseIcon from '../assets/icons/close.svg';
 import GalleryIcon from '../assets/icons/image1.svg';
 import { GlobalStyle } from '../globalStyle';
-import { setUser } from '../redux/action/Auth/authAction';
-import { setLoading } from '../redux/action/General/GeneralSlice';
 import { RootState } from '../redux/store';
-import { getUserByUserID, uploadProfilePhoto } from '../services/userService/userServices';
 
 // import Modal from 'react-native-modal';
 
@@ -47,7 +43,6 @@ const UploadPhotosScreen = ({ isVisible, onClose, uploadFunction }: UploadPhotos
                 },
             );
             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                console.log('You can use the camera');
                 const cameraOption: CameraOptions = {
                     mediaType: 'photo',
                     saveToPhotos: true,
@@ -67,7 +62,6 @@ const UploadPhotosScreen = ({ isVisible, onClose, uploadFunction }: UploadPhotos
                         console.log('User tapped custom button: ', res.customButton);
                     } else {
                         onClose()
-                        console.log(res, 'original ROtation--------------------')
                         const selectedImage = res.assets[0];
                         uploadFunction(selectedImage);
 
@@ -81,8 +75,6 @@ const UploadPhotosScreen = ({ isVisible, onClose, uploadFunction }: UploadPhotos
         }
     };
     const selectImage = () => {
-        console.log('i am on select photo from galary');
-
         const options: ImageLibraryOptions = {
             mediaType: 'photo',
             quality: 0.2,

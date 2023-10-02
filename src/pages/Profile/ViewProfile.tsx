@@ -198,7 +198,7 @@ const ViewProfileScreen = ({ navigation }: any) => {
                                     multiline
                                     numberOfLines={5}
                                     placeholder="Type here..."
-                                    placeholderTextColor="#fff"
+                                    placeholderTextColor="#000"
                                     value={skillValue ? skillValue : ''}
                                     editable={true}
                                     onChangeText={(msg: string) => handleInputChange(msg)}
