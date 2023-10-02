@@ -57,11 +57,13 @@ const ChatScreen = ({ route, navigation }: any) => {
             .collection('chats')
             .doc(user.user_id)
             .collection('messages')
-            .doc(`${route.params.user_id}`)
+            .doc(`${route.params.user_id}@${route.params.gig_id}`)
             .collection('chat')
             .orderBy('time', 'asc')
             .onSnapshot(querySnapshot => {
                 const allMessages = querySnapshot.docs.map(doc => (doc.data()));
+                console.log('allMessages', allMessages);
+
                 setChats(allMessages)
             });
 
@@ -111,13 +113,13 @@ const ChatScreen = ({ route, navigation }: any) => {
             .collection('chats')
             .doc(`${user.user_id}`) // sender id
             .collection('messages')
-            .doc(`${route.params.user_id}`);
+            .doc(`${route.params.user_id}@${gigDetails.gig_id}`);
 
         const receiverDocRef = firestore()
             .collection('chats')
             .doc(`${route.params.user_id}`) // reciver id
             .collection('messages')
-            .doc(`${user.user_id}`);
+            .doc(`${user.user_id}@${gigDetails.gig_id}`);
 
         const toUserGig = {
             gig_title: gigDetails.title,
@@ -268,10 +270,8 @@ const ChatScreen = ({ route, navigation }: any) => {
                                                 </View>
                                             }
                                             {data.message &&
-                                                <View style={{ backgroundColor: '#EAEAEA', maxWidth: '80%', borderTopLeftRadius: 10, borderTopRightRadius: 10, borderBottomLeftRadius: 10 }}>
-                                                    <View style={{ padding: 15 }}>
-                                                        {data.message && <Text style={{ fontSize: 18, color: '#000' }}>{data.message}</Text>}
-                                                    </View>
+                                                <View style={{ padding: 15 }}>
+                                                    {data.message && <Text style={{ fontSize: 18, color: '#000' }}>{data.message}</Text>}
                                                 </View>}
                                         </View>
 

@@ -130,7 +130,7 @@ const SearchGigScreen = ({ navigation }: any) => {
 
     }
     const onChangegigType = (value: any) => {
-        if (value === "Free") {
+        if (value === "unpaid") {
             setGigType('unpaid')
         } else if (value === "Paid") {
             setGigType('paid')
@@ -153,7 +153,7 @@ const SearchGigScreen = ({ navigation }: any) => {
         return date.toISOString().split('T')[0]; // Extract only the date part
     };
     useEffect(() => {
-        setGigType('unpaid')
+        setGigType('all')
         setSearchValue("");
         // selectRef.current?.reset();
         setLocation("");
@@ -570,13 +570,13 @@ const SearchGigScreen = ({ navigation }: any) => {
                             width: 110
                         }]}>
                         <SelectDropdown
-                            data={['Free', 'Paid', 'Both']}
+                            data={['unpaid', 'Paid', 'Both']}
                             onSelect={(selectedItem) => {
                                 onChangegigType(selectedItem)
                             }}
                             ref={selectRef}
                             buttonStyle={{ backgroundColor: 'transparent' }}
-                            defaultButtonText='Free'
+                            defaultButtonText='Both'
                             buttonTextStyle={{ textAlign: 'left', color: '#1E1E1E', fontSize: 16 }}
                             dropdownStyle={{ width: '25%', borderRadius: 10 }}
                             rowTextStyle={{ fontSize: 16 }}

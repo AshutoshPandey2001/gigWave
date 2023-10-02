@@ -95,13 +95,13 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                                         .collection('chats')
                                         .doc(user.user_id) // sender id
                                         .collection('messages')
-                                        .doc(gigprofiles.to_useruid);
+                                        .doc(`${gigprofiles.to_useruid}@${route.params.gig_id}`);
 
                                     const receiverDocRef = firestore()
                                         .collection('chats')
                                         .doc(gigprofiles.to_useruid) // receiver id
                                         .collection('messages')
-                                        .doc(user.user_id);
+                                        .doc(`${user.user_id}@${route.params.gig_id}`);
 
                                     const batch = firestore().batch();
 

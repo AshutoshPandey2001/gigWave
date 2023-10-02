@@ -49,6 +49,7 @@ const MessageScreen = ({ navigation }: any) => {
       .collection('chats')
       .doc(user.user_id)
       .collection('messages')
+      .orderBy('latest_messageTime', 'desc')
       .onSnapshot(querySnapshot => {
         const allProfiles = querySnapshot.docs.map((doc) => {
           if (doc.data().status === 'active') {
