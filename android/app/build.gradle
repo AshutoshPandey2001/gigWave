@@ -97,9 +97,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.gigwave"
+    namespace "com.gig.wave"
     defaultConfig {
-        applicationId "com.gigwave"
+        applicationId "com.gig.wave"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

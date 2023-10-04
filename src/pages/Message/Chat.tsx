@@ -53,17 +53,16 @@ const ChatScreen = ({ route, navigation }: any) => {
         checkPermission()
     }, []);
     useEffect(() => {
+        console.log(user.userType)
         const subscriber = firestore()
             .collection('chats')
-            .doc(user.user_id)
+            .doc(`${user.user_id}_${userType}`)
             .collection('messages')
             .doc(`${route.params.user_id}@${route.params.gig_id}`)
             .collection('chat')
             .orderBy('time', 'asc')
             .onSnapshot(querySnapshot => {
                 const allMessages = querySnapshot.docs.map(doc => (doc.data()));
-                // console.log('allMessages', allMessages);
-
                 setChats(allMessages)
             });
 
@@ -111,13 +110,13 @@ const ChatScreen = ({ route, navigation }: any) => {
         // Firestore collections and document references
         const senderDocRef = firestore()
             .collection('chats')
-            .doc(`${user.user_id}`) // sender id
+            .doc(`${user.user_id}_${userType}`) // sender id
             .collection('messages')
             .doc(`${route.params.user_id}@${gigDetails.gig_id}`);
 
         const receiverDocRef = firestore()
             .collection('chats')
-            .doc(`${route.params.user_id}`) // reciver id
+            .doc(`${route.params.user_id}_${userType === "PRO" ? "CREATOR" : "PRO"}`) // reciver id
             .collection('messages')
             .doc(`${user.user_id}@${gigDetails.gig_id}`);
 

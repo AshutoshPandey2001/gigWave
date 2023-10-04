@@ -1,4 +1,4 @@
-package com.gigwave;
+package com.gig.wave;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

@@ -47,7 +47,7 @@ const MessageScreen = ({ navigation }: any) => {
   useEffect(() => {
     const subscriber = firestore()
       .collection('chats')
-      .doc(user.user_id)
+      .doc(`${user.user_id}_${userType}`)
       .collection('messages')
       .orderBy('latest_messageTime', 'desc')
       .onSnapshot(querySnapshot => {
@@ -65,7 +65,7 @@ const MessageScreen = ({ navigation }: any) => {
       });
 
     return () => subscriber();
-  }, []);
+  }, [userType]);
 
   useEffect(() => {
     if (userType === "CREATOR")

@@ -1,4 +1,4 @@
-package com.gigwave;
+package com.gig.wave;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
