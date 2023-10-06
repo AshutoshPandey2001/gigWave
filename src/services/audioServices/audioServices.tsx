@@ -1,60 +1,38 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-import { API_BASE_URL, TOKEN_URL } from "../apiConstant";
+import axios from "axios";
 import { PermissionsAndroid, Platform } from "react-native";
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import RNFetchBlob from "rn-fetch-blob";
+import { PERMISSIONS, request, PermissionStatus } from 'react-native-permissions';
 
 const audioRecorderPlayer = new AudioRecorderPlayer();
 
 export const checkPermission = async () => {
+    if (Platform.OS == 'android') {
+        const permission = PermissionsAndroid.PERMISSIONS.RECORD_AUDIO
 
-    const permission = PermissionsAndroid.PERMISSIONS.RECORD_AUDIO
-
-    try {
-        const hasPermission = await PermissionsAndroid.check(permission);
-        if (hasPermission) {
-            // console.log('Permission already granted', hasPermission);
-            return true
-        } else {
-            const status = await PermissionsAndroid.request(permission);
-            if (status === PermissionsAndroid.RESULTS.GRANTED) {
-                console.log('Permission granted', status);
+        try {
+            const hasPermission = await PermissionsAndroid.check(permission);
+            if (hasPermission) {
+                // console.log('Permission already granted', hasPermission);
                 return true
             } else {
-                console.log('Permission denied');
-                return false
+                const status = await PermissionsAndroid.request(permission);
+                if (status === PermissionsAndroid.RESULTS.GRANTED) {
+                    console.log('Permission granted', status);
+                    return true
+                } else {
+                    console.log('Permission denied');
+                    return false
+                }
             }
+        } catch (error) {
+            console.error('Error checking or requesting permission:', error);
         }
-    } catch (error) {
-        console.error('Error checking or requesting permission:', error);
+    } else {
+        request(PERMISSIONS.IOS.MICROPHONE).then((result: PermissionStatus) => {
+            console.log(result, 'microphone permission granted')
+        }).catch(() => console.warn('no mircrophone permission granted'))
     }
-    // if (Platform.OS === 'android') {
-    //     try {
-    //         const grants = await PermissionsAndroid.requestMultiple([
-    //             PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-    //             PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-    //             PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-    //         ]);
-
-    //         if (
-    //             grants['android.permission.WRITE_EXTERNAL_STORAGE'] ===
-    //             PermissionsAndroid.RESULTS.GRANTED &&
-    //             grants['android.permission.READ_EXTERNAL_STORAGE'] ===
-    //             PermissionsAndroid.RESULTS.GRANTED &&
-    //             grants['android.permission.RECORD_AUDIO'] ===
-    //             PermissionsAndroid.RESULTS.GRANTED
-    //         ) {
-    //             console.log('Permissions granted');
-    //             return true; // Permissions granted
-    //         } else {
-    //             console.log('All required permissions not granted');
-    //             return false; // Permissions not granted
-    //         }
-    //     } catch (err) {
-    //         console.warn(err);
-    //         return false; // Permissions not granted due to an error
-    //     }
-    // }
 };
 
 

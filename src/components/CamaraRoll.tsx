@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
-import { Dimensions, Modal, PermissionsAndroid, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { RNCamera } from 'react-native-camera';
+import React, { useEffect } from 'react';
+import { Modal, PermissionsAndroid, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { CameraOptions, ImageLibraryOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { useDispatch, useSelector } from 'react-redux';
+import { PERMISSIONS, checkMultiple } from 'react-native-permissions';
 import CamaraIcon from '../assets/icons/camera1.svg';
 import CloseIcon from '../assets/icons/close.svg';
 import GalleryIcon from '../assets/icons/image1.svg';
 import { GlobalStyle } from '../globalStyle';
-import { RootState } from '../redux/store';
 
 // import Modal from 'react-native-modal';
 
@@ -18,62 +16,65 @@ interface UploadPhotosProps {
 }
 
 const UploadPhotosScreen = ({ isVisible, onClose, uploadFunction }: UploadPhotosProps) => {
-    const cameraRef = React.useRef<RNCamera | null>(null);
-    const [isCameraReady, setIsCameraReady] = useState(false);
-    const [showCamera, setShowCamera] = useState(false); // New state to control camera visibility
-    const [capturedImage, setCapturedImage] = useState<string | null>(null); // State to hold the captured image
-    const [cameraType, setCameraType] = useState(RNCamera.Constants.Type.back);
 
-    const user: any = useSelector((state: RootState) => state.user.user);
-    const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
-    const dispatch = useDispatch();
-    const windowHeight = Dimensions.get('window').height;
-
+    useEffect(() => {
+        if (isVisible)
+            requestCameraPermission();
+    }, [isVisible])
 
     const requestCameraPermission = async () => {
-        try {
-            const granted = await PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.CAMERA,
-                {
-                    title: 'Camera Permission',
-                    message: 'App needs access to your camera ',
-                    buttonNeutral: 'Ask Me Later',
-                    buttonNegative: 'Cancel',
-                    buttonPositive: 'OK',
-                },
-            );
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                const cameraOption: CameraOptions = {
-                    mediaType: 'photo',
-                    saveToPhotos: true,
-                    cameraType: 'front',
-                    presentationStyle: 'fullScreen',
-                    maxHeight: 250,
-                    maxWidth: 250,
-                    quality: 1,
-
+        if (Platform.OS == 'android') {
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.CAMERA,
+                    {
+                        title: 'Camera Permission',
+                        message: 'App needs access to your camera ',
+                        buttonNeutral: 'Ask Me Later',
+                        buttonNegative: 'Cancel',
+                        buttonPositive: 'OK',
+                    },
+                );
+                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                    console.log("Camera Permission Granted")
+                } else {
+                    console.log('Camera permission denied');
                 }
-                launchCamera(cameraOption, async (res: any) => {
-                    if (res.didCancel) {
-                        console.log('User cancelled image picker');
-                    } else if (res.error) {
-                        console.log('ImagePicker Error: ', res.error);
-                    } else if (res.customButton) {
-                        console.log('User tapped custom button: ', res.customButton);
-                    } else {
-                        onClose()
-                        const selectedImage = res.assets[0];
-                        uploadFunction(selectedImage);
-
-                    }
-                });
-            } else {
-                console.log('Camera permission denied');
+            } catch (err) {
+                console.warn(err);
             }
-        } catch (err) {
-            console.warn(err);
+        } else {
+            checkMultiple([PERMISSIONS.IOS.CAMERA, PERMISSIONS.IOS.PHOTO_LIBRARY]).then((statuses) => {
+                console.log('Camera', statuses[PERMISSIONS.IOS.CAMERA]);
+                console.log('FaceID', statuses[PERMISSIONS.IOS.PHOTO_LIBRARY]);
+            })
         }
     };
+    const selectCamera = () => {
+        const cameraOption: CameraOptions = {
+            mediaType: 'photo',
+            saveToPhotos: true,
+            cameraType: 'front',
+            presentationStyle: 'fullScreen',
+            maxHeight: 250,
+            maxWidth: 250,
+            quality: 1,
+
+        }
+        launchCamera(cameraOption, async (res: any) => {
+            if (res.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (res.error) {
+                console.log('ImagePicker Error: ', res.error);
+            } else if (res.customButton) {
+                console.log('User tapped custom button: ', res.customButton);
+            } else {
+                onClose()
+                const selectedImage = res.assets[0];
+                uploadFunction(selectedImage);
+            }
+        });
+    }
     const selectImage = () => {
         const options: ImageLibraryOptions = {
             mediaType: 'photo',
@@ -106,7 +107,7 @@ const UploadPhotosScreen = ({ isVisible, onClose, uploadFunction }: UploadPhotos
                     borderTopLeftRadius: 15,
                     borderTopRightRadius: 15
                 }}>
-                    <TouchableOpacity onPress={() => requestCameraPermission()} style={[styles.btn, { borderRadius: 15 }]}>
+                    <TouchableOpacity onPress={() => selectCamera()} style={[styles.btn, { borderRadius: 15 }]}>
                         <CamaraIcon height={30} width={30} />
                         <Text style={[GlobalStyle.btntext, { color: 'black', marginLeft: 10 }]}>Open Camera</Text>
                     </TouchableOpacity>

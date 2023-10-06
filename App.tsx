@@ -57,8 +57,6 @@ function App(): JSX.Element {
     requestUserPermission();
   }, [])
 
-  
-
   const toastConfig = {
     success: (props: any) => (
       <SuccessToast

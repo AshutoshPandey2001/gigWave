@@ -4,25 +4,12 @@ import { PermissionsAndroid, Platform } from "react-native";
 
 export const requestUserPermission = async () => {
 
-  const permission = PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
-
-  try {
-    const hasPermission = await PermissionsAndroid.check(permission);
-    if (hasPermission) {
-      // console.log('Permission already granted', hasPermission);
-      const authStatus = await messaging().requestPermission();
-      const enabled =
-        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
-      if (enabled) {
-        console.log('Authorization status:', authStatus);
-
-      }
-      return true
-    } else {
-      const status = await PermissionsAndroid.request(permission);
-      if (status === PermissionsAndroid.RESULTS.GRANTED) {
+  if (Platform.OS === 'android') {
+    const permission = PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+    try {
+      const hasPermission = await PermissionsAndroid.check(permission);
+      if (hasPermission) {
+        // console.log('Permission already granted', hasPermission);
         const authStatus = await messaging().requestPermission();
         const enabled =
           authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
@@ -32,17 +19,41 @@ export const requestUserPermission = async () => {
           console.log('Authorization status:', authStatus);
 
         }
-        console.log('Permission granted', status);
         return true
       } else {
-        console.log('Permission denied');
-        return false
-      }
-    }
-  } catch (error) {
-    console.error('Error checking or requesting permission:', error);
-  }
+        const status = await PermissionsAndroid.request(permission);
+        if (status === PermissionsAndroid.RESULTS.GRANTED) {
+          const authStatus = await messaging().requestPermission();
+          const enabled =
+            authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+            authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
+          if (enabled) {
+            console.log('Authorization status:', authStatus);
+
+          }
+          console.log('Permission granted', status);
+          return true
+        } else {
+          console.log('Permission denied');
+          return false
+        }
+      }
+    } catch (error) {
+      console.error('Error checking or requesting permission:', error);
+    }
+  }
+  else {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    if (enabled) {
+      console.log('Authorization status:', authStatus);
+
+    }
+  }
 };
 export const getFcmToken = async () => {
   try {
