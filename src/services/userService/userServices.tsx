@@ -64,3 +64,21 @@ export const getProfilePhoto = async (userID: any, token: any) => {
         })
     })
 }
+
+export const setDeviceToken = async (deviceValue: any, token: any): Promise<any> => {
+    try {
+        const response = await axios({
+            method: 'put',
+            url: `${API_BASE_URL}/device/token`,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            data: deviceValue
+        });
+        return response.data; // Return the response data
+    } catch (error) {
+        console.log(error)
+        throw error; // Rethrow the error to be caught by the caller
+    }
+}

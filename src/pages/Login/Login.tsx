@@ -9,10 +9,11 @@ import LockIcon from '../../assets/icons/lock.svg'
 import PhoneIcon from '../../assets/icons/phone.svg'
 import CommanAlertBox from '../../components/CommanAlertBox'
 import { GlobalStyle } from '../../globalStyle'
-import { setUser } from '../../redux/action/Auth/authAction'
+import { setFCMToken, setUser } from '../../redux/action/Auth/authAction'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
 import { RootState } from '../../redux/store'
 import { getOtp, verifyOtp } from '../../services/authServices/authServices'
+import { getFcmToken } from '../../services/noticationService/notification'
 
 const LoginScreen = ({ navigation }: any) => {
   const dispatch = useDispatch();
@@ -28,7 +29,6 @@ const LoginScreen = ({ navigation }: any) => {
   const loginCodeSchema = yup.object().shape({
     code: yup.string().required('Code is required')
       .matches(/^\d{6}$/, 'OTP code must be six digits')
-
   })
   const onLogin = async (values: any) => {
     // console.log('values', values);
@@ -61,7 +61,9 @@ const LoginScreen = ({ navigation }: any) => {
           text2: 'OTP Verification Successfully Completed',
         });
         await dispatch(setLoading(false))
-
+        getFcmToken().then((token)=>{
+          dispatch(setFCMToken(token));
+        })
         dispatch(setUser(response.user))
       } else {
         setOtpSend(false)

@@ -13,7 +13,8 @@ const rootReducer = combineReducers({
   isListView: userTypeReducer,
   isCreateButton: userTypeReducer,
   isLoading: uiReducer,
-  isGigCreated: gigReducer// Add other slice reducers here
+  isGigCreated: gigReducer,
+  fcm_token:userReducer
 });
 
 const persistConfig = {

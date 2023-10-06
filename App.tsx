@@ -26,10 +26,11 @@ import { RootState } from './src/redux/store';
 import { LogBox } from 'react-native';
 import { ErrorToast, SuccessToast } from 'react-native-toast-message';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
-import { setFirstToken } from './src/redux/action/Auth/authAction';
+import { setFirstToken,setFCMToken } from './src/redux/action/Auth/authAction';
 import { setLoading } from './src/redux/action/General/GeneralSlice';
 import { checkPermission } from './src/services/audioServices/audioServices';
 import { getLoginToken } from './src/services/authServices/authServices';
+import { getFcmToken, notificationListener, requestUserPermission } from './src/services/noticationService/notification';
 
 LogBox.ignoreLogs(['new NativeEventEmitter', 'ViewPropTypes']);
 function App(): JSX.Element {
@@ -40,9 +41,7 @@ function App(): JSX.Element {
   const dispatch = useDispatch();
   useEffect(() => {
     if (user?.user) {
-
-      // console.log('user info', user.user);
-      setIsLogged(true)
+       setIsLogged(true)
     }
   }, [user])
   useEffect(() => {
@@ -54,8 +53,11 @@ function App(): JSX.Element {
     })
   }, [])
   useEffect(() => {
-    checkPermission()
+    checkPermission();
+    requestUserPermission();
   }, [])
+
+  
 
   const toastConfig = {
     success: (props: any) => (

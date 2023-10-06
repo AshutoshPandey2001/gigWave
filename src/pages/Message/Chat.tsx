@@ -24,6 +24,7 @@ import firestore from '@react-native-firebase/firestore';
 import UploadPhotosScreen from '../../components/CamaraRoll'
 import fs from 'react-native-fs';
 import CloseIcon from '../../assets/icons/close.svg';
+import { sendPushNotification } from '../../services/noticationService/notification';
 
 const ChatScreen = ({ route, navigation }: any) => {
     const [message, setMessage] = useState('');
@@ -69,7 +70,6 @@ const ChatScreen = ({ route, navigation }: any) => {
         return () => subscriber();
     }, []);
 
-
     const getTouserAndgigDetails = async () => {
         try {
             dispatch(setLoading(true));
@@ -78,6 +78,7 @@ const ChatScreen = ({ route, navigation }: any) => {
             const userDetailsResponse = await getUserByUserID(route.params.user_id, firstToken);
             setTouserDetails(userDetailsResponse);
             const proDetails = await getProdetailsbyuserid(route.params.user_id, firstToken);
+            console.log(proDetails.user_id, 'proDetails')
             setproDetails(proDetails);
             dispatch(setLoading(false));
         } catch (error: any) {
@@ -92,7 +93,6 @@ const ChatScreen = ({ route, navigation }: any) => {
     };
 
     const onSend = async () => {
-
         if ((message.trim() === '' && (imgUrl === null || imgUrl.trim() === ''))) {
             return;
         }
@@ -142,8 +142,10 @@ const ChatScreen = ({ route, navigation }: any) => {
 
         try {
             await batch.commit();
-
-
+            console.log(toUserDetails.user_id, proDetails.user_id, 'pro details--------')
+            console.log(toUserDetails.device_token, proDetails.device_token, 'token--------', userType)
+            let fcm_token = userType === "PRO" ? toUserDetails?.device_token : proDetails?.device_token;
+            await sendPushNotification(fcm_token, `New Message from ${user.fname} ${user.lname}`, message)
         } catch (error: any) {
             CommanAlertBox({
                 title: 'Error',

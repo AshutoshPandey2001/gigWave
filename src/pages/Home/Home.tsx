@@ -38,6 +38,8 @@ const HomeScreen = ({ navigation }: any) => {
 
   const isRequired = (value: any) => value.trim() !== '';
   const isWithinRange = (value: any, min: any, max: any) => value.length >= min && value.length <= max;
+
+ 
   useEffect(() => {
     if (userType === "CREATOR")
       getList();

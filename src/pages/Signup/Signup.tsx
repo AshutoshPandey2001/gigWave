@@ -9,10 +9,11 @@ import LockIcon from '../../assets/icons/lock.svg'
 import PhoneIcon from '../../assets/icons/phone.svg'
 import CommanAlertBox from '../../components/CommanAlertBox'
 import { GlobalStyle } from '../../globalStyle'
-import { setUser } from '../../redux/action/Auth/authAction'
+import { setFCMToken, setUser } from '../../redux/action/Auth/authAction'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
 import { RootState } from '../../redux/store'
 import { getOtp, verifyOtp } from '../../services/authServices/authServices'
+import { getFcmToken } from '../../services/noticationService/notification'
 const SignupScreen = ({ navigation }: any) => {
     const dispatch = useDispatch();
     const [isOtpsent, setOtpSend] = useState(false)
@@ -65,7 +66,9 @@ const SignupScreen = ({ navigation }: any) => {
                     text2: 'OTP Verification Successfully Completed',
                 });
                 await dispatch(setLoading(false))
-
+                getFcmToken().then((token)=>{
+                    dispatch(setFCMToken(token));
+                  })
                 dispatch(setUser(response.user))
             } else {
                 setOtpSend(false)

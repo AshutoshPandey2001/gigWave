@@ -1743,6 +1743,11 @@
   resolved "https://registry.npmjs.org/@react-native-firebase/firestore/-/firestore-18.4.0.tgz"
   integrity sha512-YMY5yzSxo5csQp98d9r8wGFEshRbg7eVMjTU/WnLSvdzNFpsaz3n2dRPFFEwGwYFy7b09XQLRb8XYmhNiWKsWw==
 
+"@react-native-firebase/messaging@^18.4.0":
+  version "18.4.0"
+  resolved "https://registry.npmjs.org/@react-native-firebase/messaging/-/messaging-18.4.0.tgz"
+  integrity sha512-oVxOHRmLrdEXBVHgnrTkzWFiL/SbXi9oaXf/kYuqgcMGkupIhBNpPxvnqq4Z1QO0d9huZp0KHDeTgNEwA5hq1Q==
+
 "@react-native-segmented-control/segmented-control@^2.4.2":
   version "2.4.2"
   resolved "https://registry.npmjs.org/@react-native-segmented-control/segmented-control/-/segmented-control-2.4.2.tgz"

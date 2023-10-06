@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Image, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { GlobalStyle } from '../../globalStyle'
@@ -6,11 +6,48 @@ import { setUserType } from '../../redux/action/User/userTypeSlice'
 import HelpSVG from '../../assets/icons/Help.svg'
 import GroupSvg from '../../assets/icons/Group.svg'
 import { RootState } from '../../redux/store'
+import { setLoading } from '../../redux/action/General/GeneralSlice';
+import CommanAlertBox from '../../components/CommanAlertBox';
+import { setDeviceToken } from '../../services/userService/userServices'
+import { notificationListener, requestUserPermission } from '../../services/noticationService/notification'
 
 const RoleScreen = ({ navigation }: any) => {
   const dispatch = useDispatch()
   const user: any = useSelector((state: RootState) => state.user.user);
+  const fcm_token = useSelector((state: RootState) => state.fcm_token.fcm_token);
+  const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
 
+  useEffect(()=>{
+    requestUserPermission();
+  },[])
+
+  useEffect(() => {
+    let deviceInfo = {
+      device_id: "",
+      device_token: fcm_token,
+      id_token: "",
+      user_id: user.user_id
+    }
+    setFCMTokenToUser(deviceInfo)
+    notificationListener()
+  }, [fcm_token])
+
+  const setFCMTokenToUser = (value: any) => {
+    dispatch(setLoading(true))
+    try {
+      setDeviceToken(value, firstToken).then((res: any) => {
+        console.log(res, 'response token')
+        dispatch(setLoading(false));
+      })
+    } catch (error: any) {
+      CommanAlertBox({
+        title: 'Error',
+        message: error.message,
+      });
+      console.error('error', error);
+      dispatch(setLoading(false))
+    }
+  }
   return (
     <SafeAreaView>
       <StatusBar
