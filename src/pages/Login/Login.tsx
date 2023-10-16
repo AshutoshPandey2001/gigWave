@@ -61,7 +61,7 @@ const LoginScreen = ({ navigation }: any) => {
           text2: 'OTP Verification Successfully Completed',
         });
         await dispatch(setLoading(false))
-        getFcmToken().then((token)=>{
+        getFcmToken().then((token) => {
           dispatch(setFCMToken(token));
         })
         dispatch(setUser(response.user))

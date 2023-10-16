@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { Dimensions, Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Dimensions, Image, Platform, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import SelectDropdown from 'react-native-select-dropdown'
 import { useDispatch, useSelector } from 'react-redux'
 import { GlobalStyle } from '../../globalStyle'
@@ -294,7 +294,7 @@ const SearchGigScreen = ({ navigation }: any) => {
                                             display: 'flex', flexDirection: 'row',
                                         }} >
                                         <View>
-                                            <Image resizeMode='contain' style={styles.imageStyle}
+                                            <Image resizeMode={Platform.OS === 'ios' ? 'cover' : 'contain'} style={styles.imageStyle}
                                                 source={{ uri: item.thumbnail_img_url }}
                                             />
 
@@ -409,21 +409,26 @@ const SearchGigScreen = ({ navigation }: any) => {
                                 paddingHorizontal: 0
                             }]} >
                                 <View>
-                                    <Image resizeMode='contain' style={styles.imageStyle} source={selectedMarker.thumbnail_img_url ? { uri: selectedMarker.thumbnail_img_url } : selectedMarker.image} />
+                                    <Image resizeMode={Platform.OS === 'ios' ? 'cover' : 'contain'} style={[styles.imageStyle, { height: 150 }]} source={selectedMarker.thumbnail_img_url ? { uri: selectedMarker.thumbnail_img_url } : selectedMarker.image} />
                                 </View>
                                 <View style={{ flex: 1, width: 100 }}>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 18, marginHorizontal: 10, paddingTop: 10, fontWeight: 'bold' }]}>
-                                        {selectedMarker.title}
-                                    </Text>
-                                    <Text style={[GlobalStyle.blackColor, { fontSize: 16, margin: 10, }]}>
+                                    <View style={{
+                                        display: 'flex', flexDirection: 'row',
+                                    }}>
+                                        <Text style={[GlobalStyle.blackColor, styles.title, { flex: 1 }]}>
+                                            {selectedMarker.title}
+                                        </Text>
+                                        <View style={{ padding: 10 }}>
+                                            <Pressable style={{ backgroundColor: selectedMarker.gig_type === 'paid' ? '#21AF2F' : '#989898', borderRadius: 5, paddingHorizontal: 10, width: 'auto' }}>
+                                                <Text style={{ color: '#fff', textTransform: 'capitalize' }}>{selectedMarker.gig_type}</Text>
+                                            </Pressable>
+                                        </View>
+                                    </View>
+                                    <Text style={[GlobalStyle.blackColor, styles.message]}>
                                         {selectedMarker.informal_description}
                                     </Text>
                                 </View>
-                                <View style={{ padding: 10 }}>
-                                    <Pressable style={{ backgroundColor: selectedMarker.gig_type === 'Paid' ? '#21AF2F' : '#989898', borderRadius: 5, paddingHorizontal: 10, width: 'auto' }}>
-                                        <Text style={{ color: '#fff' }}>{selectedMarker.gig_type}</Text>
-                                    </Pressable>
-                                </View>
+
                             </Pressable>
                         </View>
                     )}

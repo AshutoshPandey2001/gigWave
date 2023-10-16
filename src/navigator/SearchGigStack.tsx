@@ -1,6 +1,6 @@
 import { createNativeStackNavigator, } from '@react-navigation/native-stack';
 import React from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Platform, Pressable, Text, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import HeaderProfile from '../components/HeaderProfile';
 import EditProfileScreen from '../pages/Profile/EditProfile';
@@ -17,7 +17,7 @@ const SearchGigStack = ({ navigation }: any) => {
 
     function HeaderLeft() {
         return (
-            <Pressable style={{ flex: 1, margin: 15 }} onPress={()=>navigation.navigate('View-Profile')}>
+            <Pressable style={{ flex: 1, margin: 15 }} onPress={() => navigation.navigate('View-Profile')}>
                 <HeaderProfile />
             </Pressable>
         );
@@ -30,7 +30,7 @@ const SearchGigStack = ({ navigation }: any) => {
         }}  >
             <SearchGigStack.Screen name="Search-Gig" component={SearchGigScreen} options={{
                 header: () => (
-                    <View style={{ height: 70, display: 'flex', flexDirection: 'row', paddingHorizontal: 10, alignItems: 'center', backgroundColor: '#fff' }}>
+                    <View style={{ height: 90, display: 'flex', flexDirection: 'row', paddingHorizontal: 10, alignItems: 'center', backgroundColor: '#fff', marginTop: Platform.OS === 'ios' ? 50 : 0 }}>
                         <HeaderLeft />
                         <Pressable style={{ marginHorizontal: 10 }} onPress={() => {
                             if (isListView) {

@@ -1,6 +1,6 @@
 import { useFormik } from 'formik'
 import React, { useEffect, useState } from 'react'
-import { Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Image, Platform, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import fs from 'react-native-fs'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
 import { useDispatch, useSelector } from 'react-redux'
@@ -23,7 +23,7 @@ interface InitialFormValues {
     email: string,
     phone: string,
     address: string,
-    company: string,
+    company?: string,
 }
 const EditProfileScreen = ({ navigation }: any) => {
     const dispatch = useDispatch();
@@ -70,18 +70,18 @@ const EditProfileScreen = ({ navigation }: any) => {
     const { handleChange, handleBlur, handleSubmit, values, errors, isValid, touched, setFieldValue } = formik
 
     const getProfileImage = async () => {
-        getProfilePhoto(user.user_id, firstToken).then(async (res: any) => {
-        }).catch((e) => {
-            console.error(e, 'error when getting profile image');
+        // getProfilePhoto(user.user_id, firstToken).then(async (res: any) => {
+        // }).catch((e) => {
+        //     console.error(e, 'error when getting profile image');
 
-        })
+        // })
     }
     const getUserByID = async () => {
         await dispatch(setLoading(true));
         if (user.is_pro) {
             getProdetailsbyuserid(user.user_id, firstToken).then((res) => {
                 setProuserData(res)
-                setFieldValue('company', res.company)
+                setFieldValue('company', res?.company)
                 dispatch(setLoading(false));
             }).catch((e) => {
                 console.log('error', JSON.stringify(e));
@@ -89,6 +89,7 @@ const EditProfileScreen = ({ navigation }: any) => {
             })
         }
         getUserByUserID(user.user_id, firstToken).then((response) => {
+            // console.log(response, 'userDetails');
             const dataURI = `data:image/jpeg;base64,${response.base64_img}`; // Assuming res is a base64 encoded image
             setProfilePic(dataURI);
             dispatch(setLoading(false))
@@ -189,7 +190,7 @@ const EditProfileScreen = ({ navigation }: any) => {
                     <>
                         <View style={styles.cardContainer}>
                             <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>First</Text>
-                            <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
+                            <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: Platform.OS === 'ios' ? 15 : 0 }]}>
                                 <TextInput style={{ flex: 1, fontSize: 16 }}
                                     onChangeText={handleChange('fname')}
                                     onBlur={() => { handleBlur('fname') }}
@@ -205,7 +206,7 @@ const EditProfileScreen = ({ navigation }: any) => {
                         </View>
                         <View style={styles.cardContainer}>
                             <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Last</Text>
-                            <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
+                            <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: Platform.OS === 'ios' ? 15 : 0 }]}>
                                 <TextInput style={{ flex: 1, fontSize: 16 }}
                                     onChangeText={handleChange('lname')}
                                     onBlur={() => { handleBlur('lname') }}
@@ -219,7 +220,7 @@ const EditProfileScreen = ({ navigation }: any) => {
                         </View>
                         <View style={styles.cardContainer}>
                             <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Phone</Text>
-                            <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
+                            <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: Platform.OS === 'ios' ? 15 : 0 }]}>
                                 <TextInput style={{ flex: 1, fontSize: 16 }}
                                     onChangeText={handleChange('phone')}
                                     onBlur={() => { handleBlur('phone') }}
@@ -261,7 +262,7 @@ const EditProfileScreen = ({ navigation }: any) => {
                         </View>
                         <View style={styles.cardContainer}>
                             <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Email</Text>
-                            <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
+                            <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: Platform.OS === 'ios' ? 15 : 0 }]}>
                                 <TextInput style={{ flex: 1, fontSize: 16 }}
                                     onChangeText={handleChange('email')}
                                     onBlur={() => { handleBlur('email') }}
@@ -277,11 +278,11 @@ const EditProfileScreen = ({ navigation }: any) => {
                         </View>
                         {user?.is_pro && <View style={styles.cardContainer}>
                             <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Company</Text>
-                            <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
+                            <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: Platform.OS === 'ios' ? 15 : 0 }]}>
                                 <TextInput style={{ flex: 1, fontSize: 16 }}
                                     onChangeText={handleChange('company')}
                                     onBlur={() => { handleBlur('company') }}
-                                    value={values.company}
+                                    value={values?.company}
                                     placeholder='Company'
 
                                 />

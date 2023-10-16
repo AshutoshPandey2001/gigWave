@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react'
-import { Image, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
+import { Image, Pressable, SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
-import { GlobalStyle } from '../../globalStyle'
-import { setUserType } from '../../redux/action/User/userTypeSlice'
-import HelpSVG from '../../assets/icons/Help.svg'
 import GroupSvg from '../../assets/icons/Group.svg'
+import HelpSVG from '../../assets/icons/Help.svg'
+import CommanAlertBox from '../../components/CommanAlertBox'
+import { GlobalStyle } from '../../globalStyle'
+import { setLoading } from '../../redux/action/General/GeneralSlice'
+import { setUserType } from '../../redux/action/User/userTypeSlice'
 import { RootState } from '../../redux/store'
-import { setLoading } from '../../redux/action/General/GeneralSlice';
-import CommanAlertBox from '../../components/CommanAlertBox';
-import { setDeviceToken } from '../../services/userService/userServices'
 import { notificationListener, requestUserPermission } from '../../services/noticationService/notification'
+import { setDeviceToken } from '../../services/userService/userServices'
 
 const RoleScreen = ({ navigation }: any) => {
   const dispatch = useDispatch()
@@ -17,19 +17,24 @@ const RoleScreen = ({ navigation }: any) => {
   const fcm_token = useSelector((state: RootState) => state.fcm_token.fcm_token);
   const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
 
-  useEffect(()=>{
+  useEffect(() => {
     requestUserPermission();
-  },[])
+  }, [])
 
   useEffect(() => {
-    let deviceInfo = {
-      device_id: "",
-      device_token: fcm_token,
-      id_token: "",
-      user_id: user.user_id
+    if (fcm_token) {
+      let deviceInfo = {
+        device_id: "",
+        device_token: fcm_token,
+        id_token: "",
+        user_id: user.user_id
+      }
+      setFCMTokenToUser(deviceInfo)
+      notificationListener()
     }
-    setFCMTokenToUser(deviceInfo)
-    notificationListener()
+    else {
+      console.log('fcm_token', fcm_token)
+    }
   }, [fcm_token])
 
   const setFCMTokenToUser = (value: any) => {

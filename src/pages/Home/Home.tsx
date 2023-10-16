@@ -1,7 +1,7 @@
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import { useIsFocused } from '@react-navigation/native';
 import React, { useEffect, useRef, useState } from 'react';
-import { Dimensions, Image, Pressable, RefreshControl, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Image, Platform, Pressable, RefreshControl, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import MicIcon from '../../assets/icons/Mic1.svg';
 import CommanAlertBox from '../../components/CommanAlertBox';
@@ -39,7 +39,7 @@ const HomeScreen = ({ navigation }: any) => {
   const isRequired = (value: any) => value.trim() !== '';
   const isWithinRange = (value: any, min: any, max: any) => value.length >= min && value.length <= max;
 
- 
+
   useEffect(() => {
     if (userType === "CREATOR")
       getList();
@@ -219,19 +219,19 @@ const HomeScreen = ({ navigation }: any) => {
           <SegmentedControl
             values={['Active Gigs', 'Inactive Gigs']}
             selectedIndex={selectedIndex}
-            backgroundColor='#fff'
+            backgroundColor={'#fff'}
             onChange={(event) => {
               SetSelectedIndex(event.nativeEvent.selectedSegmentIndex);
             }}
             style={[GlobalStyle.shadowProp, {
               width: '85%',
               height: 40,
-              backgroundColor: "#fff",
+              backgroundColor: '#fff',
               borderRadius: 10,
             }]}
-            tintColor='#05E3D5'
+            tintColor={Platform.OS === 'ios' ? '#000' : '#05E3D5'}
             activeFontStyle={{ color: '#fff', fontSize: 20 }}
-            fontStyle={{ color: '#000', fontSize: heightY * 0.024 }}
+            fontStyle={{ color: Platform.OS === 'ios' ? '#000' : '#000', fontSize: heightY * 0.024 }}
           />
         </View>
         <ScrollView>
@@ -255,7 +255,7 @@ const HomeScreen = ({ navigation }: any) => {
                             display: 'flex', flexDirection: 'row',
                           }} >
                           <View>
-                            <Image resizeMode='contain' style={Style.imageStyle}
+                            <Image resizeMode={Platform.OS === 'ios' ? 'cover' : 'contain'} style={Style.imageStyle}
                               defaultSource={require('../../assets/images/image.png')}
                               source={item.thumbnail_img_url ? { uri: item.thumbnail_img_url } : require('../../assets/images/image.png')}
                             />
@@ -347,7 +347,7 @@ const HomeScreen = ({ navigation }: any) => {
                                 display: 'flex', flexDirection: 'row',
                               }} >
                               <View>
-                                <Image resizeMode='contain' style={Style.imageStyle}
+                                <Image resizeMode={Platform.OS === 'ios' ? 'cover' : 'contain'} style={Style.imageStyle}
                                   source={{ uri: item.thumbnail_img_url }}
                                 />
                               </View>
