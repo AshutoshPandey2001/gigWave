@@ -1730,7 +1730,7 @@
   resolved "https://registry.npmjs.org/@react-native-community/geolocation/-/geolocation-3.0.6.tgz"
   integrity sha512-+iidKFgw1HxCJSHVnlywAKu6uerdpDAKTXLRnlsUdhgqtgTiIixb496Z267iPVFmIO1bp4lOU6UiwzmvcyXdbg==
 
-"@react-native-firebase/app@^18.4.0", "@react-native-firebase/app@18.4.0":
+"@react-native-firebase/app@^18.4.0", "@react-native-firebase/app@18.4.0", "@react-native-firebase/app@18.5.0":
   version "18.4.0"
   resolved "https://registry.npmjs.org/@react-native-firebase/app/-/app-18.4.0.tgz"
   integrity sha512-FPHwb4O5Bug5Q5WOfSPq38LHGrTRBIThNvs7Fl7OfotGpMbWKMCfwc5RN7F+PRRDeHyk2WDYvoH905zla1pPcw==
@@ -1743,10 +1743,10 @@
   resolved "https://registry.npmjs.org/@react-native-firebase/firestore/-/firestore-18.4.0.tgz"
   integrity sha512-YMY5yzSxo5csQp98d9r8wGFEshRbg7eVMjTU/WnLSvdzNFpsaz3n2dRPFFEwGwYFy7b09XQLRb8XYmhNiWKsWw==
 
-"@react-native-firebase/messaging@^18.4.0":
-  version "18.4.0"
-  resolved "https://registry.npmjs.org/@react-native-firebase/messaging/-/messaging-18.4.0.tgz"
-  integrity sha512-oVxOHRmLrdEXBVHgnrTkzWFiL/SbXi9oaXf/kYuqgcMGkupIhBNpPxvnqq4Z1QO0d9huZp0KHDeTgNEwA5hq1Q==
+"@react-native-firebase/messaging@^18.5.0":
+  version "18.5.0"
+  resolved "https://registry.npmjs.org/@react-native-firebase/messaging/-/messaging-18.5.0.tgz"
+  integrity sha512-y1FApYxBMcygmbWBqUPFC+fCfvx6Yf6TdZewun7kPwx+S+tkYzoKx1IsXtxOXtqyJjCNEYirjFgNrs5SSd02zA==
 
 "@react-native-segmented-control/segmented-control@^2.4.2":
   version "2.4.2"
