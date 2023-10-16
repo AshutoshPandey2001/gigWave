@@ -54,29 +54,31 @@ const UploadPhotosScreen = ({ isVisible, onClose, uploadFunction }: UploadPhotos
         }
     };
     const selectCamera = () => {
-        const cameraOption: CameraOptions = {
-            mediaType: 'photo',
-            saveToPhotos: true,
-            cameraType: 'front',
-            presentationStyle: 'fullScreen',
-            maxHeight: 250,
-            maxWidth: 250,
-            quality: 1,
-
-        }
-        launchCamera(cameraOption, async (res: any) => {
-            if (res.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (res.error) {
-                console.log('ImagePicker Error: ', res.error);
-            } else if (res.customButton) {
-                console.log('User tapped custom button: ', res.customButton);
-            } else {
-                onClose()
-                const selectedImage = res.assets[0];
-                uploadFunction(selectedImage);
+        onClose();
+        setTimeout(() => {
+            const cameraOption: CameraOptions = {
+                mediaType: 'photo',
+                saveToPhotos: true,
+                cameraType: 'front',
+                presentationStyle: 'fullScreen',
+                maxHeight: 250,
+                maxWidth: 250,
+                quality: 1,
             }
-        });
+            launchCamera(cameraOption, async (res: any) => {
+                if (res.didCancel) {
+                    console.log('User cancelled image picker');
+                } else if (res.error) {
+                    console.log('ImagePicker Error: ', res.error);
+                } else if (res.customButton) {
+                    console.log('User tapped custom button: ', res.customButton);
+                } else {
+                    onClose()
+                    const selectedImage = res.assets[0];
+                    uploadFunction(selectedImage);
+                }
+            });
+        }, 100);
     }
     const selectImage = () => {
         const options: ImageLibraryOptions = {

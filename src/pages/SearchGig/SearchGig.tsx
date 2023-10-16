@@ -231,35 +231,35 @@ const SearchGigScreen = ({ navigation }: any) => {
 
     }
     const stopRecording = async () => {
-        stopRecord(setIsRecording);
-        dispatch(setLoading(true))
-
-        readAudioFile(audioPath)
-            .then((base64Data) => {
-                if (base64Data) {
-                    const audioDataToSend = {
-                        audio_base64: base64Data,
-                        audio_format: 'mp4', // Set the desired audio format
-                    };
-                    audioToText(audioDataToSend, firstToken).then((res: any) => {
-                        setSearchValue(res.text)
-                        dispatch(setLoading(false))
-                    }).catch((error) => {
-                        CommanAlertBox({
-                            title: 'Error',
-                            message: error.message,
-                        });
-                        dispatch(setLoading(false))
-                    })
-                }
-            })
-            .catch((error) => {
-                dispatch(setLoading(false))
-                CommanAlertBox({
-                    title: 'Error',
-                    message: error.message,
+        stopRecord(setIsRecording).then((res) => {
+            dispatch(setLoading(true))
+            readAudioFile(audioPath)
+                .then((base64Data) => {
+                    if (base64Data) {
+                        const audioDataToSend = {
+                            audio_base64: base64Data,
+                            audio_format: Platform.OS === "ios" ? 'aac' : 'mp4', // Set the desired audio format
+                        };
+                        audioToText(audioDataToSend, firstToken).then((res: any) => {
+                            setSearchValue(res.text)
+                            dispatch(setLoading(false))
+                        }).catch((error) => {
+                            CommanAlertBox({
+                                title: 'Error',
+                                message: error.message,
+                            });
+                            dispatch(setLoading(false))
+                        })
+                    }
+                })
+                .catch((error) => {
+                    dispatch(setLoading(false))
+                    CommanAlertBox({
+                        title: 'Error',
+                        message: error.message,
+                    });
                 });
-            });
+        })
     }
 
     const handleMarkerPress = (markerData: any) => {

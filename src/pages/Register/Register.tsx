@@ -1,7 +1,7 @@
 import { useRoute } from '@react-navigation/native'
 import { Formik } from 'formik'
 import React, { useState } from 'react'
-import { Pressable, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native'
+import { KeyboardAvoidingView, Pressable, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useDispatch, useSelector } from 'react-redux'
 import * as yup from "yup"
@@ -68,118 +68,120 @@ const RegisterScreen = ({ navigation }: any) => {
         setModalVisible(false)
     }
     return (
-        <SafeAreaView style={GlobalStyle.safeAreaCotainer}>
-            <StatusBar
-                backgroundColor="#fff"
-                barStyle="dark-content" // Here is where you change the font-color
-            />
-            <ScrollView nestedScrollEnabled={true} keyboardShouldPersistTaps={'always'}>
-                <View style={GlobalStyle.centerContentPage}>
-                    <View style={Style.authContainer}>
-                        <GigwaveIcon />
-                        <Text style={[GlobalStyle.title, { marginTop: 20 }]}>Register</Text>
-                        <Text style={{ color: '#949494', marginBottom: 20, fontSize: 18 }}>Please enter your details to register</Text>
-                        <Formik
-                            initialValues={{
-                                fname: '',
-                                lname: '',
-                                email: '',
-                                address: ''
-                            }}
-                            validationSchema={registerSchema}
-                            onSubmit={values => onRegister(values)}
-                        >
-                            {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched, setFieldValue }) => (
-                                <View style={{ padding: 10 }}>
-                                    <View style={[GlobalStyle.fieldwithIcon]}>
-                                        <View style={{ marginRight: 10 }}>
-                                            <PersonIcon />
-                                        </View>
-                                        <TextInput style={{ flex: 1, fontSize: 16 }}
-                                            onChangeText={handleChange('fname')}
-                                            onBlur={() => { handleBlur('fname') }}
-                                            value={values.fname}
-                                            placeholder='First Name'
-                                        />
-                                    </View>
-                                    <View style={{ marginBottom: 10 }}>
-                                        {touched.fname && errors.fname &&
-                                            <Text style={GlobalStyle.errorMsg}>{errors.fname}</Text>
-                                        }
-                                    </View>
-                                    <View style={[GlobalStyle.fieldwithIcon]}>
-                                        <View style={{ marginRight: 10 }}>
-                                            <PersonIcon />
-                                        </View>
-                                        <TextInput style={{ flex: 1, fontSize: 16 }}
-                                            onChangeText={handleChange('lname')}
-                                            onBlur={() => { handleBlur('lname') }}
-                                            value={values.lname}
-                                            placeholder='Last Name'
-                                        />
-                                    </View>
-                                    <View style={{ marginBottom: 10 }}>
-                                        {errors.lname && touched.lname &&
-                                            <Text style={GlobalStyle.errorMsg}>{errors.lname}</Text>
-                                        }
-                                    </View>
-                                    <View style={[GlobalStyle.fieldwithIcon]}>
-                                        <View style={{ marginRight: 10 }}>
-                                            <LockIcon />
-                                        </View>
-                                        <TextInput style={{ flex: 1, fontSize: 16 }}
-                                            onChangeText={handleChange('email')}
-                                            onBlur={() => { handleBlur('email') }}
-                                            value={values.email}
-                                            keyboardType='email-address'
-                                            placeholder='Email'
-                                        />
-                                    </View>
-                                    <View style={{ marginBottom: 10 }}>
-                                        {errors.email && touched.email &&
-                                            <Text style={GlobalStyle.errorMsg}>{errors.email}</Text>
-                                        }
-                                    </View>
-                                    <View style={[GlobalStyle.fieldwithIcon]}>
-                                        <View style={{ marginRight: 10 }}>
-                                            <LockIcon />
-                                        </View>
-                                        {
-                                            isModalVisible &&
-                                            <LocationSearch
-                                                placeholder="Address"
-                                                isModalVisible={isModalVisible}
-                                                notifyChange={location => {
-                                                    setModalVisible(false);
-                                                    setFieldValue('address', location.description)
-                                                }}
-                                                closeModel={closeModel}
+        <KeyboardAvoidingView behavior={"height"}>
+            <SafeAreaView style={GlobalStyle.safeAreaCotainer}>
+                <StatusBar
+                    backgroundColor="#fff"
+                    barStyle="dark-content" // Here is where you change the font-color
+                />
+                <ScrollView nestedScrollEnabled={true} keyboardShouldPersistTaps={'always'}>
+                    <View style={GlobalStyle.centerContentPage}>
+                        <View style={Style.authContainer}>
+                            <GigwaveIcon />
+                            <Text style={[GlobalStyle.title, { marginTop: 20 }]}>Register</Text>
+                            <Text style={{ color: '#949494', marginBottom: 20, fontSize: 18 }}>Please enter your details to register</Text>
+                            <Formik
+                                initialValues={{
+                                    fname: '',
+                                    lname: '',
+                                    email: '',
+                                    address: ''
+                                }}
+                                validationSchema={registerSchema}
+                                onSubmit={values => onRegister(values)}
+                            >
+                                {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched, setFieldValue }) => (
+                                    <View style={{ padding: 10 }}>
+                                        <View style={[GlobalStyle.fieldwithIcon]}>
+                                            <View style={{ marginRight: 10 }}>
+                                                <PersonIcon />
+                                            </View>
+                                            <TextInput style={{ flex: 1, fontSize: 16 }}
+                                                onChangeText={handleChange('fname')}
+                                                onBlur={() => { handleBlur('fname') }}
+                                                value={values.fname}
+                                                placeholder='First Name'
                                             />
-                                        }
-                                        <View style={{ flex: 1 }}>
-                                            {values.address ?
-                                                <Text style={{ color: '#000', fontSize: 16 }} onPress={() => setModalVisible(true)}>{values.address ? values.address : ''}</Text>
-                                                :
-                                                <Text style={{ color: '#a9a9a9', fontSize: 16 }} onPress={() => setModalVisible(true)}>{'Address'}</Text>
+                                        </View>
+                                        <View style={{ marginBottom: 10 }}>
+                                            {touched.fname && errors.fname &&
+                                                <Text style={GlobalStyle.errorMsg}>{errors.fname}</Text>
                                             }
                                         </View>
+                                        <View style={[GlobalStyle.fieldwithIcon]}>
+                                            <View style={{ marginRight: 10 }}>
+                                                <PersonIcon />
+                                            </View>
+                                            <TextInput style={{ flex: 1, fontSize: 16 }}
+                                                onChangeText={handleChange('lname')}
+                                                onBlur={() => { handleBlur('lname') }}
+                                                value={values.lname}
+                                                placeholder='Last Name'
+                                            />
+                                        </View>
+                                        <View style={{ marginBottom: 10 }}>
+                                            {errors.lname && touched.lname &&
+                                                <Text style={GlobalStyle.errorMsg}>{errors.lname}</Text>
+                                            }
+                                        </View>
+                                        <View style={[GlobalStyle.fieldwithIcon]}>
+                                            <View style={{ marginRight: 10 }}>
+                                                <LockIcon />
+                                            </View>
+                                            <TextInput style={{ flex: 1, fontSize: 16 }}
+                                                onChangeText={handleChange('email')}
+                                                onBlur={() => { handleBlur('email') }}
+                                                value={values.email}
+                                                keyboardType='email-address'
+                                                placeholder='Email'
+                                            />
+                                        </View>
+                                        <View style={{ marginBottom: 10 }}>
+                                            {errors.email && touched.email &&
+                                                <Text style={GlobalStyle.errorMsg}>{errors.email}</Text>
+                                            }
+                                        </View>
+                                        <View style={[GlobalStyle.fieldwithIcon]}>
+                                            <View style={{ marginRight: 10 }}>
+                                                <LockIcon />
+                                            </View>
+                                            {
+                                                isModalVisible &&
+                                                <LocationSearch
+                                                    placeholder="Address"
+                                                    isModalVisible={isModalVisible}
+                                                    notifyChange={location => {
+                                                        setModalVisible(false);
+                                                        setFieldValue('address', location.description)
+                                                    }}
+                                                    closeModel={closeModel}
+                                                />
+                                            }
+                                            <View style={{ flex: 1 }}>
+                                                {values.address ?
+                                                    <Text style={{ color: '#000', fontSize: 16 }} onPress={() => setModalVisible(true)}>{values.address ? values.address : ''}</Text>
+                                                    :
+                                                    <Text style={{ color: '#a9a9a9', fontSize: 16 }} onPress={() => setModalVisible(true)}>{'Address'}</Text>
+                                                }
+                                            </View>
+                                        </View>
+                                        <View style={{ marginBottom: 10 }}>
+                                            {errors.address && touched.address &&
+                                                <Text style={GlobalStyle.errorMsg}>{errors.address}</Text>
+                                            }
+                                        </View>
+                                        <Pressable style={GlobalStyle.button} onPress={() => handleSubmit()}>
+                                            <Text style={GlobalStyle.btntext}>Create Account</Text>
+                                        </Pressable>
                                     </View>
-                                    <View style={{ marginBottom: 10 }}>
-                                        {errors.address && touched.address &&
-                                            <Text style={GlobalStyle.errorMsg}>{errors.address}</Text>
-                                        }
-                                    </View>
-                                    <Pressable style={GlobalStyle.button} onPress={() => handleSubmit()}>
-                                        <Text style={GlobalStyle.btntext}>Create Account</Text>
-                                    </Pressable>
-                                </View>
-                            )}
-                        </Formik>
+                                )}
+                            </Formik>
+                        </View>
                     </View>
-                </View>
 
-            </ScrollView>
-        </SafeAreaView>
+                </ScrollView>
+            </SafeAreaView>
+        </KeyboardAvoidingView>
     )
 }
 const Style = StyleSheet.create({

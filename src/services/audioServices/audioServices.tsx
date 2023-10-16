@@ -1,6 +1,6 @@
 import axios from "axios";
 import { PermissionsAndroid, Platform } from "react-native";
-import AudioRecorderPlayer from 'react-native-audio-recorder-player';
+import AudioRecorderPlayer, { AVEncoderAudioQualityIOSType, AVEncodingOption, AVModeIOSOption, AudioEncoderAndroidType, AudioSourceAndroidType } from 'react-native-audio-recorder-player';
 import RNFetchBlob from "rn-fetch-blob";
 import { PERMISSIONS, request, PermissionStatus } from 'react-native-permissions';
 
@@ -29,9 +29,10 @@ export const checkPermission = async () => {
             console.error('Error checking or requesting permission:', error);
         }
     } else {
-        request(PERMISSIONS.IOS.MICROPHONE).then((result: PermissionStatus) => {
+        return request(PERMISSIONS.IOS.MICROPHONE).then((result: PermissionStatus) => {
             console.log(result, 'microphone permission granted')
-        }).catch(() => console.warn('no mircrophone permission granted'))
+            return true
+        }).catch(() => { return false })
     }
 };
 
@@ -41,17 +42,32 @@ export const startRecord = async (
     setIsRecording: React.Dispatch<React.SetStateAction<boolean>>,
 ) => {
     try {
-        const result = await audioRecorderPlayer.startRecorder();
-        setAudioPath(result);
+        const fileName = `recording${Date.now()}`;
+        const path = Platform.select({
+            ios: `${fileName}.aac`,
+            android: `${RNFetchBlob.fs.dirs.CacheDir}/${fileName}.mp4`, //don't use mp4, it'll increase app size
+        });
+        const audioSet = {
+            AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
+            AudioSourceAndroid: AudioSourceAndroidType.MIC,
+            AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.high,
+            AVNumberOfChannelsKeyIOS: 2,
+            AVFormatIDKeyIOS: AVEncodingOption.aac,
+            AVModeIOS: AVModeIOSOption.videochat,
+        };
+        const result = await audioRecorderPlayer.startRecorder(path, audioSet);
+        console.log(result, 'result recorde')
 
-        setIsRecording(true);
         console.log('start recording,', result);
-
+        if (result === "Already recording")
+            audioRecorderPlayer.removeRecordBackListener();
         audioRecorderPlayer.addRecordBackListener((e) => {
-
+            setAudioPath(result);
+            setIsRecording(true);
         });
     } catch (error) {
         console.error('Error starting recording:', error);
+        audioRecorderPlayer.removeRecordBackListener();
     }
 };
 
@@ -63,8 +79,10 @@ export const stopRecord = async (
         audioRecorderPlayer.removeRecordBackListener();
         setIsRecording(false);
         console.log('stop recording', result);
+        return true
     } catch (error) {
         console.error('Error stopping recording:', error);
+        return false
     }
 };
 
@@ -72,7 +90,8 @@ export const stopRecord = async (
 
 export const readAudioFile = async (audioPath: string): Promise<string | null> => {
     try {
-        const base64Data = await RNFetchBlob.fs.readFile(audioPath, 'base64');
+        const filePath = Platform.OS === 'android' ? audioPath : audioPath.replace('file://', '')
+        const base64Data = await RNFetchBlob.fs.readFile(filePath, 'base64');
         // console.log('base64Data', base64Data);
         // Process the base64 data or return it as needed
         return base64Data;
