@@ -11,13 +11,13 @@ import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Platform,
-  SafeAreaView,
   StyleSheet,
   Text,
   View
 } from 'react-native';
 
 import AuthNavigator from './src/navigator/AuthNavigator';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useDispatch, useSelector, } from 'react-redux';
 import TabNavigator from './src/navigator/TabNavigator';
@@ -26,11 +26,12 @@ import { RootState } from './src/redux/store';
 import { LogBox } from 'react-native';
 import { ErrorToast, SuccessToast } from 'react-native-toast-message';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
-import { setFirstToken,setFCMToken } from './src/redux/action/Auth/authAction';
+import { setFirstToken } from './src/redux/action/Auth/authAction';
 import { setLoading } from './src/redux/action/General/GeneralSlice';
 import { checkPermission } from './src/services/audioServices/audioServices';
 import { getLoginToken } from './src/services/authServices/authServices';
-import { getFcmToken, notificationListener, requestUserPermission } from './src/services/noticationService/notification';
+import { requestUserPermission } from './src/services/noticationService/notification';
+
 
 LogBox.ignoreLogs(['new NativeEventEmitter', 'ViewPropTypes']);
 function App(): JSX.Element {
@@ -41,7 +42,7 @@ function App(): JSX.Element {
   const dispatch = useDispatch();
   useEffect(() => {
     if (user?.user) {
-       setIsLogged(true)
+      setIsLogged(true)
     }
   }, [user])
   useEffect(() => {

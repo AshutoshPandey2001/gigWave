@@ -1,4 +1,4 @@
-import { Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Image, Platform, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { GlobalStyle } from '../../globalStyle'
 import MicIcon from '../../assets/icons/Mic1.svg'
@@ -192,7 +192,7 @@ const ViewProfileScreen = ({ navigation }: any) => {
                     </View>
                     <View style={styles.cardContainer}>
                         <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>My Skills or How I Can Help Others</Text>
-                        <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: 0 }]}>
+                        <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: Platform.OS === 'ios' ? 16 : 0 }]}>
                             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                 <TextInput
                                     multiline
@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.1,
         shadowRadius: 4,
-        elevation: 2, // Android shadow
+        // elevation: 2, // Android shadow
     },
     editText: { color: '#05E3D5', fontSize: 20 },
     btnMargin: { marginTop: 10 }

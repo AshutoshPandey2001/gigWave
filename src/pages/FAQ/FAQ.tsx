@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, StatusBar, StyleSheet, ScrollView } from 'react-native'
+import { View, Text, SafeAreaView, StatusBar, StyleSheet, ScrollView, Platform, Dimensions } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import { GlobalStyle } from '../../globalStyle';
@@ -7,6 +7,7 @@ import { getAllFaq } from '../../services/faqService/faqService';
 import { RootState } from '../../redux/store';
 import { setLoading } from '../../redux/action/General/GeneralSlice';
 import CommanAlertBox from '../../components/CommanAlertBox';
+var heightY = Dimensions.get("window").height;
 
 
 const FAQScreen = () => {
@@ -49,11 +50,11 @@ const FAQScreen = () => {
                     onChange={(event) => {
                         SetSelectedIndex(event.nativeEvent.selectedSegmentIndex);
                     }}
-                    backgroundColor='#05E3D5'
-                    style={{ width: '80%', height: 40, backgroundColor: "#05E3D5" }}
-                    tintColor='#fff'
-                    activeFontStyle={{ color: '#000', fontWeight: 'bold', fontSize: 20 }}
-                    fontStyle={{ color: '#fff', fontWeight: 'bold', fontSize: 20 }}
+                    backgroundColor='#fff'
+                    style={{ width: '80%', height: 40, backgroundColor: "#fff" }}
+                    tintColor={Platform.OS === 'ios' ? '#000' : '#05E3D5'}
+                    activeFontStyle={{ color: '#fff', fontWeight: 'bold', fontSize: 20 }}
+                    fontStyle={{ color: (selectedIndex === 0 || selectedIndex === 1) ? '#000' : '#fff', fontWeight: 'bold', fontSize: 20 }}
                 />
             </View>
             <ScrollView>

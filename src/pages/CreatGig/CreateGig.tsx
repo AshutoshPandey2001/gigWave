@@ -273,14 +273,14 @@ const CreategigScreen = ({ navigation }: any) => {
                   :
                   <View
                     style={[{ flex: 1 }]}>
-                    <View style={Style.inputField}>
+                    <View style={[Style.inputField]}>
                       <Text style={Style.inputLabel}>Amount</Text>
                       <TextInput
                         onChangeText={handleChange('amount')}
                         onBlur={() => { handleBlur('amount') }}
                         value={values.amount}
                         keyboardType='numeric'
-                        style={{ fontSize: 16 }}
+                        style={{ fontSize: 16, paddingVertical: Platform.OS === 'ios' ? 16 : 0 }}
                       />
                     </View>
                     {errors.amount && touched.amount &&

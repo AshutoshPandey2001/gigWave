@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { Alert, Image, Platform, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import MarkerIcon from '../../assets/icons/marker.svg'
 import { GlobalStyle } from '../../globalStyle'
 import { useDispatch, useSelector } from 'react-redux'
@@ -146,7 +145,7 @@ const HelpScreen = ({ route, navigation }: any) => {
     };
 
     return (
-        <SafeAreaView>
+        <SafeAreaView >
             <ScrollView>
                 <View style={[GlobalStyle.container, { marginTop: 0 }]}>
 
@@ -156,7 +155,7 @@ const HelpScreen = ({ route, navigation }: any) => {
 
                             <View style={[GlobalStyle.card, GlobalStyle.shadowProp, Style.localCardStyle]}>
                                 <View>
-                                    <Image resizeMode='contain' style={Style.imageStyle} source={{ uri: route.params.thumbnail_img_url }} />
+                                    <Image resizeMode={Platform.OS === 'ios' ? 'cover' : 'contain'} style={Style.imageStyle} source={{ uri: route.params.thumbnail_img_url }} />
                                 </View>
                                 <View style={{ flex: 1, width: 100, marginVertical: 10 }}>
                                     <Text style={[GlobalStyle.blackColor, Style.commanPaddingFontSize, { marginHorizontal: 10 }]}>

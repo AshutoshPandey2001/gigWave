@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Modal, PermissionsAndroid, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { CameraOptions, ImageLibraryOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { PERMISSIONS, checkMultiple } from 'react-native-permissions';
+import { PERMISSIONS, PermissionStatus, request } from 'react-native-permissions';
 import CamaraIcon from '../assets/icons/camera1.svg';
 import CloseIcon from '../assets/icons/close.svg';
 import GalleryIcon from '../assets/icons/image1.svg';
@@ -44,9 +44,12 @@ const UploadPhotosScreen = ({ isVisible, onClose, uploadFunction }: UploadPhotos
                 console.warn(err);
             }
         } else {
-            checkMultiple([PERMISSIONS.IOS.CAMERA, PERMISSIONS.IOS.PHOTO_LIBRARY]).then((statuses) => {
-                console.log('Camera', statuses[PERMISSIONS.IOS.CAMERA]);
-                console.log('FaceID', statuses[PERMISSIONS.IOS.PHOTO_LIBRARY]);
+            request(PERMISSIONS.IOS.CAMERA).then((result: PermissionStatus) => {
+                console.log(result, 'camera permission granted')
+            }).catch(() => console.warn('camera permission denied')).finally(() => {
+                request(PERMISSIONS.IOS.PHOTO_LIBRARY).then((result: PermissionStatus) => {
+                    console.log(result, 'photo permission granted')
+                }).catch(() => console.warn('photo permission denied'))
             })
         }
     };

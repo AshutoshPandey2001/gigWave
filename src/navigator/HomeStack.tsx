@@ -1,7 +1,7 @@
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { useLayoutEffect } from 'react';
-import { Image, Pressable, View } from 'react-native';
+import { Image, Platform, Pressable, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import HeaderProfile from '../components/HeaderProfile';
 import HelpScreen from '../pages/Help/Help';
@@ -19,7 +19,7 @@ import { setIsCreateButton } from '../redux/action/User/userTypeSlice';
 
 const HomeStack = ({ navigation, route }: any) => {
     const GigStack = createNativeStackNavigator();
-    const dispatch=useDispatch()
+    const dispatch = useDispatch()
     const { userType }: any = useSelector((state: RootState) => state.userType)
     useLayoutEffect(() => {
         const routeName = getFocusedRouteNameFromRoute(route);
@@ -59,7 +59,7 @@ const HomeStack = ({ navigation, route }: any) => {
                 options={{
                     headerTitle: '',
                     header: () => (
-                        <View style={{ height: 90, display: 'flex', flexDirection: 'row', paddingHorizontal: 10, alignItems: 'center', backgroundColor: '#fff' }}>
+                        <View style={{ height: 90, display: 'flex', flexDirection: 'row', paddingHorizontal: 10, alignItems: 'center', backgroundColor: '#fff', marginTop: Platform.OS === 'ios' ? 50 : 0 }}>
                             <HeaderLeft />
                             <HeaderRight {...navigation} />
                         </View>

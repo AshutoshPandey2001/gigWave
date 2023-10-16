@@ -1,13 +1,12 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import React, { useEffect, useState, useLayoutEffect } from 'react';
-import { Pressable, View } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { Platform, Pressable, View } from 'react-native';
+import { useSelector } from 'react-redux';
 import AddIcon from '../assets/icons/Add.svg';
 import FAQIcon from '../assets/icons/FAQ.svg';
 import HomeIcon from '../assets/icons/Home.svg';
 import MessageIcon from '../assets/icons/Message.svg';
 import SearchIcon from '../assets/icons/Search-tab.svg';
-import HeaderProfile from '../components/HeaderProfile';
 import { GlobalStyle } from '../globalStyle';
 import CreategigScreen from '../pages/CreatGig/CreateGig';
 import FAQScreen from '../pages/FAQ/FAQ';
@@ -16,7 +15,6 @@ import { RootState } from '../redux/store';
 import HomeStack from './HomeStack';
 import MessageStack from './MessageStack';
 import SearchGigStack from './SearchGigStack';
-import { getFocusedRouteNameFromRoute, useNavigation, useRoute } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
 
@@ -64,7 +62,7 @@ const TabNavigator = () => {
                             <View
                                 style={{
                                     width: 70,
-                                    height: 70,
+                                    height: Platform.OS === "ios" ? 20 : 70,
                                     borderRadius: 35,
                                     marginEnd: 10
                                 }}
@@ -87,12 +85,12 @@ const TabNavigator = () => {
                         setCurrentScreen(e.data.state.index)
                     },
                 })}
-                sceneContainerStyle={{ backgroundColor: '#fff' }}
                 screenOptions={() => ({
                     headerBackgroundContainerStyle: '#fff',
                     tabBarShowLabel: false,
                     tabBarStyle: GlobalStyle.tabBar
                 })}
+                sceneContainerStyle={{ backgroundColor: '#fff' }}
             >
                 <Tab.Screen
                     name="Role"
@@ -194,7 +192,7 @@ const TabNavigator = () => {
                         }
                     </>
                 }
-            </Tab.Navigator>
+            </Tab.Navigator >
         </>
     )
 }

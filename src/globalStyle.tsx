@@ -1,4 +1,4 @@
-import { StatusBar, StyleSheet } from "react-native"
+import { StyleSheet } from "react-native"
 
 export const GlobalStyle = StyleSheet.create({
     safeAreaCotainer: {
@@ -107,7 +107,7 @@ export const GlobalStyle = StyleSheet.create({
         width: '100%',
         height: 80,
     },
-    noTabBar: { position: "absolute", height: 0 },
+    noTabBar: { position: "absolute", height: 0, display: 'none' },
     profileImg: {
         height: 65,
         width: 65,
