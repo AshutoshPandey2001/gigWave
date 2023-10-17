@@ -314,7 +314,7 @@ const MessageScreen = ({ navigation }: any) => {
                     <Text style={[GlobalStyle.blackColor, { fontSize: 18 }]}>{data.to_userName}</Text>
                     <Text style={[GlobalStyle.blackColor]}>{data.gig_title}</Text>
                     {data.latest_message &&
-                      <Text numberOfLines={1} style={[GlobalStyle.greyColor]}>{data.latest_message}</Text>}
+                      <Text numberOfLines={1} style={[{ fontWeight: !data.read ? 'bold' : '400', color: !data.read ? 'black' : 'gray' }]}>{data.latest_message}</Text>}
                     {data.img &&
                       <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                         <Image resizeMode='contain' style={{ width: 25, height: 25 }} source={require('../../assets/images/photo.png')} />

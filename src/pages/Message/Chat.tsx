@@ -70,6 +70,39 @@ const ChatScreen = ({ route, navigation }: any) => {
         return () => subscriber();
     }, []);
 
+    useEffect(() => {
+
+        const senderDocRef = firestore()
+            .collection('chats')
+            .doc(`${user.user_id}_${userType}`)
+            .collection('messages')
+            .doc(`${route.params.user_id}@${route.params.gig_id}`);
+
+        // Add a snapshot listener to the document
+        const subscriber = senderDocRef.onSnapshot((doc) => {
+            if (doc.exists) {
+                const data: any = doc.data(); // Existing data
+                // Perform your updates on the data here
+                data.read = true; // Modify the data as needed
+
+                senderDocRef
+                    .set(data)
+                    .then(() => {
+                        0
+                        console.log('Document successfully updated!');
+                    })
+                    .catch((error) => {
+                        console.error('Error updating document: ', error);
+                    });
+            } else {
+                console.log('Document does not exist');
+            }
+        }, (error) => {
+            console.error('Error with the snapshot listener: ', error);
+        });
+
+        return () => subscriber();
+    }, [])
     const getTouserAndgigDetails = async () => {
         try {
             dispatch(setLoading(true));
@@ -129,7 +162,8 @@ const ChatScreen = ({ route, navigation }: any) => {
             to_userName: '',
             to_useruid: '',
             to_userProfilepic: '',
-            status: 'active'
+            status: 'active',
+            read: false
         }
         // Use a batch write to add messages to both sender and receiver collections
         const batch = firestore().batch();
@@ -137,8 +171,8 @@ const ChatScreen = ({ route, navigation }: any) => {
             .doc(), { ...myMsg, id: 0 });
         batch.set(receiverDocRef.collection('chat')
             .doc(), { ...myMsg, id: 1 });
-        batch.set(senderDocRef, { ...toUserGig, to_userName: toUserDetails.fname + " " + toUserDetails.lname, to_userProfilepic: toUserDetails.base64_img, to_useruid: toUserDetails.user_id });
-        batch.set(receiverDocRef, { ...toUserGig, to_userName: user.fname + " " + user.lname, to_userProfilepic: user.base64_img, to_useruid: user.user_id });
+        batch.set(senderDocRef, { ...toUserGig, to_userName: toUserDetails.fname + " " + toUserDetails.lname, to_userProfilepic: toUserDetails.base64_img, to_useruid: toUserDetails.user_id, read: true });
+        batch.set(receiverDocRef, { ...toUserGig, to_userName: user.fname + " " + user.lname, to_userProfilepic: user.base64_img, to_useruid: user.user_id, read: false });
 
         try {
             await batch.commit();
@@ -336,7 +370,7 @@ const ChatScreen = ({ route, navigation }: any) => {
                         <BackIcon />
                     </Pressable>
                     {toUserDetails &&
-                        <Text style={{ flex: 1, marginLeft: 26, fontSize: 20, color: '#000', fontWeight: 'bold' }}>Chatting with {toUserDetails.fname + " " + toUserDetails.lname}</Text>
+                        <Text style={{ flex: 1, marginLeft: 26, fontSize: 20, color: '#000', fontWeight: 'bold' }}>Chatting with {toUserDetails.fname}</Text>
                     }
                 </View>
 
