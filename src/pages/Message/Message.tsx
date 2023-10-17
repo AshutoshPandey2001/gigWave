@@ -308,7 +308,7 @@ const MessageScreen = ({ navigation }: any) => {
                 <View style={[{ display: 'flex', flexDirection: 'row', alignItems: 'center' }]}>
                   <View style={{ height: 70, width: 70, backgroundColor: 'black', borderRadius: 35 }}>
                     <Image style={{ height: 70, width: 70, borderRadius: 35 }} resizeMode='contain' source={data.to_userProfilepic ? { uri: `data:image/jpeg;base64,${data.to_userProfilepic}` } : require('../../assets/images/avatar-1.png')} />
-                    <View style={{ height: 20, width: 20, borderRadius: 10, backgroundColor: '#36CC36', position: 'absolute', bottom: 0, right: 0 }}></View>
+                    {!data.read && <View style={{ height: 20, width: 20, borderRadius: 10, backgroundColor: '#36CC36', position: 'absolute', bottom: 0, right: 0 }}></View>}
                   </View>
                   <View style={{ flex: 1, marginStart: 10 }}>
                     <Text style={[GlobalStyle.blackColor, { fontSize: 18 }]}>{data.to_userName}</Text>
@@ -325,6 +325,7 @@ const MessageScreen = ({ navigation }: any) => {
                   </View>
                   <View>
                     <Text style={[GlobalStyle.themeColor, { fontWeight: 'bold' }]}>{data.latest_messageTime ? moment(data.latest_messageTime.toDate()).format('hh:mm A') : ''}</Text>
+                    {/* {!data.read && <Text style={{ padding: 10, color: 'red', fontSize: 18 }}>{'\u2B24'}</Text>} */}
                   </View>
                 </View>
               </View>
