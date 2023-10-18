@@ -119,7 +119,6 @@ const HomeScreen = ({ navigation }: any) => {
         title: 'Error',
         message: e.message,
       });
-      console.log('error', JSON.stringify(e));
       setRefreshing(false);
       dispatch(setLoading(false))
     })

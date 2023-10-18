@@ -54,7 +54,6 @@ const ChatScreen = ({ route, navigation }: any) => {
         checkPermission()
     }, []);
     useEffect(() => {
-        console.log(user.userType)
         const subscriber = firestore()
             .collection('chats')
             .doc(`${user.user_id}_${userType}`)
@@ -111,7 +110,6 @@ const ChatScreen = ({ route, navigation }: any) => {
             const userDetailsResponse = await getUserByUserID(route.params.user_id, firstToken);
             setTouserDetails(userDetailsResponse);
             const proDetails = await getProdetailsbyuserid(route.params.user_id, firstToken);
-            console.log(proDetails.user_id, 'proDetails')
             setproDetails(proDetails);
             dispatch(setLoading(false));
         } catch (error: any) {
@@ -138,8 +136,6 @@ const ChatScreen = ({ route, navigation }: any) => {
             time: new Date(),
             from: user.fname
         };
-        // console.log(myMsg, 'myMsg');
-
         // Firestore collections and document references
         const senderDocRef = firestore()
             .collection('chats')
@@ -176,8 +172,6 @@ const ChatScreen = ({ route, navigation }: any) => {
 
         try {
             await batch.commit();
-            console.log(toUserDetails.user_id, proDetails.user_id, 'pro details--------')
-            console.log(toUserDetails.device_token, proDetails.device_token, 'token--------', userType)
             let fcm_token = userType === "PRO" ? toUserDetails?.device_token : proDetails?.device_token;
             await sendPushNotification(fcm_token, `New Message from ${user.fname} ${user.lname}`, message)
         } catch (error: any) {
@@ -190,7 +184,6 @@ const ChatScreen = ({ route, navigation }: any) => {
     }
     const onSpeechResults = (e: any) => {
         //Invoked when SpeechRecognizer is finished recognizing
-        // console.log('onSpeechResults: ', e);
         if (e.value && e.value.length) {
             setResults(e.value);
             setMessage(e.value[0])
@@ -211,7 +204,6 @@ const ChatScreen = ({ route, navigation }: any) => {
             dispatch(setLoading(true))
             readAudioFile(audioPath)
                 .then((base64Data) => {
-                    console.log(base64Data, 'char audio base 64')
                     if (base64Data) {
                         const audioDataToSend = {
                             audio_base64: base64Data,
@@ -352,7 +344,6 @@ const ChatScreen = ({ route, navigation }: any) => {
             }
             dispatch(setLoading(true));
             uploadChatimages(imgJson, firstToken).then((res) => {
-                console.log(res, 'res------------------------------')
                 setMessage('');
                 getImage(res?.url)
             }).catch((error) => {

@@ -2,7 +2,6 @@ import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { API_BASE_URL, TOKEN_URL } from "../apiConstant";
 
 export const createProUsers = async (userData: any, token: any): Promise<any> => {
-    // console.log(userData, 'userData');
     try {
         const response = await axios({
             method: 'post',
@@ -22,7 +21,6 @@ export const createProUsers = async (userData: any, token: any): Promise<any> =>
 }
 
 export const updateProUsersDetails = async (userData: any, token: any): Promise<any> => {
-    // console.log(userData, 'userData');
     try {
         const response = await axios({
             method: 'put',
@@ -186,7 +184,6 @@ export const getImageFromdb = async (imgUrl: any, token: any): Promise<any> => {
                 'Authorization': `Bearer ${token}`,
             },
         });
-        // console.log(response, 'response---------')
         return response.data; // Return the response data
     } catch (error) {
         throw error; // Rethrow the error to be caught by the caller

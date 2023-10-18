@@ -36,8 +36,6 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                 querySnapshot.docs.map((doc) => {
                     if (doc.data().gig_id === route.params.gig_id) {
                         setGigProfiles(doc.data())
-                        console.log('doc.data()', doc.data());
-
                     }
                 }
                 );

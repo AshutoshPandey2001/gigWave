@@ -132,7 +132,6 @@ const CreategigScreen = ({ navigation }: any) => {
       dispatch(setLoading(true))
       readAudioFile(audioPath)
         .then((base64Data) => {
-          console.log(base64Data, 'audio base64')
           if (base64Data) {
             const audioDataToSend = {
               audio_base64: base64Data,

@@ -31,7 +31,6 @@ const LoginScreen = ({ navigation }: any) => {
       .matches(/^\d{6}$/, 'OTP code must be six digits')
   })
   const onLogin = async (values: any) => {
-    // console.log('values', values);
     try {
       await dispatch(setLoading(true))
       const response = await getOtp(values.phone, firsToken);

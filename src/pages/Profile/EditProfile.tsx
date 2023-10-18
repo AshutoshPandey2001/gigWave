@@ -84,12 +84,10 @@ const EditProfileScreen = ({ navigation }: any) => {
                 setFieldValue('company', res?.company)
                 dispatch(setLoading(false));
             }).catch((e) => {
-                console.log('error', JSON.stringify(e));
                 dispatch(setLoading(false))
             })
         }
         getUserByUserID(user.user_id, firstToken).then((response) => {
-            // console.log(response, 'userDetails');
             const dataURI = `data:image/jpeg;base64,${response.base64_img}`; // Assuming res is a base64 encoded image
             setProfilePic(dataURI);
             dispatch(setLoading(false))
@@ -108,9 +106,7 @@ const EditProfileScreen = ({ navigation }: any) => {
             setProfilePic(`data:image/jpeg;base64,${imgRes}`)
             uploadProfilePhoto(user.user_id, firstToken, imgRes)
                 .then((res) => {
-                    console.log(res, 'uploaded image');
                     getUserByUserID(user.user_id, firstToken).then((response) => {
-                        // console.log('res--------', response.base64_img);
                         const dataURI = `data:image/jpeg;base64,${response.base64_img}`; // Assuming res is a base64 encoded image
                         setProfilePic(dataURI);
                         dispatch(setLoading(false))
