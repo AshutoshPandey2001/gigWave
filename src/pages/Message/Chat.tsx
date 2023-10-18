@@ -216,6 +216,7 @@ const ChatScreen = ({ route, navigation }: any) => {
                         const audioDataToSend = {
                             audio_base64: base64Data,
                             audio_format: Platform.OS === "ios" ? 'aac' : 'mp4', // Set the desired audio format
+                            platform: Platform.OS
                         };
                         audioToText(audioDataToSend, firstToken).then((res) => {
                             setMessage(res.text)

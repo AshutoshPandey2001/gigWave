@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { useEffect, useState } from 'react';
-import { Platform, Pressable, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import AddIcon from '../assets/icons/Add.svg';
 import FAQIcon from '../assets/icons/FAQ.svg';
@@ -15,14 +15,17 @@ import { RootState } from '../redux/store';
 import HomeStack from './HomeStack';
 import MessageStack from './MessageStack';
 import SearchGigStack from './SearchGigStack';
+import firestore from '@react-native-firebase/firestore'
 
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
     const [hideCreate, setHideCreate] = useState(false)
     const [currentScreen, setCurrentScreen] = useState(null)
+    const [messagecount, setMessageCount] = useState(0)
     const { userType }: any = useSelector((state: RootState) => state.userType)
     const { isCreateButton }: any = useSelector((state: RootState) => state.isCreateButton)
+    const user: any = useSelector((state: RootState) => state.user.user);
 
     useEffect(() => {
         if (currentScreen === 4) {
@@ -32,7 +35,25 @@ const TabNavigator = () => {
         }
 
     }, [currentScreen])
+    useEffect(() => {
+        const subscriber = firestore()
+            .collection('chats')
+            .doc(`${user.user_id}_${userType}`)
+            .collection('messages')
+            .onSnapshot(querySnapshot => {
+                setMessageCount(querySnapshot.docs.length);
+                querySnapshot.docs.map((doc) => {
+                    if (doc.data().read === true) {
+                        setMessageCount(prevCount => prevCount - 1);
+                    }
+                })
+            });
 
+        return () => {
+            subscriber()
+            setMessageCount(0)
+        };
+    }, [userType]);
     const CustomTabButton = ({ children, onPress }: any) => (
 
         <>
@@ -122,8 +143,12 @@ const TabNavigator = () => {
                                 return {
                                     tabBarIcon: () => {
                                         return (
-                                            <View>
+                                            <View style={{ position: 'relative' }}>
                                                 <MessageIcon />
+                                                {messagecount > 0 &&
+                                                    <View style={styles.badge}>
+                                                        <Text style={styles.text}>{messagecount}</Text>
+                                                    </View>}
                                             </View>
                                         )
                                     },
@@ -196,4 +221,22 @@ const TabNavigator = () => {
         </>
     )
 }
+const styles = StyleSheet.create({
+    badge: {
+        position: 'absolute',
+        top: -10, // Adjust the positioning as needed
+        right: -10, // Adjust the positioning as needed
+        backgroundColor: 'red',
+        borderRadius: 10,
+        width: 20,
+        height: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    text: {
+        color: 'white',
+        fontWeight: 'bold',
+    },
+});
+
 export default TabNavigator

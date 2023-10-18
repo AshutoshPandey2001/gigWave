@@ -320,7 +320,6 @@ const MessageScreen = ({ navigation }: any) => {
                         <Image resizeMode='contain' style={{ width: 25, height: 25 }} source={require('../../assets/images/photo.png')} />
                         <Text style={[GlobalStyle.greyColor]}>Photo</Text>
                       </View>
-
                     }
                   </View>
                   <View>
