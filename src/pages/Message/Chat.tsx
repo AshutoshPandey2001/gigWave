@@ -354,331 +354,11 @@ const ChatScreen = ({ route, navigation }: any) => {
             })
         })
     }
-    const renderChatComponent=()=>(
-        <SafeAreaView style={{ height: '100%' }}>
-                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: 80, padding: 20 }}>
-                        <Pressable onPress={() => navigation.goBack()}>
-                            <BackIcon />
-                        </Pressable>
-                        {toUserDetails &&
-                            <Text style={{ flex: 1, marginLeft: 26, fontSize: 20, color: '#000', fontWeight: 'bold' }}>Chatting with {toUserDetails.fname}</Text>
-                        }
-                    </View>
 
-                    <ScrollView
-                        ref={scrollViewRef}
-                        style={{ flex: 1 }}
-                        onContentSizeChange={(contentWidth, contentHeight) => {
-                            // Scroll to the end when content size changes (new content is added)
-                            scrollViewRef.current.scrollToEnd({ animated: true });
-                        }}
-                    >
-                        {gigDetails &&
-                            <View style={[GlobalStyle.container, { marginTop: 0 }]}>
-                                <View>
-                                    <View style={[GlobalStyle.card, GlobalStyle.shadowProp, {
-                                        display: 'flex', flexDirection: 'row', paddingVertical: 10,
-                                        paddingHorizontal: 10
-                                    }]}>
-                                        <View>
-                                            <Image resizeMode='contain' style={styles.imageStyle}
-                                                defaultSource={require('../../assets/images/image.png')}
-                                                source={gigDetails.thumbnail_img_url ? { uri: gigDetails.thumbnail_img_url } : require('../../assets/images/piano.png')} />
-                                        </View>
-                                        <View style={{ flex: 1, width: 100 }}>
-                                            <Text style={[GlobalStyle.blackColor, { fontSize: 18, marginHorizontal: 10, paddingTop: 10, fontWeight: 'bold' }]}>
-                                                {gigDetails.title}
-                                            </Text>
-                                            <Text style={[GlobalStyle.blackColor, { fontSize: 14, margin: 10, }]}>
-                                                {gigDetails.summary}
-                                            </Text>
-                                        </View>
-                                    </View>
-                                    {
-                                        toUserDetails && proDetails && userType === "CREATOR" && (
-                                            <View style={[GlobalStyle.card, GlobalStyle.shadowProp, styles.localCardStyle]}>
-                                                <View style={styles.imgView}>
-                                                    <Image resizeMode='contain' style={styles.img} source={toUserDetails.base64_img ? { uri: `data:image/jpeg;base64,${toUserDetails.base64_img}` } : require('../../assets/images/avatar-1.png')} />
-                                                </View>
-                                                <View style={{ flex: 1, width: 100, marginHorizontal: 10 }}>
-                                                    <Text style={[GlobalStyle.blackColor, { fontSize: 18, paddingTop: 10, fontWeight: 'bold' }]}>
-                                                        {toUserDetails.fname + " " + toUserDetails.lname}
-                                                    </Text>
-                                                    <View style={{ display: 'flex', flexDirection: 'row' }}>
-                                                        <View>
-                                                            <MarkerIcon />
-                                                        </View>
-                                                        <Text style={{ fontSize: 14 }}>
-                                                            &nbsp;{toUserDetails.address}
-                                                        </Text>
-                                                    </View>
-                                                    <Text style={[GlobalStyle.blackColor, { fontSize: 14, paddingTop: 5 }]}>
-                                                        {proDetails.summary}
-                                                    </Text>
-                                                </View>
-                                                <View style={{ justifyContent: 'center' }}>
-                                                    <OnlineIcon height={40} width={40} />
-                                                </View>
-                                            </View>
-                                        )
-                                    }
-                                </View>
-                                <View style={{ display: 'flex', alignItems: 'center', marginTop: 10 }}>
-                                    <View style={[styles.centerBorder, { left: 40 }]} />
-                                    <Text style={{ alignSelf: 'center', paddingHorizontal: 5, color: '#d6d6d6', fontSize: 18, fontWeight: 'bold' }}>Chat History</Text>
-                                    <View style={[styles.centerBorder, { right: 40 }]} />
-                                </View>
-                                <View style={styles.chatContainer}>
-                                    <RenderChats />
-                                </View>
-                            </View>}
-                    </ScrollView>
-                    <View style={styles.footer}>
-                        <View>
-                            <TouchableOpacity style={[styles.btnSend, { paddingRight: 10 }]} onPress={() => setIscamaraModalVisible(true)}>
-                                <CamaraIcon height={30} width={30} />
-                            </TouchableOpacity>
-                            {
-                                iscamaraModalVisible && <UploadPhotosScreen isVisible={iscamaraModalVisible} onClose={closecamaraModel} uploadFunction={uploadAndSendImage}
-                                />
-                            }
-                        </View>
-                        <View style={styles.inputContainer}>
-                            <TextInput style={styles.inputs}
-                                placeholder="Type here..."
-                                placeholderTextColor="#fff"
-                                underlineColorAndroid='transparent'
-                                keyboardType='default'
-                                returnKeyType='send'
-                                value={message ? message : ''}
-                                onChangeText={(msg: string) => setMessage(msg)}
-                                onSubmitEditing={() => onSend()}
-                                blurOnSubmit={false}
-                            />
-                        </View>
-                        <TouchableOpacity style={[styles.btnSend, { paddingRight: 10 }]} onPress={() => onSend()}>
-                            <SendIcon fill={'#fff'} height={30} width={30} />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.btnSend} onPress={isRecording ? stopRecording : startRecognizing} >
-                            {isRecording ? <Image resizeMode='contain' source={require('../../assets/images/stopRecording.png')} style={{ width: 35, height: 35 }} /> : <MicIcon height={35} width={35} />}
-                        </TouchableOpacity>
-                    </View>
-                    {imgUrl && (
-                        <View style={{
-                            width: "100%",
-                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                            marginBottom: 80,
-                            height: '15%',
-                            position: 'relative', // Make the parent view relative for absolute positioning
-                        }}>
-                            <View style={{
-                                borderTopLeftRadius: 5,
-                                borderTopRightRadius: 15,
-                                padding: 10,
-                                width: '30%',
-                            }}>
-                                <View style={{
-                                    width: '100%',
-                                    aspectRatio: 1, // Create a perfect square
-                                    overflow: 'hidden', // Hide any content outside the square
-                                    borderWidth: 2, // Add a border for a circular shape
-                                    borderColor: 'white',
-                                    borderRadius: 10
-                                }}>
-
-                                    <Image
-                                        source={{ uri: imgUrl }}
-                                        style={{
-                                            width: '100%',
-                                            height: '100%',
-                                            resizeMode: 'cover', // Cover the entire circle
-                                        }}
-                                    />
-                                </View>
-                                <TouchableOpacity
-                                    style={{
-                                        position: 'absolute',
-                                        right: -8,
-                                        backgroundColor: 'black',
-                                        borderRadius: 50,
-                                        width: 28,
-                                        height: 28,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                    }}
-                                    onPress={closeImage}
-                                >
-                                    <CloseIcon height={15} width={15} fill={"#fff"} />
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    )}
-                </SafeAreaView>
-    )
     return (
         <>
-            {Platform.OS == "ios" ?
-                <KeyboardAvoidingView behavior={"height"} >
-                    <SafeAreaView style={{ height: '100%' }}>
-                        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: 80, padding: 20 }}>
-                            <Pressable onPress={() => navigation.goBack()}>
-                                <BackIcon />
-                            </Pressable>
-                            {toUserDetails &&
-                                <Text style={{ flex: 1, marginLeft: 26, fontSize: 20, color: '#000', fontWeight: 'bold' }}>Chatting with {toUserDetails.fname}</Text>
-                            }
-                        </View>
 
-                        <ScrollView
-                            ref={scrollViewRef}
-                            style={{ flex: 1 }}
-                            onContentSizeChange={(contentWidth, contentHeight) => {
-                                // Scroll to the end when content size changes (new content is added)
-                                scrollViewRef.current.scrollToEnd({ animated: true });
-                            }}
-                        >
-                            {gigDetails &&
-                                <View style={[GlobalStyle.container, { marginTop: 0 }]}>
-                                    <View>
-                                        <View style={[GlobalStyle.card, GlobalStyle.shadowProp, {
-                                            display: 'flex', flexDirection: 'row', paddingVertical: 10,
-                                            paddingHorizontal: 10
-                                        }]}>
-                                            <View>
-                                                <Image resizeMode='contain' style={styles.imageStyle}
-                                                    defaultSource={require('../../assets/images/image.png')}
-                                                    source={gigDetails.thumbnail_img_url ? { uri: gigDetails.thumbnail_img_url } : require('../../assets/images/piano.png')} />
-                                            </View>
-                                            <View style={{ flex: 1, width: 100 }}>
-                                                <Text style={[GlobalStyle.blackColor, { fontSize: 18, marginHorizontal: 10, paddingTop: 10, fontWeight: 'bold' }]}>
-                                                    {gigDetails.title}
-                                                </Text>
-                                                <Text style={[GlobalStyle.blackColor, { fontSize: 14, margin: 10, }]}>
-                                                    {gigDetails.summary}
-                                                </Text>
-                                            </View>
-                                        </View>
-                                        {
-                                            toUserDetails && proDetails && userType === "CREATOR" && (
-                                                <View style={[GlobalStyle.card, GlobalStyle.shadowProp, styles.localCardStyle]}>
-                                                    <View style={styles.imgView}>
-                                                        <Image resizeMode='contain' style={styles.img} source={toUserDetails.base64_img ? { uri: `data:image/jpeg;base64,${toUserDetails.base64_img}` } : require('../../assets/images/avatar-1.png')} />
-                                                    </View>
-                                                    <View style={{ flex: 1, width: 100, marginHorizontal: 10 }}>
-                                                        <Text style={[GlobalStyle.blackColor, { fontSize: 18, paddingTop: 10, fontWeight: 'bold' }]}>
-                                                            {toUserDetails.fname + " " + toUserDetails.lname}
-                                                        </Text>
-                                                        <View style={{ display: 'flex', flexDirection: 'row' }}>
-                                                            <View>
-                                                                <MarkerIcon />
-                                                            </View>
-                                                            <Text style={{ fontSize: 14 }}>
-                                                                &nbsp;{toUserDetails.address}
-                                                            </Text>
-                                                        </View>
-                                                        <Text style={[GlobalStyle.blackColor, { fontSize: 14, paddingTop: 5 }]}>
-                                                            {proDetails.summary}
-                                                        </Text>
-                                                    </View>
-                                                    <View style={{ justifyContent: 'center' }}>
-                                                        <OnlineIcon height={40} width={40} />
-                                                    </View>
-                                                </View>
-                                            )
-                                        }
-                                    </View>
-                                    <View style={{ display: 'flex', alignItems: 'center', marginTop: 10 }}>
-                                        <View style={[styles.centerBorder, { left: 40 }]} />
-                                        <Text style={{ alignSelf: 'center', paddingHorizontal: 5, color: '#d6d6d6', fontSize: 18, fontWeight: 'bold' }}>Chat History</Text>
-                                        <View style={[styles.centerBorder, { right: 40 }]} />
-                                    </View>
-                                    <View style={styles.chatContainer}>
-                                        <RenderChats />
-                                    </View>
-                                </View>}
-                        </ScrollView>
-                        <View style={styles.footer}>
-                            <View>
-                                <TouchableOpacity style={[styles.btnSend, { paddingRight: 10 }]} onPress={() => setIscamaraModalVisible(true)}>
-                                    <CamaraIcon height={30} width={30} />
-                                </TouchableOpacity>
-                                {
-                                    iscamaraModalVisible && <UploadPhotosScreen isVisible={iscamaraModalVisible} onClose={closecamaraModel} uploadFunction={uploadAndSendImage}
-                                    />
-                                }
-                            </View>
-                            <View style={styles.inputContainer}>
-                                <TextInput style={styles.inputs}
-                                    placeholder="Type here..."
-                                    placeholderTextColor="#fff"
-                                    underlineColorAndroid='transparent'
-                                    keyboardType='default'
-                                    returnKeyType='send'
-                                    value={message ? message : ''}
-                                    onChangeText={(msg: string) => setMessage(msg)}
-                                    onSubmitEditing={() => onSend()}
-                                    blurOnSubmit={false}
-                                />
-                            </View>
-                            <TouchableOpacity style={[styles.btnSend, { paddingRight: 10 }]} onPress={() => onSend()}>
-                                <SendIcon fill={'#fff'} height={30} width={30} />
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.btnSend} onPress={isRecording ? stopRecording : startRecognizing} >
-                                {isRecording ? <Image resizeMode='contain' source={require('../../assets/images/stopRecording.png')} style={{ width: 35, height: 35 }} /> : <MicIcon height={35} width={35} />}
-                            </TouchableOpacity>
-                        </View>
-                        {imgUrl && (
-                            <View style={{
-                                width: "100%",
-                                backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                                marginBottom: 80,
-                                height: '15%',
-                                position: 'relative', // Make the parent view relative for absolute positioning
-                            }}>
-                                <View style={{
-                                    borderTopLeftRadius: 5,
-                                    borderTopRightRadius: 15,
-                                    padding: 10,
-                                    width: '30%',
-                                }}>
-                                    <View style={{
-                                        width: '100%',
-                                        aspectRatio: 1, // Create a perfect square
-                                        overflow: 'hidden', // Hide any content outside the square
-                                        borderWidth: 2, // Add a border for a circular shape
-                                        borderColor: 'white',
-                                        borderRadius: 10
-                                    }}>
-
-                                        <Image
-                                            source={{ uri: imgUrl }}
-                                            style={{
-                                                width: '100%',
-                                                height: '100%',
-                                                resizeMode: 'cover', // Cover the entire circle
-                                            }}
-                                        />
-                                    </View>
-                                    <TouchableOpacity
-                                        style={{
-                                            position: 'absolute',
-                                            right: -8,
-                                            backgroundColor: 'black',
-                                            borderRadius: 50,
-                                            width: 28,
-                                            height: 28,
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                        }}
-                                        onPress={closeImage}
-                                    >
-                                        <CloseIcon height={15} width={15} fill={"#fff"} />
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        )}
-                    </SafeAreaView>
-                </KeyboardAvoidingView> :
+            <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "height" : undefined} >
                 <SafeAreaView style={{ height: '100%' }}>
                     <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: 80, padding: 20 }}>
                         <Pressable onPress={() => navigation.goBack()}>
@@ -722,7 +402,7 @@ const ChatScreen = ({ route, navigation }: any) => {
                                         toUserDetails && proDetails && userType === "CREATOR" && (
                                             <View style={[GlobalStyle.card, GlobalStyle.shadowProp, styles.localCardStyle]}>
                                                 <View style={styles.imgView}>
-                                                    <Image resizeMode='contain' style={styles.img} source={toUserDetails.base64_img ? { uri: `data:image/jpeg;base64,${toUserDetails.base64_img}` } : require('../../assets/images/avatar-1.png')} />
+                                                    <Image resizeMode='cover' style={styles.img} source={toUserDetails.base64_img ? { uri: `data:image/jpeg;base64,${toUserDetails.base64_img}` } : require('../../assets/images/avatar-1.png')} />
                                                 </View>
                                                 <View style={{ flex: 1, width: 100, marginHorizontal: 10 }}>
                                                     <Text style={[GlobalStyle.blackColor, { fontSize: 18, paddingTop: 10, fontWeight: 'bold' }]}>
@@ -759,7 +439,7 @@ const ChatScreen = ({ route, navigation }: any) => {
                     </ScrollView>
                     <View style={styles.footer}>
                         <View>
-                            <TouchableOpacity style={[styles.btnSend, { paddingRight: 10 }]} onPress={() => setIscamaraModalVisible(true)}>
+                            <TouchableOpacity style={[styles.btnSend, { paddingRight: 10, paddingLeft: Platform.OS === 'ios' ? 10 : 'auto' }]} onPress={() => setIscamaraModalVisible(true)}>
                                 <CamaraIcon height={30} width={30} />
                             </TouchableOpacity>
                             {
@@ -783,7 +463,7 @@ const ChatScreen = ({ route, navigation }: any) => {
                         <TouchableOpacity style={[styles.btnSend, { paddingRight: 10 }]} onPress={() => onSend()}>
                             <SendIcon fill={'#fff'} height={30} width={30} />
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.btnSend} onPress={isRecording ? stopRecording : startRecognizing} >
+                        <TouchableOpacity style={[styles.btnSend, { paddingRight: Platform.OS === 'ios' ? 10 : 'auto' }]} onPress={isRecording ? stopRecording : startRecognizing} >
                             {isRecording ? <Image resizeMode='contain' source={require('../../assets/images/stopRecording.png')} style={{ width: 35, height: 35 }} /> : <MicIcon height={35} width={35} />}
                         </TouchableOpacity>
                     </View>
@@ -838,7 +518,8 @@ const ChatScreen = ({ route, navigation }: any) => {
                         </View>
                     )}
                 </SafeAreaView>
-            }
+            </KeyboardAvoidingView>
+
         </>
 
     )

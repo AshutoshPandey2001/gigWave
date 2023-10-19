@@ -307,7 +307,7 @@ const MessageScreen = ({ navigation }: any) => {
               <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingHorizontal: 10 }]} >
                 <View style={[{ display: 'flex', flexDirection: 'row', alignItems: 'center' }]}>
                   <View style={{ height: 70, width: 70, backgroundColor: 'black', borderRadius: 35 }}>
-                    <Image style={{ height: 70, width: 70, borderRadius: 35 }} resizeMode='contain' source={data.to_userProfilepic ? { uri: `data:image/jpeg;base64,${data.to_userProfilepic}` } : require('../../assets/images/avatar-1.png')} />
+                    <Image style={{ height: 70, width: 70, borderRadius: 35, resizeMode: 'cover' }} source={data.to_userProfilepic ? { uri: `data:image/jpeg;base64,${data.to_userProfilepic}` } : require('../../assets/images/avatar-1.png')} />
                     {!data.read && <View style={{ height: 20, width: 20, borderRadius: 10, backgroundColor: '#36CC36', position: 'absolute', bottom: 0, right: 0 }}></View>}
                   </View>
                   <View style={{ flex: 1, marginStart: 10 }}>
