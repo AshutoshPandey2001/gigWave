@@ -279,7 +279,7 @@ const CreategigScreen = ({ navigation }: any) => {
                           onBlur={() => { handleBlur('amount') }}
                           value={values.amount}
                           keyboardType='numeric'
-                          style={{ fontSize: 16, paddingVertical: Platform.OS === 'ios' ? 16 : 0 }}
+                          style={{ fontSize: 16, paddingVertical: Platform.OS === 'ios' ? 16 : 11 }}
                         />
                       </View>
                       {errors.amount && touched.amount &&
