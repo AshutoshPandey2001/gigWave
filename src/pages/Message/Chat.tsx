@@ -564,7 +564,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#05E3D5',
         width: '100%',
         alignItems: 'center',
-        padding: 10
+        padding: 10,
+        paddingBottom: Platform.OS === "ios" ? 25 : 10
     },
     footer_img: {
         flexDirection: 'row',
