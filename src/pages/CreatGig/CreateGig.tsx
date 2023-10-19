@@ -166,7 +166,7 @@ const CreategigScreen = ({ navigation }: any) => {
 
   return (
     <SafeAreaView>
-      <KeyboardAvoidingView behavior={"height"}>
+      <KeyboardAvoidingView  behavior={Platform.OS == "ios" ? "height" : undefined}>
         <ScrollView keyboardShouldPersistTaps={keyboardPersist ? 'always' : 'never'} contentContainerStyle={{ flexGrow: 1 }}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={true}>
             <View style={[GlobalStyle.container]}>

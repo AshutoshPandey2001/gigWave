@@ -1,7 +1,7 @@
 import { useRoute } from '@react-navigation/native'
 import { Formik } from 'formik'
 import React, { useState } from 'react'
-import { KeyboardAvoidingView, Pressable, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native'
+import { KeyboardAvoidingView, Pressable, ScrollView, StatusBar, StyleSheet, Text, TextInput, View,Platform } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useDispatch, useSelector } from 'react-redux'
 import * as yup from "yup"
@@ -68,7 +68,7 @@ const RegisterScreen = ({ navigation }: any) => {
         setModalVisible(false)
     }
     return (
-        <KeyboardAvoidingView behavior={"height"}>
+        <KeyboardAvoidingView  behavior={Platform.OS == "ios" ? "height" : undefined}>
             <SafeAreaView style={GlobalStyle.safeAreaCotainer}>
                 <StatusBar
                     backgroundColor="#fff"

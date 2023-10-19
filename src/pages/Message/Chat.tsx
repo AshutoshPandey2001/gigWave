@@ -601,6 +601,4 @@ const styles = StyleSheet.create({
         color: '#A7A7A7',
         fontSize: 16
     }
-
-
 })

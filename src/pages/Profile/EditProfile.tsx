@@ -13,7 +13,7 @@ import { setLoading } from '../../redux/action/General/GeneralSlice'
 import { RootState } from '../../redux/store'
 import { updateUsersDetails } from '../../services/authServices/authServices'
 import { getProdetailsbyuserid, updateProUsersDetails } from '../../services/proUserService/proUserService'
-import { getProfilePhoto, getUserByUserID, uploadProfilePhoto } from '../../services/userService/userServices'
+import { getUserByUserID, uploadProfilePhoto } from '../../services/userService/userServices'
 
 
 interface InitialFormValues {
