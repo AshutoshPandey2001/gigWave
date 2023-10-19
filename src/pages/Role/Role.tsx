@@ -33,6 +33,8 @@ const RoleScreen = ({ navigation }: any) => {
       notificationListener()
     }
     else {
+      notificationListener()
+
       console.log('fcm_token', fcm_token)
     }
   }, [fcm_token])
