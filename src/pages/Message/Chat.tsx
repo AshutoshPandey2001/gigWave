@@ -311,21 +311,15 @@ const ChatScreen = ({ route, navigation }: any) => {
                             }
                             {selectedImage && (
                                 <Modal transparent={true} animationType="fade" visible={selectedImage !== null}>
-
                                     <View style={{ flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center', paddingTop: Platform.OS == 'ios' ? 25 : 0 }}>
-                                        <Image
-                                            source={{ uri: selectedImage }}
-                                            style={{ width: '90%', height: '90%', resizeMode: 'contain' }}
-                                        />
-                                        <TouchableOpacity
-                                            style={{ position: 'absolute', top: 20, right: 20 }}
-                                            onPress={closeImageModal}
-                                        >
+                                        <Image source={{ uri: selectedImage }} style={{ width: '90%', height: '90%', resizeMode: 'contain' }} />
+                                        <TouchableOpacity style={{ position: 'absolute', top: Platform.OS === "ios" ? 60 : 20, right: 20 }} onPress={closeImageModal}>
                                             <CloseIcon height={30} width={30} fill={"#fff"} />
                                         </TouchableOpacity>
                                     </View>
                                 </Modal>
                             )}
+
                         </View>
                     ))
                 }

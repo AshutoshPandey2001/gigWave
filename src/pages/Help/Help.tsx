@@ -98,18 +98,24 @@ const HelpScreen = ({ route, navigation }: any) => {
                                                     text2: 'Gig Closed Successfully',
                                                 });
                                                 navigation.goBack();
+                                                dispatch(setLoading(false));
+
                                             })
                                             .catch((commitError) => {
                                                 CommanAlertBox({
                                                     title: 'Error',
                                                     message: commitError.message,
                                                 });
+                                                dispatch(setLoading(false));
+
                                             });
                                     } catch (error: any) {
                                         CommanAlertBox({
                                             title: 'Error',
                                             message: error.message,
                                         });
+                                        dispatch(setLoading(false));
+
                                     } finally {
                                         dispatch(setLoading(false));
                                     }
@@ -120,6 +126,8 @@ const HelpScreen = ({ route, navigation }: any) => {
                                         text2: 'Gig Closed Successfully',
                                     });
                                     navigation.goBack();
+                                    dispatch(setLoading(false));
+
                                 }
                             })
                             .catch((e) => {

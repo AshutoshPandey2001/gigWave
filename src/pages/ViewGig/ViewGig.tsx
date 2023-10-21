@@ -85,34 +85,57 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                     text: 'Yes',
                     onPress: () => {
                         dispatch(setLoading(true));
+
                         updateGig({ gig_id: route.params.gig_id, status: "inactive" }, firstToken)
                             .then(async (res) => {
-                                try {
-                                    const senderDocRef = firestore()
-                                        .collection('chats')
-                                        .doc(user.user_id) // sender id
-                                        .collection('messages')
-                                        .doc(`${gigprofiles.to_useruid}@${route.params.gig_id}`);
+                                if (gigprofiles) {
+                                    try {
+                                        const senderDocRef = firestore()
+                                            .collection('chats')
+                                            .doc(`${user.user_id}_${userType}`) // sender id
+                                            .collection('messages')
+                                            .doc(`${gigprofiles.to_useruid}@${route.params.gig_id}`);
 
-                                    const receiverDocRef = firestore()
-                                        .collection('chats')
-                                        .doc(gigprofiles.to_useruid) // receiver id
-                                        .collection('messages')
-                                        .doc(`${user.user_id}@${route.params.gig_id}`);
+                                        const receiverDocRef = firestore()
+                                            .collection('chats')
+                                            .doc(`${gigprofiles.to_useruid}_${userType === "PRO" ? "CREATOR" : "PRO"}`) // receiver id
+                                            .collection('messages')
+                                            .doc(`${user.user_id}@${route.params.gig_id}`);
 
-                                    const batch = firestore().batch();
+                                        const batch = firestore().batch();
+                                        batch.delete(senderDocRef);
+                                        batch.delete(receiverDocRef);
 
-                                    // Use object spread to update the 'status' field
-                                    batch.set(senderDocRef, { ...gigprofiles, status: 'inactive' });
-                                    batch.set(receiverDocRef, {
-                                        ...gigprofiles,
-                                        to_userName: user.fname + " " + user.lname,
-                                        to_userProfilepic: user.base64_img,
-                                        to_useruid: user.user_id,
-                                        status: 'inactive'
-                                    });
+                                        await batch.commit() // Commit the batch write
+                                            .then((res: any) => {
+                                                dispatch(setLoading(false));
 
-                                    await batch.commit(); // Commit the batch write
+                                                Toast.show({
+                                                    type: 'success',
+                                                    text1: 'Success',
+                                                    text2: 'Gig Closed Successfully',
+                                                });
+                                                navigation.goBack();
+                                            })
+                                            .catch((commitError) => {
+                                                dispatch(setLoading(false));
+
+                                                CommanAlertBox({
+                                                    title: 'Error',
+                                                    message: commitError.message,
+                                                });
+                                            });
+                                    } catch (error: any) {
+                                        dispatch(setLoading(false));
+
+                                        CommanAlertBox({
+                                            title: 'Error',
+                                            message: error.message,
+                                        });
+                                    } finally {
+                                        dispatch(setLoading(false));
+                                    }
+                                } else {
 
                                     Toast.show({
                                         type: 'success',
@@ -120,13 +143,8 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                                         text2: 'Gig Closed Successfully',
                                     });
                                     navigation.goBack();
-                                } catch (error: any) {
-                                    CommanAlertBox({
-                                        title: 'Error',
-                                        message: error.message,
-                                    });
-                                } finally {
                                     dispatch(setLoading(false));
+
                                 }
                             })
                             .catch((e) => {

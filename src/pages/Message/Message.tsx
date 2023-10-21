@@ -181,6 +181,7 @@ const MessageScreen = ({ navigation }: any) => {
 
       } catch (error: any) {
         console.error(error);
+        dispatch(setLoading(false));
 
         CommanAlertBox({
           title: 'Error',
@@ -236,6 +237,7 @@ const MessageScreen = ({ navigation }: any) => {
         setProfiles(matchedProfile);
       } catch (error: any) {
         console.error(error);
+        dispatch(setLoading(false));
 
         CommanAlertBox({
           title: 'Error',
