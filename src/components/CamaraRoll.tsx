@@ -87,17 +87,19 @@ const UploadPhotosScreen = ({ isVisible, onClose, uploadFunction }: UploadPhotos
             includeBase64: false,
 
         };
-        launchImageLibrary(options, async (response: any) => {
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-            } else if (response.assets && response.assets.length > 0) {
-                onClose()
-                const selectedImage = response.assets[0];
-                uploadFunction(selectedImage);
-            }
-        })
+        setTimeout(() => {
+            launchImageLibrary(options, async (response: any) => {
+                if (response.didCancel) {
+                    console.log('User cancelled image picker');
+                } else if (response.error) {
+                    console.log('ImagePicker Error: ', response.error);
+                } else if (response.assets && response.assets.length > 0) {
+                    onClose()
+                    const selectedImage = response.assets[0];
+                    uploadFunction(selectedImage);
+                }
+            })
+        }, 300);
     };
     return (
         <Modal visible={isVisible} animationType="slide"

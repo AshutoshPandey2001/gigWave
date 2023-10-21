@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
     Image, SafeAreaView, ScrollView, StyleSheet,
     Text, Pressable,
-    TextInput, TouchableOpacity, View, Modal, KeyboardAvoidingView, Platform
+    TextInput, TouchableOpacity, View, Modal, KeyboardAvoidingView, Platform, Keyboard
 } from 'react-native';
 import MicIcon from '../../assets/icons/Mic.svg';
 import CamaraIcon from '../../assets/icons/camera.svg';
@@ -335,6 +335,10 @@ const ChatScreen = ({ route, navigation }: any) => {
     const closecamaraModel = () => {
         setIscamaraModalVisible(false)
     }
+    const opencamaraModel = () => {
+        Keyboard.dismiss()
+        setIscamaraModalVisible(true)
+    }
     const uploadAndSendImage = (selectedImage: any) => {
         fs.readFile(selectedImage.uri, "base64").then((imgRes) => {
             const imgJson = {
@@ -345,7 +349,6 @@ const ChatScreen = ({ route, navigation }: any) => {
             }
             dispatch(setLoading(true));
             uploadChatimages(imgJson, firstToken).then((res) => {
-                setMessage('');
                 getImage(res?.url)
             }).catch((error) => {
                 CommanAlertBox({
@@ -360,7 +363,9 @@ const ChatScreen = ({ route, navigation }: any) => {
     return (
         <>
 
-            <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "height" : undefined} >
+            <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : undefined}
+                style={{ flex: 1 }}
+            >
                 <SafeAreaView style={{ height: '100%' }}>
                     <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: 80, padding: 20 }}>
                         <Pressable onPress={() => navigation.goBack()}>
@@ -439,86 +444,84 @@ const ChatScreen = ({ route, navigation }: any) => {
                                 </View>
                             </View>}
                     </ScrollView>
-                    <View style={styles.footer}>
-                        <View>
-                            <TouchableOpacity style={[styles.btnSend, { paddingRight: 10, paddingLeft: Platform.OS === 'ios' ? 10 : 'auto' }]} onPress={() => setIscamaraModalVisible(true)}>
-                                <CamaraIcon height={30} width={30} />
-                            </TouchableOpacity>
-                            {
-                                iscamaraModalVisible && <UploadPhotosScreen isVisible={iscamaraModalVisible} onClose={closecamaraModel} uploadFunction={uploadAndSendImage}
-                                />
-                            }
-                        </View>
-                        <View style={styles.inputContainer}>
-                            <TextInput style={styles.inputs}
-                                placeholder="Type here..."
-                                placeholderTextColor="#fff"
-                                underlineColorAndroid='transparent'
-                                keyboardType='default'
-                                returnKeyType='send'
-                                value={message ? message : ''}
-                                onChangeText={(msg: string) => setMessage(msg)}
-                                onSubmitEditing={() => onSend()}
-                                blurOnSubmit={false}
-                            />
-                        </View>
-                        <TouchableOpacity style={[styles.btnSend, { paddingRight: 10 }]} onPress={() => onSend()}>
-                            <SendIcon fill={'#fff'} height={30} width={30} />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={[styles.btnSend, { paddingRight: Platform.OS === 'ios' ? 10 : 'auto' }]} onPress={isRecording ? stopRecording : startRecognizing} >
-                            {isRecording ? <Image resizeMode='contain' source={require('../../assets/images/stopRecording.png')} style={{ width: 35, height: 35 }} /> : <MicIcon height={35} width={35} />}
-                        </TouchableOpacity>
-                    </View>
-                    {imgUrl && (
-                        <View style={{
-                            width: "100%",
-                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                            marginBottom: Platform.OS === 'ios' ? 47 : 80,
-                            height: '15%',
-                            position: 'relative', // Make the parent view relative for absolute positioning
-                        }}>
-                            <View style={{
-                                borderTopLeftRadius: 5,
-                                borderTopRightRadius: 15,
-                                padding: 10,
-                                width: '30%',
-                            }}>
-                                <View style={{
-                                    width: '100%',
-                                    aspectRatio: 1, // Create a perfect square
-                                    overflow: 'hidden', // Hide any content outside the square
-                                    borderWidth: 2, // Add a border for a circular shape
-                                    borderColor: 'white',
-                                    borderRadius: 10
-                                }}>
 
-                                    <Image
-                                        source={{ uri: imgUrl }}
+                    <View style={[styles.footer, { height: imgUrl ? 200 : 80 }]}>
+                        {imgUrl && (
+                            <View style={{ width: '100%' }}>
+                                <View style={{
+                                    borderTopLeftRadius: 5,
+                                    borderTopRightRadius: 15,
+                                    padding: 10,
+                                    width: '30%',
+                                }}>
+                                    <View style={{
+                                        width: '100%',
+                                        aspectRatio: 1, // Create a perfect square
+                                        // overflow: 'hidden', // Hide any content outside the square
+                                        borderWidth: 2, // Add a border for a circular shape
+                                        borderColor: 'white',
+                                        borderRadius: 10
+                                    }}>
+
+                                        <Image
+                                            source={{ uri: imgUrl }}
+                                            style={{
+                                                width: '100%',
+                                                height: '100%',
+                                                resizeMode: 'cover', // Cover the entire circle
+                                            }}
+                                        />
+                                    </View>
+                                    <TouchableOpacity
                                         style={{
-                                            width: '100%',
-                                            height: '100%',
-                                            resizeMode: 'cover', // Cover the entire circle
+                                            position: 'absolute',
+                                            right: -8,
+                                            backgroundColor: 'black',
+                                            borderRadius: 50,
+                                            width: 28,
+                                            height: 28,
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
                                         }}
-                                    />
+                                        onPress={closeImage}
+                                    >
+                                        <CloseIcon height={15} width={15} fill={"#fff"} />
+                                    </TouchableOpacity>
                                 </View>
-                                <TouchableOpacity
-                                    style={{
-                                        position: 'absolute',
-                                        right: -8,
-                                        backgroundColor: 'black',
-                                        borderRadius: 50,
-                                        width: 28,
-                                        height: 28,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                    }}
-                                    onPress={closeImage}
-                                >
-                                    <CloseIcon height={15} width={15} fill={"#fff"} />
-                                </TouchableOpacity>
                             </View>
+                        )}
+                        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                            <View>
+                                <TouchableOpacity style={[styles.btnSend, { paddingRight: 10, paddingLeft: Platform.OS === 'ios' ? 10 : 'auto' }]} onPress={() => opencamaraModel()}>
+                                    <CamaraIcon height={30} width={30} />
+                                </TouchableOpacity>
+                                {
+                                    iscamaraModalVisible && <UploadPhotosScreen isVisible={iscamaraModalVisible} onClose={closecamaraModel} uploadFunction={uploadAndSendImage}
+                                    />
+                                }
+                            </View>
+                            <View style={styles.inputContainer}>
+                                <TextInput style={styles.inputs}
+                                    placeholder="Type here..."
+                                    placeholderTextColor="#fff"
+                                    underlineColorAndroid='transparent'
+                                    keyboardType='default'
+                                    returnKeyType='send'
+                                    value={message ? message : ''}
+                                    onChangeText={(msg: string) => setMessage(msg)}
+                                    onSubmitEditing={() => onSend()}
+                                    blurOnSubmit={false}
+                                />
+                            </View>
+                            <TouchableOpacity style={[styles.btnSend, { paddingRight: 10 }]} onPress={() => onSend()}>
+                                <SendIcon fill={'#fff'} height={30} width={30} />
+                            </TouchableOpacity>
+                            <TouchableOpacity style={[styles.btnSend, { paddingRight: Platform.OS === 'ios' ? 10 : 'auto' }]} onPress={isRecording ? stopRecording : startRecognizing} >
+                                {isRecording ? <Image resizeMode='contain' source={require('../../assets/images/stopRecording.png')} style={{ width: 35, height: 35 }} /> : <MicIcon height={35} width={35} />}
+                            </TouchableOpacity>
                         </View>
-                    )}
+                    </View>
+
                 </SafeAreaView>
             </KeyboardAvoidingView>
 
@@ -559,13 +562,13 @@ const styles = StyleSheet.create({
         width: '20%'
     },
     footer: {
-        flexDirection: 'row',
+        flexDirection: 'column',
         position: 'absolute',
         bottom: 0,
-        height: 80,
+        // height: 80,
         backgroundColor: '#05E3D5',
         width: '100%',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         padding: 10,
         paddingBottom: Platform.OS === "ios" ? 25 : 10
     },
