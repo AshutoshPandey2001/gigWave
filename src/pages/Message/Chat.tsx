@@ -154,7 +154,7 @@ const ChatScreen = ({ route, navigation }: any) => {
             gig_id: gigDetails.gig_id,
             latest_message: myMsg.message,
             latest_messageTime: new Date(),
-            img: myMsg.img,
+            img: myMsg.img ? 'Photo' : '',
             to_userName: '',
             to_useruid: '',
             to_userProfilepic: '',
@@ -311,7 +311,8 @@ const ChatScreen = ({ route, navigation }: any) => {
                             }
                             {selectedImage && (
                                 <Modal transparent={true} animationType="fade" visible={selectedImage !== null}>
-                                    <View style={{ flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
+
+                                    <View style={{ flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center', paddingTop: Platform.OS == 'ios' ? 25 : 0 }}>
                                         <Image
                                             source={{ uri: selectedImage }}
                                             style={{ width: '90%', height: '90%', resizeMode: 'contain' }}
@@ -351,6 +352,7 @@ const ChatScreen = ({ route, navigation }: any) => {
                     title: 'Error',
                     message: error.message,
                 });
+                dispatch(setLoading(false))
             })
         })
     }
@@ -471,7 +473,7 @@ const ChatScreen = ({ route, navigation }: any) => {
                         <View style={{
                             width: "100%",
                             backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                            marginBottom: 80,
+                            marginBottom: Platform.OS === 'ios' ? 47 : 80,
                             height: '15%',
                             position: 'relative', // Make the parent view relative for absolute positioning
                         }}>

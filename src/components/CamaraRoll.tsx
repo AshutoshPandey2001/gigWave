@@ -78,7 +78,7 @@ const UploadPhotosScreen = ({ isVisible, onClose, uploadFunction }: UploadPhotos
                     uploadFunction(selectedImage);
                 }
             });
-        }, 100);
+        }, 200);
     }
     const selectImage = () => {
         const options: ImageLibraryOptions = {
