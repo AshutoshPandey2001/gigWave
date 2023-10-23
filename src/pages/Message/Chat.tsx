@@ -19,12 +19,12 @@ import { setLoading } from '../../redux/action/General/GeneralSlice';
 import { getUserByUserID } from '../../services/userService/userServices';
 import { getGigByGig_id } from '../../services/gigService/gigService';
 import CommanAlertBox from '../../components/CommanAlertBox';
-import { getImageFromdb, getProdetailsbyuserid, uploadChatimages } from '../../services/proUserService/proUserService';
+import { getProdetailsbyuserid } from '../../services/proUserService/proUserService';
 import firestore from '@react-native-firebase/firestore';
 import UploadPhotosScreen from '../../components/CamaraRoll'
-import fs from 'react-native-fs';
 import CloseIcon from '../../assets/icons/close.svg';
 import { sendPushNotification } from '../../services/noticationService/notification';
+import storage from '@react-native-firebase/storage';
 
 const ChatScreen = ({ route, navigation }: any) => {
     const [message, setMessage] = useState('');
@@ -182,13 +182,6 @@ const ChatScreen = ({ route, navigation }: any) => {
             console.error('Error sending message: ', error);
         }
     }
-    const onSpeechResults = (e: any) => {
-        //Invoked when SpeechRecognizer is finished recognizing
-        if (e.value && e.value.length) {
-            setResults(e.value);
-            setMessage(e.value[0])
-        }
-    };
 
     const startRecognizing = async () => {
         const granted = await checkPermission();
@@ -225,22 +218,7 @@ const ChatScreen = ({ route, navigation }: any) => {
                 });
         })
     }
-    const getImage = (img: string) => {
-        if (img.indexOf("http://") == 0 || img.indexOf("https://") == 0) {
-            // do something here
-            getImageFromdb(img, firstToken).then((res) => {
-                setImgUrl(`data:image/jpeg;base64,${res}`);
-                // onSend(`data:image/jpeg;base64,${res}`)
-                dispatch(setLoading(false));
-            }).catch((err) => {
-                CommanAlertBox({
-                    title: 'Error',
-                    message: err.message,
-                });
-                dispatch(setLoading(false));
-            })
-        }
-    }
+
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
     const openImageModal = (img: string) => {
@@ -264,7 +242,7 @@ const ChatScreen = ({ route, navigation }: any) => {
                                     <View style={{ display: 'flex', flexDirection: 'column' }}>
                                         <View style={{ backgroundColor: '#05E3D5', maxWidth: '80%', borderTopLeftRadius: 10, borderTopRightRadius: 10, borderBottomLeftRadius: 10 }}>
                                             {data.img &&
-                                                <View style={{ padding: 5 }}>
+                                                <View style={{ padding: 5, display: 'flex', alignItems: 'center' }}>
                                                     <TouchableOpacity onPress={() => openImageModal(data.img)}>
                                                         <Image source={{ uri: data.img }} style={{ width: 200, height: 300, borderRadius: 10 }} />
                                                     </TouchableOpacity>
@@ -288,7 +266,7 @@ const ChatScreen = ({ route, navigation }: any) => {
                                     <View style={{ display: 'flex', flexDirection: 'column' }}>
                                         <View style={{ backgroundColor: '#EAEAEA', maxWidth: '80%', borderTopLeftRadius: 10, borderTopRightRadius: 10, borderBottomLeftRadius: 10 }}>
                                             {data.img &&
-                                                <View style={{ padding: 5 }}>
+                                                <View style={{ padding: 5, display: 'flex', alignItems: 'center' }}>
                                                     {data.img && (
                                                         <TouchableOpacity onPress={() => openImageModal(data.img)}>
                                                             <Image source={{ uri: data.img }} style={{ width: 200, height: 300, borderRadius: 10 }} />
@@ -333,25 +311,29 @@ const ChatScreen = ({ route, navigation }: any) => {
         Keyboard.dismiss()
         setIscamaraModalVisible(true)
     }
-    const uploadAndSendImage = (selectedImage: any) => {
-        fs.readFile(selectedImage.uri, "base64").then((imgRes) => {
-            const imgJson = {
-                "pro_id": proDetails.user_id,
-                "gig_id": gigDetails.gig_id,
-                "base64_image": imgRes,
-                "timestamp": new Date()
-            }
-            dispatch(setLoading(true));
-            uploadChatimages(imgJson, firstToken).then((res) => {
-                getImage(res?.url)
-            }).catch((error) => {
-                CommanAlertBox({
-                    title: 'Error',
-                    message: error.message,
-                });
-                dispatch(setLoading(false))
-            })
-        })
+    const uploadAndSendImage = async (selectedImage: any) => {
+        try {
+            dispatch(setLoading(true))
+            const imageRef = storage().ref(`images/${gigDetails.gig_id}/${selectedImage.fileName}_${Math.floor(Math.random() * new Date().getTime())}`);
+
+            const snapshot = await imageRef.putFile(selectedImage.uri);
+            console.log('Image uploaded successfully', snapshot);
+
+            const downloadURL = await imageRef.getDownloadURL();
+            console.log('Image downloadURL successfully', downloadURL);
+            setImgUrl(downloadURL);
+            dispatch(setLoading(false))
+
+        } catch (error: any) {
+            CommanAlertBox({
+                title: 'Error',
+                message: error.message,
+            });
+            dispatch(setLoading(false))
+
+            console.error('Error uploading image:', error);
+        }
+
     }
 
     return (

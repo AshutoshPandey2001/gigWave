@@ -61,9 +61,9 @@ const UploadPhotosScreen = ({ isVisible, onClose, uploadFunction }: UploadPhotos
                 saveToPhotos: true,
                 cameraType: 'front',
                 presentationStyle: 'fullScreen',
-                maxHeight: 250,
-                maxWidth: 250,
-                quality: 1,
+                maxHeight: 1080,
+                maxWidth: 1080,
+                quality: 0.7,
             }
             launchCamera(cameraOption, async (res: any) => {
                 if (res.didCancel) {
@@ -83,8 +83,10 @@ const UploadPhotosScreen = ({ isVisible, onClose, uploadFunction }: UploadPhotos
     const selectImage = () => {
         const options: ImageLibraryOptions = {
             mediaType: 'photo',
-            quality: 0.2,
+            quality: 0.7,
             includeBase64: false,
+            maxHeight: 1080,
+            maxWidth: 1080,
 
         };
         setTimeout(() => {
