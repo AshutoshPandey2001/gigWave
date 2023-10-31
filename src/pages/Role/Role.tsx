@@ -8,7 +8,7 @@ import { GlobalStyle } from '../../globalStyle'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
 import { setUserType } from '../../redux/action/User/userTypeSlice'
 import { RootState } from '../../redux/store'
-import { notificationListener, requestUserPermission } from '../../services/noticationService/notification'
+import { getFcmToken, notificationListener, requestUserPermission } from '../../services/noticationService/notification'
 import { setDeviceToken } from '../../services/userService/userServices'
 
 const RoleScreen = ({ navigation }: any) => {
@@ -18,6 +18,7 @@ const RoleScreen = ({ navigation }: any) => {
   const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
 
   useEffect(() => {
+    getFcmToken()
     requestUserPermission();
   }, [])
 

@@ -55,9 +55,6 @@ target 'Gigwave' do
   flags = get_default_flags()
 
 #  permission_path='../node_modules/react-native-permissions/ios'
-  pod 'Firebase', :modular_headers => true
-  pod 'FirebaseCore', :modular_headers => true
-  pod 'GoogleUtilities', :modular_headers => true
 #  pod 'Permission-Camera',:path=>"#{permission_path}/Camera"
 #  pod 'Permission-PhotoLibrary',:path=>"#{permission_path}/PhotoLibrary"
   
