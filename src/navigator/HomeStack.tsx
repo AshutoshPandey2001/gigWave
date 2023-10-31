@@ -15,6 +15,7 @@ import { RootState } from '../redux/store';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { GlobalStyle } from '../globalStyle';
 import { setIsCreateButton } from '../redux/action/User/userTypeSlice';
+import PaymentScreen from '../components/PaymentScreen';
 
 
 const HomeStack = ({ navigation, route }: any) => {
@@ -76,6 +77,12 @@ const HomeStack = ({ navigation, route }: any) => {
                 contentStyle: { backgroundColor: "#fff" }
             }} />
             <GigStack.Screen name="Single-pro" component={SingleproScreen} options={{
+                headerBackButtonMenuEnabled: true,
+                headerTitle: '',
+                headerShadowVisible: false,
+                contentStyle: { backgroundColor: "#fff" }
+            }} />
+            <GigStack.Screen name="Payment" component={PaymentScreen} options={{
                 headerBackButtonMenuEnabled: true,
                 headerTitle: '',
                 headerShadowVisible: false,

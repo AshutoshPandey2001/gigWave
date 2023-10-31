@@ -35,3 +35,22 @@ export const checkAccountStatus = async (userData: any, token: any): Promise<any
         throw error; // Rethrow the error to be caught by the caller
     }
 }
+
+export const paymentIntent = async (intent: any, token: any): Promise<any> => {
+    try {
+        const response = await axios({
+            method: 'post',
+            url: `${API_BASE_URL}/create_payment_intent`,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            data: intent
+        });
+        return response.data; // Return the response data
+    } catch (error) {
+        console.error('error', error);
+
+        throw error; // Rethrow the error to be caught by the caller
+    }
+}

@@ -7,6 +7,7 @@ import { RootState } from '../../redux/store'
 import CommanAlertBox from '../../components/CommanAlertBox'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
 import { getUserByUserID } from '../../services/userService/userServices'
+import PaymentScreen from '../../components/PaymentScreen'
 
 const SingleproScreen = ({ route, navigation }: any) => {
     const [proDetails, setproDetails] = useState<any>()
@@ -14,6 +15,7 @@ const SingleproScreen = ({ route, navigation }: any) => {
     const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
     const dispatch = useDispatch()
     const [profilePic, setProfilePic] = useState<any>()
+    const [paymentScreen, setpaymentScreen] = useState<any>(false)
 
     useEffect(() => {
         getProuserData()
@@ -63,6 +65,7 @@ const SingleproScreen = ({ route, navigation }: any) => {
     return (
         <SafeAreaView>
             <ScrollView>
+
                 {
                     proUserDetails ?
                         <View style={[GlobalStyle.container, { marginTop: 0 }]}>
@@ -79,7 +82,7 @@ const SingleproScreen = ({ route, navigation }: any) => {
                                     <Pressable style={[GlobalStyle.button, { width: '50%', backgroundColor: '#000', marginRight: 10 }]} onPress={() => navigation.navigate('DirectChat', { user_id: route.params.user_id, gig_id: route.params.gig_id })}>
                                         <Text style={[GlobalStyle.btntext, { fontWeight: 'bold', fontSize: 18 }]}>Message Pro</Text>
                                     </Pressable>
-                                    <Pressable style={[GlobalStyle.button, { width: '50%' }]}>
+                                    <Pressable style={[GlobalStyle.button, { width: '50%' }]} onPress={() => navigation.navigate('Payment', { user_id: route.params.user_id, amount: route.params.budget })}>
                                         <Text style={[GlobalStyle.btntext, { fontWeight: 'bold', fontSize: 18 }]}>Pay Pro</Text>
                                     </Pressable>
                                 </View>
@@ -139,6 +142,8 @@ const SingleproScreen = ({ route, navigation }: any) => {
                             </Pressable>
                         </View> : null
                 }
+
+
 
             </ScrollView>
         </SafeAreaView>
