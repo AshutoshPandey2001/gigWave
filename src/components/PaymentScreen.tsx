@@ -186,7 +186,7 @@ const PaymentScreen = ({ route, navigation }: any) => {
                         {cardInfo && (
                             <View style={{ justifyContent: 'center', alignItems: 'flex-start', padding: 15 }}>
                                 <Text style={{ color: 'black', fontSize: 18, margin: 2 }}>
-                                    Card number: <Text style={{ fontWeight: 'bold' }}>XXXX .... {cardInfo.last2}</Text>
+                                    Card number: <Text style={{ fontWeight: 'bold' }}>XXXX .... {cardInfo.last4}</Text>
                                 </Text>
                                 <Text style={{ color: 'black', fontSize: 18, margin: 2 }}>
                                     MM/YY: <Text style={{ fontWeight: 'bold' }}>{cardInfo.expiryMonth}/{cardInfo.expiryYear}</Text>
