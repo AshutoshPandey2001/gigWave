@@ -184,7 +184,7 @@ const HelpScreen = ({ route, navigation }: any) => {
                         <Text style={[GlobalStyle.blackColor, Style.commanmargin]}>Review Pro List</Text>
                         {matchedprouserList?.length > 0 ?
                             matchedprouserList?.map((item: any, i) =>
-                                <Pressable onPress={() => route.params.status === 'active' ? navigation.navigate('Single-pro', { user_id: item.user_id, gig_id: route.params.gig_id, budget: route.params.budget }) : null} key={i}>
+                                <Pressable onPress={() => route.params.status === 'active' ? navigation.navigate('Single-pro', { user_id: item.user_id, gig_id: route.params.gig_id, budget: route.params.budget, gigTitle: route.params.title }) : null} key={i}>
                                     <View style={[GlobalStyle.card, GlobalStyle.shadowProp, Style.localCardStyle]}>
                                         <View style={{ padding: 10 }}>
                                             <Image resizeMode='contain' style={Style.profileImg} source={item.base64_img ? { uri: `data:image/jpeg;base64,${item.base64_img}` } : require('../../assets/images/avatar_profile.png')} />

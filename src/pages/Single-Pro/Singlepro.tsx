@@ -7,7 +7,6 @@ import { RootState } from '../../redux/store'
 import CommanAlertBox from '../../components/CommanAlertBox'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
 import { getUserByUserID } from '../../services/userService/userServices'
-import PaymentScreen from '../../components/PaymentScreen'
 
 const SingleproScreen = ({ route, navigation }: any) => {
     const [proDetails, setproDetails] = useState<any>()
@@ -82,7 +81,7 @@ const SingleproScreen = ({ route, navigation }: any) => {
                                     <Pressable style={[GlobalStyle.button, { width: '50%', backgroundColor: '#000', marginRight: 10 }]} onPress={() => navigation.navigate('DirectChat', { user_id: route.params.user_id, gig_id: route.params.gig_id })}>
                                         <Text style={[GlobalStyle.btntext, { fontWeight: 'bold', fontSize: 18 }]}>Message Pro</Text>
                                     </Pressable>
-                                    <Pressable style={[GlobalStyle.button, { width: '50%' }]} onPress={() => navigation.navigate('Payment', { user_id: route.params.user_id, amount: route.params.budget })}>
+                                    <Pressable style={[GlobalStyle.button, { width: '50%' }]} onPress={() => navigation.navigate('Payment', { user_id: route.params.user_id, amount: route.params.budget, gigTitle: route.params.gigTitle, payeeName: `${proUserDetails.fname + " " + proUserDetails.lname}` })}>
                                         <Text style={[GlobalStyle.btntext, { fontWeight: 'bold', fontSize: 18 }]}>Pay Pro</Text>
                                     </Pressable>
                                 </View>
