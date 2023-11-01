@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, Button, TouchableOpacity, Modal } from 'react-native';
-import { CardField, useStripe } from '@stripe/stripe-react-native';
+import { useStripe, CardForm, CardFormView, CardField } from '@stripe/stripe-react-native';
 import { paymentIntent } from '../services/payment/paymentService';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
@@ -16,9 +16,11 @@ const PaymentScreen = ({ route, navigation }: any) => {
     const [cardInfo, setCardInfo] = useState<any>(null)
     const dispatch = useDispatch()
     const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
+
     const handlePayment = async () => {
         setIsVisible(true)
     };
+
     const onClose = () => {
         setIsVisible(false)
     }
@@ -27,7 +29,7 @@ const PaymentScreen = ({ route, navigation }: any) => {
         try {
             const intent = await paymentIntent({
                 "amount": route.params.amount,
-                "currency": "INR",
+                "currency": "usd",
                 "user_id": route.params.user_id
             }, firstToken)
             dispatch(setLoading(true))
@@ -59,8 +61,26 @@ const PaymentScreen = ({ route, navigation }: any) => {
         }
     }
     return (
-        <View style={{ flex: 1, justifyContent: 'center' }}>
-            <CardField
+        <View style={{ flex: 1 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                <Text style={GlobalStyle.title}>Add Card Details</Text>
+            </View>
+            <CardForm
+                defaultValues={{ countryCode: 'US' }}
+                cardStyle={{
+                    backgroundColor: '#FFFFFF',
+                    textColor: '#000000',
+                }}
+                placeholders={{
+                    number: '4242 4242 4242 4242',
+                }}
+                onFormComplete={(cardDetails) => {
+                    console.log('card details', cardDetails);
+                    fetchCardDetail(cardDetails)
+                }}
+                style={{ height: 200, padding: 20, margin: 20 }}
+            />
+            {/* <CardField
                 postalCodeEnabled={false}
                 placeholders={{
                     number: '4242 4242 4242 4242',
@@ -68,18 +88,21 @@ const PaymentScreen = ({ route, navigation }: any) => {
                 cardStyle={{
                     backgroundColor: '#FFFFFF',
                     textColor: '#000000',
+                    borderColor: '#000',
+                    borderWidth: 1,
                 }}
                 style={{
-                    width: '100%',
+                    width: '98%',
                     height: 50,
-                    marginVertical: 30,
+                    borderColor: '#000',
+                    padding: 20
                 }}
                 onCardChange={(cardDetails) => {
                     fetchCardDetail(cardDetails)
                 }}
 
-            />
-            <Button title="Proceed to Payment" onPress={() => handlePayment()} disabled={!cardInfo} />
+            /> */}
+            <Button title="Proceed to Payment" color={'green'} onPress={() => handlePayment()} disabled={!cardInfo} />
             <Modal
                 visible={isVisible}
                 animationType="slide"
