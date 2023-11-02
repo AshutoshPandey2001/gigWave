@@ -30,27 +30,26 @@ export const checkAccountStatus = async (userData: any, token: any): Promise<any
         });
         return response.data; // Return the response data
     } catch (error) {
-        console.error('error', error);
-
         throw error; // Rethrow the error to be caught by the caller
     }
 }
 
 export const paymentIntent = async (intent: any, token: any): Promise<any> => {
-    try {
-        const response = await axios({
-            method: 'post',
-            url: `${API_BASE_URL}/create_payment_intent`,
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
-            data: intent
-        });
-        return response.data; // Return the response data
-    } catch (error) {
-        console.error('error', error);
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios({
+                method: 'post',
+                url: `${API_BASE_URL}/create_payment_intent`,
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                data: intent
+            });
+            resolve(response.data); // Return the response data
+        } catch (error) {
+            reject(error)
+        }
 
-        throw error; // Rethrow the error to be caught by the caller
-    }
+    })
 }

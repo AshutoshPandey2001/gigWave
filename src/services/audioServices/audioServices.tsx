@@ -9,7 +9,6 @@ const audioRecorderPlayer = new AudioRecorderPlayer();
 export const checkPermission = async () => {
     if (Platform.OS == 'android') {
         const permission = PermissionsAndroid.PERMISSIONS.RECORD_AUDIO
-
         try {
             const hasPermission = await PermissionsAndroid.check(permission);
             if (hasPermission) {
