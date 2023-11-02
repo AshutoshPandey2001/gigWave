@@ -195,7 +195,7 @@ const CreategigScreen = ({ navigation }: any) => {
                         onBlur={() => { handleBlur('description') }}
                         value={values.description}
                         maxLength={400}
-                        style={{ width: '80%', fontSize: 16 }}
+                        style={{ width: '80%', fontSize: 16,color:'#000' }}
                       />
                       <View style={{ alignItems: 'center' }}>
                         <TouchableOpacity onPress={isRecording ? stopRecording : startRecognizing} >
@@ -225,6 +225,7 @@ const CreategigScreen = ({ navigation }: any) => {
                           dropdownRef.current.focus();
                         }}
                         closeModel={closeModel}
+                        
                       />
                       <TouchableOpacity onPress={() => { setModalVisible(true); setkeyboardPersist(true) }}>
 
@@ -279,7 +280,7 @@ const CreategigScreen = ({ navigation }: any) => {
                           onBlur={() => { handleBlur('amount') }}
                           value={values.amount}
                           keyboardType='numeric'
-                          style={{ fontSize: 16, paddingVertical: Platform.OS === 'ios' ? 16 : 11 }}
+                          style={{ fontSize: 16, paddingVertical: Platform.OS === 'ios' ? 16 : 11,color:'#000' }}
                         />
                       </View>
                       {errors.amount && touched.amount &&

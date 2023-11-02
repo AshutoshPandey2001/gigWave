@@ -16,10 +16,14 @@ const PaymentScreen = ({ route, navigation }: any) => {
     const dispatch = useDispatch()
     const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
     const [amount, setamount] = useState(route.params.amount);
+    const [amountError, setAmountError] = useState('');
     const [paymentConfirmation, setPaymentConfirmation] = useState<any>(null);
     const [isPaymentSuccess, setIsPaymentSuccess] = useState<any>(false);
     const handlePayment = async () => {
-        setIsVisible(true)
+        if (!amount)
+            setAmountError('Please enter valid amount!')
+        else
+            setIsVisible(true)
     };
 
     const onClose = () => {
@@ -108,13 +112,26 @@ const PaymentScreen = ({ route, navigation }: any) => {
                         <View style={[Style.inputField]}>
                             <Text style={Style.inputLabel}>Amount</Text>
                             <TextInput
-                                onChangeText={(amt: any) => setamount(amt)}
+                                onChangeText={(amt: any) => {
+                                    setamount(amt)
+                                    if (amt)
+                                        setAmountError('')
+                                    else
+                                        setAmountError('Please enter valid amount!')
+                                }}
+                                autoFocus={true}
                                 placeholder='0.00'
                                 value={amount}
                                 keyboardType='numeric'
-                                style={{ fontSize: 16, paddingVertical: Platform.OS === 'ios' ? 16 : 11 }}
+                                placeholderTextColor={'#05E3D5'}
+                                style={{ fontSize: 16, paddingVertical: Platform.OS === 'ios' ? 16 : 11, color: '#000' }}
                             />
                         </View>
+                        {amountError &&
+                            <View>
+                                <Text style={[GlobalStyle.errorMsg,{paddingStart:25}]}>{amountError}</Text>
+                            </View>
+                        }
                         <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                             <Text style={GlobalStyle.title}>Add Card Details</Text>
                         </View>
@@ -123,15 +140,17 @@ const PaymentScreen = ({ route, navigation }: any) => {
                             cardStyle={{
                                 backgroundColor: '#FFFFFF',
                                 textColor: '#000000',
+                                placeholderColor: '#05E3D5'
+
                             }}
                             placeholders={{
-                                number: '4242 4242 4242 4242',
+                                number: '**** **** **** 4242',
                             }}
                             onFormComplete={(cardDetails) => {
                                 console.log('card details', cardDetails);
                                 fetchCardDetail(cardDetails)
                             }}
-                            style={{ height: 250, padding: 20, margin: 20, marginBottom: 0 }}
+                            style={{ height: '45%', padding: 20, margin: 20, marginBottom: 0 }}
                         />
                         <Pressable style={[GlobalStyle.button, { marginHorizontal: 20, marginTop: 0 }]} disabled={!cardInfo} onPress={() => handlePayment()}>
                             <Text style={GlobalStyle.btntext}>Proceed to Payment</Text>

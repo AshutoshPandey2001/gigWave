@@ -29,7 +29,6 @@ import storage from '@react-native-firebase/storage';
 const ChatScreen = ({ route, navigation }: any) => {
     const [message, setMessage] = useState('');
     const [imgUrl, setImgUrl] = useState<string | null>(null);
-    const [result, setResults] = useState([]);
     const [isRecording, setIsRecording] = useState(false);
     const [gigDetails, setGigDetails] = useState<any>()
     const [toUserDetails, setTouserDetails] = useState<any>()
