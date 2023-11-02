@@ -150,7 +150,7 @@ const PaymentScreen = ({ route, navigation }: any) => {
             >
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.5)' }}>
                     <View style={{
-                        height: "35%",
+                        height: Platform.OS === 'ios' ? '35%' : '40%',
                         width: "100%",
                         backgroundColor: 'white',
                         elevation: 5,
@@ -177,6 +177,7 @@ const PaymentScreen = ({ route, navigation }: any) => {
                                 </Text>
                             </View>
                         )}
+
                         <View style={{ justifyContent: 'flex-end', alignItems: 'center', marginBottom: 12 }}>
                             <Pressable
                                 onPress={() => onConfirm()}
