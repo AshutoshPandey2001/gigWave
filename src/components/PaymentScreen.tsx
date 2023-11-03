@@ -150,7 +150,7 @@ const PaymentScreen = ({ route, navigation }: any) => {
                                 console.log('card details', cardDetails);
                                 fetchCardDetail(cardDetails)
                             }}
-                            style={{ height: '45%', padding: 20, margin: 20, marginBottom: 0 }}
+                            style={{ minHeight: Platform.OS === 'ios' ? '30%' : '45%', padding: 20, margin: 20, marginBottom: 0 }}
                         />
                         <Pressable style={[GlobalStyle.button, { marginHorizontal: 20, marginTop: 0 }]} disabled={!cardInfo} onPress={() => handlePayment()}>
                             <Text style={GlobalStyle.btntext}>Proceed to Payment</Text>
