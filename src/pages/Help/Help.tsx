@@ -196,7 +196,7 @@ const HelpScreen = ({ route, navigation }: any) => {
                                             <View style={{ display: 'flex', flexDirection: 'row' }}>
                                                 <MarkerIcon />
                                                 {/* <Image resizeMode='contain' source={require('../../assets/icons/marker.png')} /> */}
-                                                <Text style={{ fontSize: 14 }}>
+                                                <Text style={{ fontSize: 14, color: 'gray' }}>
                                                     &nbsp;{item.city}
 
                                                 </Text>
@@ -209,7 +209,7 @@ const HelpScreen = ({ route, navigation }: any) => {
                                 </Pressable>
                             )
                             : <View style={{ marginTop: 50 }}>
-                                <Text style={{ fontWeight: 'bold', fontSize: 18, textAlign: 'center' }}>
+                                <Text style={{ fontWeight: 'bold', fontSize: 18, textAlign: 'center', color: 'gray' }}>
                                     No matches found
                                 </Text>
                             </View>}

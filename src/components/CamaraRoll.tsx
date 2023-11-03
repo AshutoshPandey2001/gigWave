@@ -108,7 +108,7 @@ const UploadPhotosScreen = ({ isVisible, onClose, uploadFunction }: UploadPhotos
             transparent={true} onRequestClose={onClose} onPointerDown={onClose}>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }} onTouchEnd={onClose}>
                 <View style={{
-                    height: "22%",
+                    height: "25%",
                     width: "100%",
                     marginTop: 'auto',
                     backgroundColor: 'white',

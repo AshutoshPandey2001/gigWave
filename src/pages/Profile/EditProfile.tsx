@@ -187,11 +187,12 @@ const EditProfileScreen = ({ navigation }: any) => {
                         <View style={styles.cardContainer}>
                             <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>First</Text>
                             <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: Platform.OS === 'ios' ? 15 : 0 }]}>
-                                <TextInput style={{ flex: 1, fontSize: 16 }}
+                                <TextInput style={{ flex: 1, fontSize: 16, color: '#000' }}
                                     onChangeText={handleChange('fname')}
                                     onBlur={() => { handleBlur('fname') }}
                                     value={values.fname}
                                     placeholder='First Name'
+                                    placeholderTextColor='gray'
                                 />
 
 
@@ -203,11 +204,12 @@ const EditProfileScreen = ({ navigation }: any) => {
                         <View style={styles.cardContainer}>
                             <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Last</Text>
                             <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: Platform.OS === 'ios' ? 15 : 0 }]}>
-                                <TextInput style={{ flex: 1, fontSize: 16 }}
+                                <TextInput style={{ flex: 1, fontSize: 16, color: '#000' }}
                                     onChangeText={handleChange('lname')}
                                     onBlur={() => { handleBlur('lname') }}
                                     value={values.lname}
                                     placeholder='Last Name'
+                                    placeholderTextColor='gray'
                                 />
                             </View>
                             {errors.lname && touched.lname &&
@@ -217,13 +219,14 @@ const EditProfileScreen = ({ navigation }: any) => {
                         <View style={styles.cardContainer}>
                             <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Phone</Text>
                             <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: Platform.OS === 'ios' ? 15 : 0 }]}>
-                                <TextInput style={{ flex: 1, fontSize: 16 }}
+                                <TextInput style={{ flex: 1, fontSize: 16, color: '#000' }}
                                     onChangeText={handleChange('phone')}
                                     onBlur={() => { handleBlur('phone') }}
                                     value={values.phone}
                                     keyboardType='phone-pad'
                                     placeholder='Phone'
                                     maxLength={10}
+                                    placeholderTextColor='gray'
                                     editable={false}
                                 />
                             </View>
@@ -259,12 +262,13 @@ const EditProfileScreen = ({ navigation }: any) => {
                         <View style={styles.cardContainer}>
                             <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Email</Text>
                             <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: Platform.OS === 'ios' ? 15 : 0 }]}>
-                                <TextInput style={{ flex: 1, fontSize: 16 }}
+                                <TextInput style={{ flex: 1, fontSize: 16, color: '#000' }}
                                     onChangeText={handleChange('email')}
                                     onBlur={() => { handleBlur('email') }}
                                     value={values.email}
                                     keyboardType='email-address'
                                     placeholder='Email'
+                                    placeholderTextColor='gray'
                                     editable={false}
                                 />
                             </View>
@@ -275,11 +279,12 @@ const EditProfileScreen = ({ navigation }: any) => {
                         {user?.is_pro && <View style={styles.cardContainer}>
                             <Text style={[GlobalStyle.blackColor, { fontSize: 18, fontWeight: 'bold' }]}>Company</Text>
                             <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { paddingVertical: Platform.OS === 'ios' ? 15 : 0 }]}>
-                                <TextInput style={{ flex: 1, fontSize: 16 }}
+                                <TextInput style={{ flex: 1, fontSize: 16, color: '#000' }}
                                     onChangeText={handleChange('company')}
                                     onBlur={() => { handleBlur('company') }}
                                     value={values?.company}
                                     placeholder='Company'
+                                    placeholderTextColor='gray'
 
                                 />
                             </View>

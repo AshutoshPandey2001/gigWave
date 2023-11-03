@@ -1,7 +1,7 @@
 import { useRoute } from '@react-navigation/native'
 import { Formik } from 'formik'
 import React, { useState } from 'react'
-import { KeyboardAvoidingView, Pressable, ScrollView, StatusBar, StyleSheet, Text, TextInput, View,Platform } from 'react-native'
+import { KeyboardAvoidingView, Pressable, ScrollView, StatusBar, StyleSheet, Text, TextInput, View, Platform } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useDispatch, useSelector } from 'react-redux'
 import * as yup from "yup"
@@ -68,7 +68,7 @@ const RegisterScreen = ({ navigation }: any) => {
         setModalVisible(false)
     }
     return (
-        <KeyboardAvoidingView  behavior={Platform.OS == "ios" ? "height" : undefined}>
+        <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "height" : undefined}>
             <SafeAreaView style={GlobalStyle.safeAreaCotainer}>
                 <StatusBar
                     backgroundColor="#fff"
@@ -96,11 +96,13 @@ const RegisterScreen = ({ navigation }: any) => {
                                             <View style={{ marginRight: 10 }}>
                                                 <PersonIcon />
                                             </View>
-                                            <TextInput style={{ flex: 1, fontSize: 16 }}
+                                            <TextInput style={{ flex: 1, fontSize: 16, color: '#000' }}
                                                 onChangeText={handleChange('fname')}
                                                 onBlur={() => { handleBlur('fname') }}
                                                 value={values.fname}
                                                 placeholder='First Name'
+                                                placeholderTextColor='gray'
+
                                             />
                                         </View>
                                         <View style={{ marginBottom: 10 }}>
@@ -112,11 +114,13 @@ const RegisterScreen = ({ navigation }: any) => {
                                             <View style={{ marginRight: 10 }}>
                                                 <PersonIcon />
                                             </View>
-                                            <TextInput style={{ flex: 1, fontSize: 16 }}
+                                            <TextInput style={{ flex: 1, fontSize: 16, color: '#000' }}
                                                 onChangeText={handleChange('lname')}
                                                 onBlur={() => { handleBlur('lname') }}
                                                 value={values.lname}
                                                 placeholder='Last Name'
+                                                placeholderTextColor='gray'
+
                                             />
                                         </View>
                                         <View style={{ marginBottom: 10 }}>
@@ -128,12 +132,14 @@ const RegisterScreen = ({ navigation }: any) => {
                                             <View style={{ marginRight: 10 }}>
                                                 <LockIcon />
                                             </View>
-                                            <TextInput style={{ flex: 1, fontSize: 16 }}
+                                            <TextInput style={{ flex: 1, fontSize: 16, color: '#000' }}
                                                 onChangeText={handleChange('email')}
                                                 onBlur={() => { handleBlur('email') }}
                                                 value={values.email}
                                                 keyboardType='email-address'
                                                 placeholder='Email'
+                                                placeholderTextColor='gray'
+
                                             />
                                         </View>
                                         <View style={{ marginBottom: 10 }}>

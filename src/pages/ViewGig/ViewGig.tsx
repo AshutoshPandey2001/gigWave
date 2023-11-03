@@ -233,7 +233,7 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                                     <Image resizeMode='cover' source={{ uri: gigDetails.thumbnail_img_url }} style={{ position: 'absolute', zIndex: 999, top: 0, width: "100%", height: 250 }} />
                                     <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { marginTop: 210, paddingTop: 50, display: 'flex', justifyContent: 'center', alignItems: 'center' }]}>
                                         <Text style={[GlobalStyle.blackColor, { fontWeight: 'bold', fontSize: 20 }]}>{gigDetails.title ? gigDetails?.title : ''}</Text>
-                                        <Text>{gigDetails.address ? gigDetails?.address : ''}</Text>
+                                        <Text style={{ color: 'gray' }}>{gigDetails.address ? gigDetails?.address : ''}</Text>
                                     </View>
                                 </View>
                                 {userType === "PRO" ? <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: -15 }}>
@@ -276,7 +276,7 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                                                     {gigDetails.gig_requirement.map((item: any, index: any) => {
                                                         return (
                                                             <View style={{ flexDirection: 'row', alignItems: 'center' }} key={index}>
-                                                                <Text style={{ fontSize: 18, marginRight: 5 }}>•</Text>
+                                                                <Text style={{ fontSize: 18, marginRight: 5, color: '#000' }}>•</Text>
                                                                 <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
                                                                     {item}
                                                                 </Text>
@@ -295,7 +295,7 @@ const ViewGigScreen = ({ route, navigation }: any) => {
                                                     {gigDetails.good_to_have_skills.map((item: any, index: any) => {
                                                         return (
                                                             <View style={{ flexDirection: 'row', alignItems: 'center' }} key={index}>
-                                                                <Text style={{ fontSize: 18, marginRight: 5 }}>•</Text>
+                                                                <Text style={{ fontSize: 18, marginRight: 5, color: '#000' }}>•</Text>
                                                                 <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
                                                                     {item}
                                                                 </Text>

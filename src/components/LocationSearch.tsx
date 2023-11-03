@@ -58,13 +58,18 @@ const LocationSearch = ({ placeholder, isModalVisible, notifyChange, closeModel 
                         nearbyPlacesAPI='GooglePlacesSearch'
                         debounce={300}
                         ref={autocompleteRef}
+                        textInputProps={{
+                            placeholderTextColor: 'gray',
+                        }}
                         styles={{
+
                             container: GlobalStyle.container,
-                            textInput: [GlobalStyle.card, { height: 50 ,color:'#000'}],
-                            listView: { backgroundColor: '#f5f5f5', borderRadius: 10, color:'#000'},
-                            row: { backgroundColor: '#f5f5f5',color:'#000'},
-                            description:{color:'#000'},
-                            predefinedPlacesDescription:{color:'#000'}
+                            textInput: [GlobalStyle.card, { height: 50, color: '#000' },
+                            ],
+                            listView: { backgroundColor: '#f5f5f5', borderRadius: 10, color: '#000' },
+                            row: { backgroundColor: '#f5f5f5', color: '#000' },
+                            description: { color: '#000' },
+                            predefinedPlacesDescription: { color: '#000' }
                         }}
 
                     />

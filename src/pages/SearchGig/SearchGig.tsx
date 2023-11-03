@@ -488,7 +488,8 @@ const SearchGigScreen = ({ navigation }: any) => {
                         onChangeText={text => setSearchValue(text)}
                         value={searchValue}
                         placeholder='Search here'
-                        style={{ padding: 5, flex: 1, fontSize: 16 }}
+                        placeholderTextColor='gray'
+                        style={{ padding: 5, flex: 1, fontSize: 16, color: '#000' }}
                     />
                     {searchValue ?
                         <TouchableOpacity onPress={() => onChangeSearch()} >

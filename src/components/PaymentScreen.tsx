@@ -129,7 +129,7 @@ const PaymentScreen = ({ route, navigation }: any) => {
                         </View>
                         {amountError &&
                             <View>
-                                <Text style={[GlobalStyle.errorMsg,{paddingStart:25}]}>{amountError}</Text>
+                                <Text style={[GlobalStyle.errorMsg, { paddingStart: 25 }]}>{amountError}</Text>
                             </View>
                         }
                         <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
@@ -140,8 +140,8 @@ const PaymentScreen = ({ route, navigation }: any) => {
                             cardStyle={{
                                 backgroundColor: '#FFFFFF',
                                 textColor: '#000000',
-                                placeholderColor: '#05E3D5'
-
+                                placeholderColor: '#05E3D5',
+                                borderColor: 'gray'
                             }}
                             placeholders={{
                                 number: '**** **** **** 4242',

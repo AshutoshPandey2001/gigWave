@@ -124,13 +124,15 @@ const LoginScreen = ({ navigation }: any) => {
                           <PhoneIcon />
                         </View>
                       </View>
-                      <TextInput style={{ flex: 1, fontSize: 16 }}
+                      <TextInput style={{ flex: 1, fontSize: 16, color: '#000' }}
                         onChangeText={handleChange('phone')}
                         onBlur={() => { handleBlur('phone') }}
                         value={values.phone}
                         keyboardType={'phone-pad'}
                         placeholder='Phone'
                         maxLength={10}
+                        placeholderTextColor='gray'
+
                       />
                     </View>
                     {errors.phone &&
@@ -155,13 +157,14 @@ const LoginScreen = ({ navigation }: any) => {
                         <LockIcon />
                         {/* <Image source={require('../../assets/icons/lock.png')} /> */}
                       </View>
-                      <TextInput style={{ flex: 1, fontSize: 16 }}
+                      <TextInput style={{ flex: 1, fontSize: 16, color: '#000' }}
                         onChangeText={handleChange('code')}
                         onBlur={() => { handleBlur('code') }}
                         value={values.code}
                         keyboardType={'numeric'}
                         placeholder='Code'
                         maxLength={10}
+                        placeholderTextColor='gray'
                       />
                     </View>
                     {errors.code &&

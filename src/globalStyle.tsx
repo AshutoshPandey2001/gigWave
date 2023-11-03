@@ -1,6 +1,9 @@
-import { StyleSheet,Platform } from "react-native"
+import { StyleSheet, Platform } from "react-native"
 
 export const GlobalStyle = StyleSheet.create({
+    textinputColor: {
+        color: '#000'
+    },
     safeAreaCotainer: {
         backgroundColor: '#fff',
     },
@@ -107,7 +110,7 @@ export const GlobalStyle = StyleSheet.create({
         width: '100%',
         height: 80,
     },
-    noTabBar: { position: "absolute", height: 0, display: Platform.OS==="ios"?'none':'flex' },
+    noTabBar: { position: "absolute", height: 0, display: Platform.OS === "ios" ? 'none' : 'flex' },
     profileImg: {
         height: 65,
         width: 65,

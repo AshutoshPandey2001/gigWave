@@ -73,7 +73,7 @@ const SingleproScreen = ({ route, navigation }: any) => {
                                     <Image style={styles.profileImg} source={profilePic ? { uri: profilePic } : require('../../assets/images/avatar_profile.png')} />
                                     <View style={[GlobalStyle.card, GlobalStyle.shadowProp, { marginTop: 70, paddingTop: 50, display: 'flex', justifyContent: 'center', alignItems: 'center' }]}>
                                         <Text style={[GlobalStyle.blackColor, { fontWeight: 'bold' }]}>{proUserDetails.fname + " " + proUserDetails.lname}</Text>
-                                        <Text>{proUserDetails.address}</Text>
+                                        <Text style={{ color: 'gray' }}>{proUserDetails.address}</Text>
                                         <Text style={{ color: '#989898', marginTop: 5, fontSize: 18, fontStyle: 'italic', fontWeight: 'bold' }}>Background Check {proDetails.background_clear}</Text>
                                     </View>
                                 </View>
@@ -100,7 +100,7 @@ const SingleproScreen = ({ route, navigation }: any) => {
                                     {proDetails.formal_skills.map((item: any, index: any) => {
                                         return (
                                             <View style={{ flexDirection: 'row', alignItems: 'center' }} key={index}>
-                                                <Text style={{ fontSize: 18, marginRight: 5 }}>•</Text>
+                                                <Text style={{ fontSize: 18, marginRight: 5, color: '#000' }}>•</Text>
                                                 <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
                                                     {item}
                                                 </Text>
@@ -115,7 +115,7 @@ const SingleproScreen = ({ route, navigation }: any) => {
                                     {proDetails.potential_skills.map((item: any, index: any) => {
                                         return (
                                             <View style={{ flexDirection: 'row', alignItems: 'center' }} key={index}>
-                                                <Text style={{ fontSize: 18, marginRight: 5 }}>•</Text>
+                                                <Text style={{ fontSize: 18, marginRight: 5, color: '#000' }}>•</Text>
                                                 <Text style={[GlobalStyle.blackColor, { fontSize: 16 }]}>
                                                     {item}
                                                 </Text>

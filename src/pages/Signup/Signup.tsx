@@ -66,9 +66,9 @@ const SignupScreen = ({ navigation }: any) => {
                     text2: 'OTP Verification Successfully Completed',
                 });
                 await dispatch(setLoading(false))
-                getFcmToken().then((token)=>{
+                getFcmToken().then((token) => {
                     dispatch(setFCMToken(token));
-                  })
+                })
                 dispatch(setUser(response.user))
             } else {
                 setOtpSend(false)
@@ -123,12 +123,13 @@ const SignupScreen = ({ navigation }: any) => {
                                                 <PhoneIcon />
                                                 {/* <Image source={require('../../assets/icons/phone.png')} /> */}
                                             </View>
-                                            <TextInput style={{ flex: 1, fontSize: 16 }}
+                                            <TextInput style={{ flex: 1, fontSize: 16, color: '#000' }}
                                                 onChangeText={handleChange('phone')}
                                                 onBlur={() => { handleBlur('phone') }}
                                                 value={values.phone}
                                                 keyboardType={'phone-pad'}
                                                 placeholder='Phone'
+                                                placeholderTextColor='gray'
                                                 maxLength={10}
                                             />
                                         </View>
@@ -154,12 +155,13 @@ const SignupScreen = ({ navigation }: any) => {
                                                 <LockIcon />
                                                 {/* <Image source={require('../../assets/icons/lock.png')} /> */}
                                             </View>
-                                            <TextInput style={{ flex: 1, fontSize: 16 }}
+                                            <TextInput style={{ flex: 1, fontSize: 16, color: '#000' }}
                                                 onChangeText={handleChange('code')}
                                                 onBlur={() => { handleBlur('code') }}
                                                 value={values.code}
                                                 keyboardType={'numeric'}
                                                 placeholder='Code'
+                                                placeholderTextColor='gray'
                                                 maxLength={10}
                                             />
                                         </View>
