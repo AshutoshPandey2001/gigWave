@@ -15,7 +15,7 @@ const PaymentScreen = ({ route, navigation }: any) => {
     const [cardInfo, setCardInfo] = useState<any>(null)
     const dispatch = useDispatch()
     const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
-    const [amount, setamount] = useState(Number(route.params.amount));
+    const [amount, setamount] = useState(route.params.amount);
     const [amountError, setAmountError] = useState('');
     const [paymentConfirmation, setPaymentConfirmation] = useState<any>(null);
     const [isPaymentSuccess, setIsPaymentSuccess] = useState<any>(false);
