@@ -75,7 +75,7 @@ export const createUser = async (userData: any, token: any): Promise<any> => {
         });
         return response.data; // Return the response data
     } catch (error) {
-        console.log('error', error);
+        // console.log('error', error);
 
         throw error; // Rethrow the error to be caught by the caller
     }
@@ -94,7 +94,7 @@ export const updateUsersDetails = async (userData: any, token: any): Promise<any
         });
         return response.data; // Return the response data
     } catch (error) {
-        console.log('error', error);
+        // console.log('error', error);
 
         throw error; // Rethrow the error to be caught by the caller
     }

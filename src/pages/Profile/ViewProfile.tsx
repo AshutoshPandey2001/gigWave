@@ -44,7 +44,7 @@ const ViewProfileScreen = ({ navigation }: any) => {
                 title: 'Error',
                 message: e.message,
             });
-            console.log('error', JSON.stringify(e));
+            // console.log('error', JSON.stringify(e));
             dispatch(setLoading(false))
         })
     }, [])
@@ -100,7 +100,7 @@ const ViewProfileScreen = ({ navigation }: any) => {
                         title: 'Error',
                         message: e.message,
                     });
-                    console.log('error', JSON.stringify(e));
+                    // console.log('error', JSON.stringify(e));
                     dispatch(setLoading(false))
                 })
             }
@@ -129,7 +129,7 @@ const ViewProfileScreen = ({ navigation }: any) => {
                 title: 'Error',
                 message: e.message,
             });
-            console.log(e, 'error');
+            // console.log(e, 'error');
 
         })
     }
@@ -206,7 +206,6 @@ const ViewProfileScreen = ({ navigation }: any) => {
                 });
             } else {
                 onboardUser(userData, firstToken).then((data) => {
-                    console.log('user data', data)
                     if (data && data.url) {
                         setPayment(true)
                         setStripeUrl(data.url)
@@ -215,7 +214,6 @@ const ViewProfileScreen = ({ navigation }: any) => {
             }
         }).catch((error) => {
             onboardUser(userData, firstToken).then((data) => {
-                console.log('user data', data)
                 if (data && data.url) {
                     setPayment(true)
                     setStripeUrl(data.url)

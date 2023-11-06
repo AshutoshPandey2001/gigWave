@@ -23,7 +23,6 @@ const PaymentWebComponent = ({ setPayment, stripeUrl }: PaymentWebViewProps) => 
                         // originWhitelist={['*']}
                         source={{ uri: stripeUrl }}
                         onNavigationStateChange={(e) => {
-                            console.log('current state', e);
                             if (e.url === 'https://lab.gigwave.app/api/return_url') {
                                 setPayment(false)
                             }

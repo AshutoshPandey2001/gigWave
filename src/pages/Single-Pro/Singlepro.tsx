@@ -7,6 +7,7 @@ import { RootState } from '../../redux/store'
 import CommanAlertBox from '../../components/CommanAlertBox'
 import { setLoading } from '../../redux/action/General/GeneralSlice'
 import { getUserByUserID } from '../../services/userService/userServices'
+import { checkAccountStatus } from '../../services/payment/paymentService'
 
 const SingleproScreen = ({ route, navigation }: any) => {
     const [proDetails, setproDetails] = useState<any>()
@@ -14,11 +15,27 @@ const SingleproScreen = ({ route, navigation }: any) => {
     const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
     const dispatch = useDispatch()
     const [profilePic, setProfilePic] = useState<any>()
-    const [paymentScreen, setpaymentScreen] = useState<any>(false)
+    const [showPayment, setShowPayment] = useState<any>(true)
 
     useEffect(() => {
         getProuserData()
+
     }, [])
+
+    useEffect(() => {
+        checkPyamentStatus(route?.params?.user_id)
+    }, [route?.params?.user_id]);
+
+
+    const checkPyamentStatus = (proID: any) => {
+        const userData = {
+            user_id: proID
+        }
+        checkAccountStatus(userData, firstToken).then((data) => {
+            // console.log('data', data)
+            setShowPayment(data)
+        }).catch(() => setShowPayment(false))
+    }
 
     const getProuserData = async () => {
         try {
@@ -81,9 +98,11 @@ const SingleproScreen = ({ route, navigation }: any) => {
                                     <Pressable style={[GlobalStyle.button, { width: '50%', backgroundColor: '#000', marginRight: 10 }]} onPress={() => navigation.navigate('DirectChat', { user_id: route.params.user_id, gig_id: route.params.gig_id })}>
                                         <Text style={[GlobalStyle.btntext, { fontWeight: 'bold', fontSize: 18 }]}>Message Pro</Text>
                                     </Pressable>
-                                    <Pressable style={[GlobalStyle.button, { width: '50%' }]} onPress={() => navigation.navigate('Payment', { user_id: route.params.user_id, amount: route.params.budget, gigTitle: route.params.gigTitle, payeeName: `${proUserDetails.fname + " " + proUserDetails.lname}` })}>
-                                        <Text style={[GlobalStyle.btntext, { fontWeight: 'bold', fontSize: 18 }]}>Pay Pro</Text>
-                                    </Pressable>
+                                    {showPayment &&
+                                        <Pressable style={[GlobalStyle.button, { width: '50%' }]} onPress={() => navigation.navigate('Payment', { user_id: route.params.user_id, amount: route.params.budget, gigTitle: route.params.gigTitle, payeeName: `${proUserDetails.fname + " " + proUserDetails.lname}` })}>
+                                            <Text style={[GlobalStyle.btntext, { fontWeight: 'bold', fontSize: 18 }]}>Pay Pro</Text>
+                                        </Pressable>
+                                    }
                                 </View>
                             </View>
                             <View style={{ marginTop: 10 }}>

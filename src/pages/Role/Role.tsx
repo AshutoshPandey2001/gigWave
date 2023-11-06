@@ -36,7 +36,7 @@ const RoleScreen = ({ navigation }: any) => {
     else {
       notificationListener()
 
-      console.log('fcm_token', fcm_token)
+      // console.log('fcm_token', fcm_token)
     }
   }, [fcm_token])
 
@@ -44,7 +44,7 @@ const RoleScreen = ({ navigation }: any) => {
     dispatch(setLoading(true))
     try {
       setDeviceToken(value, firstToken).then((res: any) => {
-        console.log(res, 'response token')
+        // console.log(res, 'response token')
         dispatch(setLoading(false));
       })
     } catch (error: any) {

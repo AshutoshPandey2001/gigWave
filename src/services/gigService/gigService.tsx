@@ -51,8 +51,7 @@ export const getGigByGig_id = async (gig_id: string, token: any): Promise<any> =
 
 
 export const updateGig = async (gigValue: any, token: any): Promise<any> => {
-    console.log('update', gigValue);
-
+    // console.log('update', gigValue);
     try {
         const response = await axios({
             method: 'put',

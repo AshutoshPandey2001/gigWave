@@ -35,7 +35,7 @@ const SignupScreen = ({ navigation }: any) => {
         try {
             dispatch(setLoading(true))
             const response = await getOtp(values.phone, firsToken);
-            console.log('Response:', response);
+            // console.log('Response:', response);
             if (response) {
                 Toast.show({
                     type: 'success',

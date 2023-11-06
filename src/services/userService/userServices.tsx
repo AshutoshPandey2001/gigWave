@@ -15,7 +15,7 @@ export const getUserByUserID = async (userID: any, token: any): Promise<any> => 
         });
         return response.data; // Return the response data
     } catch (error) {
-        console.log('error', JSON.stringify(error));
+        // console.log('error', JSON.stringify(error));
 
         throw error; // Rethrow the error to be caught by the caller
     }
@@ -78,7 +78,7 @@ export const setDeviceToken = async (deviceValue: any, token: any): Promise<any>
         });
         return response.data; // Return the response data
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         throw error; // Rethrow the error to be caught by the caller
     }
 }

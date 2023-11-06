@@ -54,6 +54,8 @@
 	<string>Give $(PRODUCT_NAME) permission to use your microphone. Your record wont be shared without your permission.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Gigwave requires to access your library to upload your photos.</string>
+	<key>UIUserInterfaceStyle</key>
+    <string>Light</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

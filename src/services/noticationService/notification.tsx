@@ -58,10 +58,10 @@ export const requestUserPermission = async () => {
 export const getFcmToken = async () => {
   try {
     const newFcmToken = await messaging().getToken();
-    console.log(newFcmToken);
+    // console.log(newFcmToken);
     return newFcmToken;
   } catch (error) {
-    console.error(error, 'error-----------------------');
+    // console.error(error, 'error-----------------------');
     return null;
   }
 };

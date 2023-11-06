@@ -15,7 +15,7 @@ const PaymentScreen = ({ route, navigation }: any) => {
     const [cardInfo, setCardInfo] = useState<any>(null)
     const dispatch = useDispatch()
     const firstToken = useSelector((state: RootState) => state.firstToken.firstToken);
-    const [amount, setamount] = useState(route.params.amount);
+    const [amount, setamount] = useState(Number(route.params.amount));
     const [amountError, setAmountError] = useState('');
     const [paymentConfirmation, setPaymentConfirmation] = useState<any>(null);
     const [isPaymentSuccess, setIsPaymentSuccess] = useState<any>(false);
@@ -44,7 +44,6 @@ const PaymentScreen = ({ route, navigation }: any) => {
             const confirmPaymentIntent = await confirmPayment(intent?.client_secret, { paymentMethodType: 'Card' })
             setPaymentConfirmation(confirmPaymentIntent)
             setIsPaymentSuccess(true)
-            console.log('confirmPaymentIntent', confirmPaymentIntent);
             dispatch(setLoading(false))
             setIsLoading(false)
             setTimeout(() => {
@@ -68,7 +67,6 @@ const PaymentScreen = ({ route, navigation }: any) => {
         // console.log("my card details",cardDetail)
         if (cardDetail.complete) {
             setCardInfo(cardDetail)
-            console.log('cardDetail', cardDetail);
         } else {
             setCardInfo(null)
         }
@@ -147,7 +145,6 @@ const PaymentScreen = ({ route, navigation }: any) => {
                                 number: '**** **** **** 4242',
                             }}
                             onFormComplete={(cardDetails) => {
-                                console.log('card details', cardDetails);
                                 fetchCardDetail(cardDetails)
                             }}
                             style={{ minHeight: Platform.OS === 'ios' ? '30%' : '45%', padding: 20, margin: 20, marginBottom: 0 }}

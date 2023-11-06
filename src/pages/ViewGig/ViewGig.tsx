@@ -65,7 +65,7 @@ const ViewGigScreen = ({ route, navigation }: any) => {
 
         }).catch((error) => {
             dispatch(setLoading(false));
-            console.log(error)
+            // console.log(error)
         })
     }
 
@@ -197,9 +197,6 @@ const ViewGigScreen = ({ route, navigation }: any) => {
             });
 
             dispatch(setLoading(false));
-
-            console.log(error, 'error');
-
         })
     }
     const notInterest = async () => {
