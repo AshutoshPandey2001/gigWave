@@ -95,7 +95,7 @@ const SingleproScreen = ({ route, navigation }: any) => {
                                     </View>
                                 </View>
                                 <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: -15 }}>
-                                    <Pressable style={[GlobalStyle.button, { width: '50%', backgroundColor: '#000', marginRight: 10 }]} onPress={() => navigation.navigate('DirectChat', { user_id: route.params.user_id, gig_id: route.params.gig_id })}>
+                                    <Pressable style={[GlobalStyle.button, { width: showPayment ? '50%' : '100%', backgroundColor: '#000', marginRight: 10 }]} onPress={() => navigation.navigate('DirectChat', { user_id: route.params.user_id, gig_id: route.params.gig_id })}>
                                         <Text style={[GlobalStyle.btntext, { fontWeight: 'bold', fontSize: 18 }]}>Message Pro</Text>
                                     </Pressable>
                                     {showPayment &&
