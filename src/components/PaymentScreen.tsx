@@ -1,4 +1,4 @@
-import { CardForm, useStripe } from '@stripe/stripe-react-native';
+import { CardForm, PlatformPay, PlatformPayButton, useStripe } from '@stripe/stripe-react-native';
 import React, { useState } from 'react';
 import { Image, Modal, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -6,7 +6,6 @@ import { GlobalStyle } from '../globalStyle';
 import { setLoading } from '../redux/action/General/GeneralSlice';
 import { RootState } from '../redux/store';
 import { paymentIntent } from '../services/payment/paymentService';
-
 
 const PaymentScreen = ({ route, navigation }: any) => {
     const { confirmPayment } = useStripe();
@@ -149,9 +148,29 @@ const PaymentScreen = ({ route, navigation }: any) => {
                             }}
                             style={{ minHeight: Platform.OS === 'ios' ? '30%' : '45%', padding: 20, margin: 20, marginBottom: 0 }}
                         />
+                        {/* <View style={{ display: 'flex', direction: 'inherit' }}> */}
                         <Pressable style={[GlobalStyle.button, { marginHorizontal: 20, marginTop: 0 }]} disabled={!cardInfo} onPress={() => handlePayment()}>
                             <Text style={GlobalStyle.btntext}>Proceed to Payment</Text>
                         </Pressable>
+                        <Text style={{ color: '#000', textAlign: 'center', padding: 10, fontSize: 16 }}>Or</Text>
+                        <View style={{
+                            marginLeft: 15,
+                            marginRight: 15,
+                            borderRadius: 20,
+                        }}>
+                            <PlatformPayButton
+                                type={PlatformPay.ButtonType.Pay}
+                                onPress={() => console.log('pay button clicked')}
+                                style={{
+                                    width: '100%',
+                                    height: 50,
+
+                                }}
+                            />
+                        </View>
+
+                        {/* </View> */}
+
                     </>
             }
 
