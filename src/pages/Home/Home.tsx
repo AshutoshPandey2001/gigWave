@@ -169,6 +169,8 @@ const HomeScreen = ({ navigation }: any) => {
   const getList = () => {
     dispatch(setLoading(true))
     getGigByUser(user.user_id, firstToken).then((res) => {
+      console.log('res', res);
+
       if (selectedIndex === 0) {
         let activegig = res.filter((item: any) => item.status === "active")
         setLists(activegig)

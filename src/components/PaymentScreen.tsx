@@ -1,4 +1,4 @@
-import { CardForm, PlatformPay, PlatformPayButton, useStripe } from '@stripe/stripe-react-native';
+import { CardForm, useStripe, ApplePayButton, GooglePayButton } from '@stripe/stripe-react-native';
 import React, { useState } from 'react';
 import { Image, Modal, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -157,16 +157,32 @@ const PaymentScreen = ({ route, navigation }: any) => {
                             marginLeft: 15,
                             marginRight: 15,
                             borderRadius: 20,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
                         }}>
-                            <PlatformPayButton
-                                type={PlatformPay.ButtonType.Pay}
-                                onPress={() => console.log('pay button clicked')}
-                                style={{
-                                    width: '100%',
-                                    height: 50,
+                            {/* <Text style={{ padding: 10 }}>Pay with</Text> */}
+                            {Platform.OS === "ios" ?
+                                <ApplePayButton
+                                    type={'inStore'}
+                                    onPress={() => console.log('pay button clicked')}
+                                    style={{
+                                        width: '60%',
+                                        height: 50,
 
-                                }}
-                            />
+                                    }}
+                                />
+                                :
+                                <GooglePayButton
+                                    onPress={() => console.log('pay button clicked')}
+                                    type={'pay'}
+                                    style={{
+                                        width: '60%',
+                                        height: 50,
+
+                                    }}
+                                />
+                            }
                         </View>
 
                         {/* </View> */}
